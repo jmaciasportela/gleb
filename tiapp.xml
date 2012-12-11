@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ti:app xmlns:ti="http://ti.appcelerator.org">
+    <property name="ti.android.bug2373.disableDetection" type="bool">false</property>
+    <property name="ti.android.bug2373.restartDelay" type="int">500</property>
+    <property name="ti.android.bug2373.finishDelay" type="int">0</property>
+    <property name="ti.android.bug2373.skipAlert" type="bool">true</property>
+    <property name="ti.android.bug2373.message">Loading</property>
+    <property name="ti.android.bug2373.title">Restart Required</property>
+    <property name="ti.android.bug2373.buttonText">Continue</property>    
     <deployment-targets>
-        <target device="mobileweb">false</target>
+        <target device="mobileweb">true</target>
         <target device="iphone">false</target>
         <target device="ipad">false</target>
         <target device="android">true</target>
@@ -17,26 +24,50 @@
     <copyright>2012 by maci</copyright>
     <icon>appicon.png</icon>
     <persistent-wifi>false</persistent-wifi>
-    <prerendered-icon>false</prerendered-icon>
+    <prerendered-icon>true</prerendered-icon>
     <statusbar-style>default</statusbar-style>
     <statusbar-hidden>false</statusbar-hidden>
     <fullscreen>false</fullscreen>
-    <navbar-hidden>false</navbar-hidden>
-    <analytics>true</analytics>
+    <navbar-hidden>true</navbar-hidden>
+    <analytics>false</analytics>
     <guid>5c626da0-4708-468e-9831-4542e84ab3af</guid>
     <property name="ti.ui.defaultunit">system</property>
-    <iphone>
+  <iphone>
         <orientations device="iphone">
             <orientation>Ti.UI.PORTRAIT</orientation>
         </orientations>
         <orientations device="ipad">
             <orientation>Ti.UI.PORTRAIT</orientation>
-            <orientation>Ti.UI.UPSIDE_PORTRAIT</orientation>
-            <orientation>Ti.UI.LANDSCAPE_LEFT</orientation>
-            <orientation>Ti.UI.LANDSCAPE_RIGHT</orientation>
         </orientations>
     </iphone>
-    <android xmlns:android="http://schemas.android.com/apk/res/android"/>
+    <android xmlns:android="http://schemas.android.com/apk/res/android">
+        <tool-api-level>8</tool-api-level>
+        <manifest>
+            <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+            <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+            <uses-permission android:name="android.permission.INTERNET"/>
+            <uses-permission android:name="android.permission.VIBRATE"/>
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+            <application android:debuggable="true"/>
+        </manifest>
+        <activities>
+            <activity android:name="es.thinetic.ngleb.NewGlebActivity" url="app.js">
+                <intent-filter>
+                    <action android:name="android.intent.action.VIEW"/>
+                    <action android:name="android.intent.action.MAIN"/>
+                    <category android:name="android.intent.category.DEFAULT"/>
+                    <category android:name="android.intent.category.BROWSABLE"/>
+                </intent-filter>
+            </activity>
+        </activities>
+        <activity android:configChanges="keyboardHidden"
+            android:name="org.appcelerator.titanium.TiActivity" android:screenOrientation="portrait"/>
+        <activity android:configChanges="keyboardHidden" android:name="ti.modules.titanium.ui.TiTabActivity"/>
+        <services>
+            <!--<service type="interval" url="services/glebService.js"/>-->
+        </services>
+    </android>
     <mobileweb>
         <precache/>
         <splash>
