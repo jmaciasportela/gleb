@@ -2,13 +2,12 @@
 // SETUP Inicial
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
-Ti.API.info("GLEB - Iniciando app.js");
-Ti.API.info('GLEB - Width x Height: ' + Ti.Platform.displayCaps.platformWidth + ' x ' + Ti.Platform.displayCaps.platformHeight);
-Ti.API.info('GLEB - DPI: ' + Ti.Platform.displayCaps.dpi);
+Ti.API.info('GLEB - CONFIG - Width x Height: ' + Ti.Platform.displayCaps.platformWidth + ' x ' + Ti.Platform.displayCaps.platformHeight);
+Ti.API.info('GLEB - CONFIG - DPI: ' + Ti.Platform.displayCaps.dpi);
 
 Ti.App.Properties.setBool('isTablet', Ti.Platform.osname === 'ipad' || (Ti.Platform.osname === 'android' && (Ti.Platform.displayCaps.platformWidth > 899 || Ti.Platform.displayCaps.platformHeight > 899)));
 	
-if (!Ti.App.Properties.hasProperty('tUpload') || Ti.App.Properties.getString('tUpload')=="") Ti.App.Properties.setString('tUpload',"15000"); 
+if (!Ti.App.Properties.hasProperty('tUpload') || Ti.App.Properties.getString('tUpload')=="") Ti.App.Properties.setString('tUpload',"60000"); 
 if (!Ti.App.Properties.hasProperty('tTracking') || Ti.App.Properties.getString('tTracking')=="") Ti.App.Properties.setString('tTracking',"60000");
 
 Ti.App.Properties.setDouble('displayConstant', Ti.Platform.displayCaps.dpi/160);
@@ -31,20 +30,16 @@ Ti.App.Properties.setInt('initialDegrees',0);
 Ti.App.Properties.setString('prevTimestamp','0');  
 Ti.App.Properties.setBool('isChatOpen',false);    
 
-//generación del GLEBUUID
 if (!Ti.App.Properties.getString("GLEBUUID")) {
-	Ti.API.info("GLEB - Generando GLEBUUID");
-	Ti.API.info("GLEB - Generando MAC: "+Titanium.Platform.macaddress);
-	Ti.API.info("GLEB - Generando UUID: "+ Titanium.Platform.id);	
+	Ti.API.info("GLEB - CONFIG - Device MAC: "+Titanium.Platform.macaddress);
+	Ti.API.info("GLEB - CONFIG - Device UUID: "+ Titanium.Platform.id);	
 	if (Titanium.Platform.id == null) Ti.App.Properties.setString("GLEBUUID",Ti.Utils.base64encode(Ti.Utils.sha1(Titanium.Platform.macaddress)));
 	else Ti.App.Properties.setString("GLEBUUID",Ti.Utils.base64encode(Ti.Utils.sha1(Titanium.Platform.macaddress+Titanium.Platform.id)));
 }
+Ti.API.info("GLEB - CONFIG - GLEBUUID: "+Ti.App.Properties.getString("GLEBUUID"));
 
-Ti.API.info("GLEB - GLEBUUID: "+Ti.App.Properties.getString("GLEBUUID"));
-
-// check for network
-Ti.API.info('GLEB - Titanium.Network.networkType: '+Titanium.Network.networkType + 'Titanium.Network.networkTypeName: '+Titanium.Network.networkTypeName+'Titanium.Network.online: '+Titanium.Network.online);  	
-Ti.API.info('GLEB - Connection Status:'+ Titanium.Network.online);
+Ti.API.info('GLEB - CONFIG - Titanium.Network.networkType: '+Titanium.Network.networkType + ' Titanium.Network.networkTypeName: '+Titanium.Network.networkTypeName+' Titanium.Network.online: '+Titanium.Network.online);  	
+Ti.API.info('GLEB - CONFIG - Connection Status:'+ Titanium.Network.online);
 Ti.App.Properties.setBool('connectionStatus', Titanium.Network.online);
 Ti.App.Properties.setString('connectionName', Titanium.Network.networkTypeName);
 

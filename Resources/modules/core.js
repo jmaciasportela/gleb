@@ -1,6 +1,6 @@
 /**
 * Core functionality for the app
-* @author Jesus Macias, Fernando Ruiz, Mario Izquierdo
+* @author Jesus Macias Portela, Fernando Ruiz Hernandez, Mario Izquierdo Rodriguez
 **/
 
 /***************************
