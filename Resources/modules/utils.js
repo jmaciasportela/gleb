@@ -1,127 +1,46 @@
 /**
-* Core functionality for the app
+* Utils functionality for the app
 * @author Jesus Macias Portela, Fernando Ruiz Hernandez, Mario Izquierdo Rodriguez
 **/
 
-/***************************
-* Private methods, variables, & dependencies
-***************************/
-
-
-/***************************
-* Public methods & variables
-***************************/
-
-/**
-* Set properties for app
-* @param {String} name Name of property
-* @param {String} value Value of property
-*/
-exports.addProperty = function(name, value) {
-properties[name] = value;
-};
-
-/**
-* Register a plugin with the core app
-* @param {String} name Name of plugin
-* @param {Object} object The object namespace the plugin uses
-*/  
-exports.register = function(name, object) {
-plugins[name] = object;
-};
-
-/**
-* Helper method to show all properties in the core app
-*/
-exports.properties = function() {
-return properties;
-};
-
-/**
-* Helper method to show one property in the core app
-* @param {String} name
-*/
-exports.property = function(name) {
-return properties[name];
-};
-
-/**
-* Change layout based on orientation
-* @param {Object} _event
-*/
-exports.orientationObserverUpdate = function(_event) {
-// Example of how you can control the current page with global events
-var type = (_event.source.isLandscape()) ? 'landscape' : 'portrait' ;
-
-if(currentPage && currentPage.orientationUpdate) {
-currentPage.orientationUpdate(type);
-}
-};
-
-/**
-* Get orientation in a sane way
-* @param {String} o
-*/
-exports.getOrientation = function(o) {
-    switch (o) {
-        case Titanium.UI.PORTRAIT: {
-            return 'portrait';
-    }
-        case Titanium.UI.UPSIDE_PORTRAIT: {
-            return 'upside portrait';
-    }
-        case Titanium.UI.LANDSCAPE_LEFT: {
-            return 'landscape left';
-    }
-        case Titanium.UI.LANDSCAPE_RIGHT: {
-            return 'landscape right';
-    }
-        case Titanium.UI.FACE_UP: {
-            return 'face up';
-    }
-        case Titanium.UI.FACE_DOWN: {
-            return 'face down';
-    }
-    case Titanium.UI.UNKNOWN: {
-            return 'unknown';
-    }
-  }
-};
-
-/**
-* Get DISPLAY Constant
-* @param {String} p
-*/
-exports._p = function (value) {     
+exports._p = function (value) {
+    //return parseInt(value*Ti.Platform.displayCaps.platformWidth/320); 
     platformWidth = Ti.App.Properties.getInt("platformWidth");  
     return parseInt(value*platformWidth/320);
 };  
 
-
-/**
-* Decode text in base64
-* @param {String} texto
+/*
+exports.textoClaro = function (texto){  
+var base64Matcher = new RegExp("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$");
+if (base64Matcher.test(texto)) {
+        var textLabel = Ti.Utils.base64decode(texto);
+} else {
+        var textLabel = texto;
+}
+return textLabel;
+}
 */
+
+
 exports.textoClaro = function (texto){
+    //Ti.API.debug('GLEB - Decodificando: '+ texto);
     if (texto.substring(0, 7) == "base64*") {
         texto = texto.substring(7);
         var textLabel = Ti.Utils.base64decode(texto);
     }
     else {
         var textLabel = texto;
-    }    
+    }
+    //Ti.API.debug('GLEB - Decodificado: '+ textLabel);
 return textLabel;
 }
 
-/**
-* Replace
-* @param {String} o
-*/
 exports.replaceCadena = function(str) {
 str = str.replace (/{LATITUD}/g,Ti.App.Properties.getString('lastLatitude'));
 str = str.replace (/{LONGITUD}/g,Ti.App.Properties.getString('lastLongitude'));
 str = str.replace (/{EXACTITUD}/g,Ti.App.Properties.getString('lastAccuracy'));
 str = str.replace (/{ALTURA}/g,Ti.App.Properties.getString('lastAltitude'));
+
 return str;
 }
 
