@@ -6,7 +6,7 @@
     <property name="ti.android.bug2373.skipAlert" type="bool">true</property>
     <property name="ti.android.bug2373.message">Loading</property>
     <property name="ti.android.bug2373.title">Restart Required</property>
-    <property name="ti.android.bug2373.buttonText">Continue</property>    
+    <property name="ti.android.bug2373.buttonText">Continue</property>
     <deployment-targets>
         <target device="mobileweb">true</target>
         <target device="iphone">false</target>
@@ -14,7 +14,7 @@
         <target device="android">true</target>
         <target device="blackberry">false</target>
     </deployment-targets>
-    <sdk-version>2.1.4.GA</sdk-version>
+    <sdk-version>2.1.0.GA</sdk-version>
     <id>ngleb.thinetic.es</id>
     <name>new gleb</name>
     <version>1.0</version>
@@ -32,7 +32,7 @@
     <analytics>false</analytics>
     <guid>5c626da0-4708-468e-9831-4542e84ab3af</guid>
     <property name="ti.ui.defaultunit">system</property>
-  <iphone>
+    <iphone>
         <orientations device="iphone">
             <orientation>Ti.UI.PORTRAIT</orientation>
         </orientations>
