@@ -10,13 +10,14 @@ var view2 = require('ui/wizard/pagina_2')._get();
 var view3 = require('ui/wizard/pagina_3')._get();
 
 
-exports._open = function() {    
+exports._open = function() {   
+    _set(); 
     var win = require ("modules/controlWindow").createWindow(scrollableView);    
     Ti.API.debug("GLEB - WIZARD - win: " + win);  
     win.open();    
 }
 
-exports._set = function() {
+_set = function() {
     
   Ti.API.info("GLEB - Set wizard");     
     
