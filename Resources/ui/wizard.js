@@ -4,10 +4,10 @@
 **/
 
 var scrollableView;
-var view0 = require('ui/wizard/pagina_0')._get();
-var view1 = require('ui/wizard/pagina_1')._get();
-var view2 = require('ui/wizard/pagina_2')._get();
-var view3 = require('ui/wizard/pagina_3')._get();
+var view0 = new require('ui/wizard/pagina_0')();
+var view1 = new require('ui/wizard/pagina_1')();
+var view2 = new require('ui/wizard/pagina_2')();
+var view3 = new require('ui/wizard/pagina_3')();
 
 
 exports._open = function() {   
@@ -44,14 +44,16 @@ exports.toLeft = function() {
 }
 
 exports.toRight = function() {
-    Ti.API.info('GLEB - wizard a la derecha');
+    Ti.API.debug('GLEB - Current wizard view:'+scrollableView.currentPage);    
+    Ti.API.debug('GLEB - wizard a la derecha');
+    
     if (scrollableView.currentPage ==2) view2.msisdn (Ti.App.Properties.getString("telf"));     
-    if (scrollableView.currentPage ==3) {           
-       Titanium.API.info("GLEB - Button Save from wizard click");
+    else if (scrollableView.currentPage ==3) {           
+       Titanium.API.debug("GLEB - Button Save from wizard click");
        //Salvamos parametros
        Ti.App.Properties.setString("WIZARD","done");
        //Disparamos evento
-       Ti.App.fireEvent("gleb_wizard_end");
+      // Ti.App.fireEvent("gleb_wizard_end");
     }       
     else scrollableView.currentPage = scrollableView.currentPage + 1;
 }

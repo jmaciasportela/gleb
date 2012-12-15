@@ -1,4 +1,4 @@
-exports._get = function(){
+module.exports= function(){
 
 	var view = Ti.UI.createView({
 		borderWidth: 1,

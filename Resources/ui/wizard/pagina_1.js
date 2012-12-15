@@ -1,4 +1,4 @@
-exports._get = function(){
+module.exports= function(){
 
 	var view = Ti.UI.createView({
 		borderWidth: 1,
@@ -164,10 +164,11 @@ exports._get = function(){
 				telf.focus();			
 		}
 		else {
-			Ti.App.fireEvent('gleb_closeActivityIndicator');
+			//Ti.App.fireEvent('gleb_closeActivityIndicator');
 			Ti.API.info("Enviando codigo de verificación al numero "+Ti.App.Properties.getString("telf"));
-			Ti.App.fireEvent('gleb_openActivityIndicator',{"text":"Enviando código ..."});			
-			require("plugins/glebAPI").sendSMS(Ti.App.Properties.getString("telf"));		
+			//Ti.App.fireEvent('gleb_openActivityIndicator',{"text":"Enviando código ..."});			
+			//require("plugins/glebAPI").sendSMS(Ti.App.Properties.getString("telf"));		
+			require('ui/wizard').toRight();
 		}
 			
 	});	

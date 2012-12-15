@@ -14,7 +14,7 @@
         <target device="android">true</target>
         <target device="blackberry">false</target>
     </deployment-targets>
-    <sdk-version>2.1.0.GA</sdk-version>
+    <sdk-version>3.0.0.GA</sdk-version>
     <id>ngleb.thinetic.es</id>
     <name>new gleb</name>
     <version>0.1</version>
