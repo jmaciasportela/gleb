@@ -76,5 +76,8 @@
         </splash>
         <theme>default</theme>
     </mobileweb>
-    <modules/>
+    <modules>
+        <module platform="android" version="0.2">es.gleb.androidnative</module>
+        <module platform="android" version="2.0.1">ti.paint</module>
+    </modules>
 </ti:app>

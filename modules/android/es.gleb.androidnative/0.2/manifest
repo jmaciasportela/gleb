@@ -1,0 +1,18 @@
+#
+# this is your module manifest and used by Titanium
+# during compilation, packaging, distribution, etc.
+#
+version: 0.2
+apiversion: 2
+description: Native methods for Android
+author: Mario Izquierdo
+license: Gleb copyright
+copyright: Copyright (c) 2012 by Thinetic Systems
+
+
+# these should not be edited
+name: glebandroidnative
+moduleid: es.gleb.androidnative
+guid: 72e402e8-02ef-4d39-b98a-8c5cbdc46a1a
+platform: android
+minsdk: 1.8.2

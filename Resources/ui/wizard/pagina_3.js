@@ -87,8 +87,10 @@ module.exports= function(){
 		}
 		else {
 			Ti.App.fireEvent('gleb_openActivityIndicator',{"text":"Creando usuario ..."});
-			Ti.API.info("GLEB - Añadiendo modulo pushACS");
-			require("plugins/pushACS").pushACS();
+			Ti.API.info("GLEB - Registrando usuario en GLEB server");
+            require("plugins/glebAPI").registerClient();
+
+			//require("plugins/pushACS").pushACS();
 		}
 	});	
 		
@@ -106,7 +108,8 @@ module.exports= function(){
 	        }
 	        if (e.index === 1){
 	        	Ti.App.fireEvent('gleb_openActivityIndicator',{"text":"Creando usuario ..."});
-				require("plugins/pushACS").pushACS();
+				//require("plugins/pushACS").pushACS();
+				require("plugins/glebAPI").registerClient();
 	        }		        
 	      });
 	      dialog.show();

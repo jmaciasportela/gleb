@@ -45,8 +45,8 @@ exports.toLeft = function() {
 
 exports.toRight = function() {        
     Ti.API.debug('GLEB - wizard a la derecha');    
-    if (scrollableView.currentPage ==2) view2.msisdn (Ti.App.Properties.getString("telf"));     
-    else if (scrollableView.currentPage ==3) {           
+    if (scrollableView.currentPage ==2) view2.msisdn(Ti.App.Properties.getString("telf"));     
+    if (scrollableView.currentPage ==3) {           
        Titanium.API.debug("GLEB - Button Save from wizard click");
        //Salvamos parametros
        Ti.App.Properties.setString("WIZARD","done");
