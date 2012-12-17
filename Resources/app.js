@@ -7,7 +7,6 @@
 Ti.API.info("GLEB - INIT - Init New Gleb App");
 
 (function(){
-// Include plugins
 Ti.include('config/initial.js');
 
 Ti.App.glebUtils = require("modules/utils");    
@@ -21,7 +20,6 @@ require('plugins/colaHTTP').start();
 
 wizard = function (){
     Ti.API.info("GLEB - INIT - Checking wizard status: "+Ti.App.Properties.getString("WIZARD"));
-    // PARA ACTIVAR EL WIZARD SIEMPRE       
     if (Ti.App.Properties.getString("WIZARD") != "done") {  
         Ti.API.info("GLEB - INIT - Iniciando Wizard"); 
         require('ui/wizard')._open();
@@ -31,7 +29,6 @@ wizard = function (){
     }
 }
 
-// Lo primero es pillar los endpoints
 Ti.API.debug("GLEB - INIT - Checking new endpoints");
 require("plugins/glebAPI").getGlebURLs(wizard);
 

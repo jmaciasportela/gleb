@@ -43,17 +43,15 @@ exports.toLeft = function() {
     scrollableView.currentPage = scrollableView.currentPage - 1;
 }
 
-exports.toRight = function() {
-    Ti.API.debug('GLEB - Current wizard view:'+scrollableView.currentPage);    
-    Ti.API.debug('GLEB - wizard a la derecha');
-    
+exports.toRight = function() {        
+    Ti.API.debug('GLEB - wizard a la derecha');    
     if (scrollableView.currentPage ==2) view2.msisdn (Ti.App.Properties.getString("telf"));     
     else if (scrollableView.currentPage ==3) {           
        Titanium.API.debug("GLEB - Button Save from wizard click");
        //Salvamos parametros
        Ti.App.Properties.setString("WIZARD","done");
        //Disparamos evento
-      // Ti.App.fireEvent("gleb_wizard_end");
+      Ti.App.fireEvent("gleb_wizard_end");
     }       
     else scrollableView.currentPage = scrollableView.currentPage + 1;
 }
