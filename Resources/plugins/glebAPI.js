@@ -4,14 +4,14 @@ exports.getGlebURLs = function(callback) {
     var timeout = 15000; //miliseconds
     var headers = {
         "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
-        "X-TOKEN": Ti.App.Properties.getString("token")     
+        "X-TOKEN": Ti.App.Properties.getString("token")
     };
-    
-    var getGlebURLs_callback = function (obj,e){   
+
+    var getGlebURLs_callback = function (obj,e){
         if (e.error) {
                 Ti.App.fireEvent('gleb_getGlebURLs_error');
         }
-        else {       
+        else {
             if (obj.responseText) {
                 var response =  JSON.parse(obj.responseText);
                 if (response.sendSMS_url!="") Ti.App.Properties.setString("sendSMS_url", response.sendSMS_url);
@@ -25,28 +25,28 @@ exports.getGlebURLs = function(callback) {
                 if (response.confirmPUSH_url!="") Ti.App.Properties.setString("confirmPUSH_url", response.confirmPUSH_url);
                 if (response.uploadTracking_url!="") Ti.App.Properties.setString("uploadTracking_url", response.uploadTracking_url);
                 if (response.getGlebURLs_url!="") Ti.App.Properties.setString("getGlebURLs_url", response.getGlebURLs_url);
-                if (response.sendForm_url!="") Ti.App.Properties.setString("sendForm_url", response.sendForm_url);   
-                Ti.API.debug('GLEB - URL remotas establecidas.');         
-            }       
-        }                
+                if (response.sendForm_url!="") Ti.App.Properties.setString("sendForm_url", response.sendForm_url);
+                Ti.API.debug('GLEB - URL remotas establecidas.');
+            }
+        }
        callback();
-    } 
-    makeGET (url,params,timeout,headers,getGlebURLs_callback); 
+    }
+    makeGET (url,params,timeout,headers,getGlebURLs_callback);
 };
 
 exports.sendSMS = function(msisdn) {
 
     var url = Ti.App.Properties.getString("sendSMS_url");
     var params = {
-     "msisdn" : msisdn 
+     "msisdn" : msisdn
     }
     var timeout = 45000; //miliseconds
     var headers = {
         "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
     };
-    
-    var sendSMS_callback = function (obj,e){    
-        if (e.error) {          
+
+    var sendSMS_callback = function (obj,e){
+        if (e.error) {
           Ti.App.fireEvent('gleb_closeActivityIndicator');
           var dialog = Ti.UI.createAlertDialog({
                 cancel: 0,
@@ -62,21 +62,21 @@ exports.sendSMS = function(msisdn) {
                     Ti.App.fireEvent('gleb_openActivityIndicator',{"text":"Enviando código ..."});
                     require("plugins/glebAPI").sendSMS(msisdn);
                 }
-                else require('ui/wizard').toRight();                                
+                else require('ui/wizard').toRight();
               });
               dialog.show();
         }
         else {
             Ti.App.fireEvent('gleb_closeActivityIndicator');
-            require('ui/wizard').toRight();             
+            require('ui/wizard').toRight();
         }
-        
+
         url = null;
         params = null;
         timeout = null;
-        headers = null; 
+        headers = null;
     }
-    makePOST (url,params,timeout,"","",headers,sendSMS_callback);   
+    makePOST (url,params,timeout,"","",headers,sendSMS_callback);
 }
 
 exports.validate = function(code,msisdn) {
@@ -84,14 +84,14 @@ exports.validate = function(code,msisdn) {
     var url = Ti.App.Properties.getString("validate_url");
     var params = {
       "code" : code,
-      "msisdn" : msisdn       
+      "msisdn" : msisdn
     }
     var timeout = 30000; //miliseconds
     var headers = {
         "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
     };
-    
-    var validate_callback = function (obj,e){   
+
+    var validate_callback = function (obj,e){
         if (e.error) {
           Ti.App.fireEvent('gleb_closeActivityIndicator');
               // Si no tenemos conexion
@@ -105,30 +105,30 @@ exports.validate = function(code,msisdn) {
                       dialog.addEventListener('click', function(e){
                         if (e.index === e.source.cancel){
                           Ti.API.info('The cancel button was clicked');
-                        }        
+                        }
                       });
                       dialog.show();
              }
-             else {         
+             else {
                   var dialog2 = Ti.UI.createAlertDialog({
                     message: 'No tienes cobertura de datos. Reintenta el envio.',
                     ok: 'OK',
                     title: 'Error de conexión'
                   }).show();
              }
-             
+
         }
-        else {          
+        else {
             Ti.App.fireEvent('gleb_closeActivityIndicator');
-            require('ui/wizard').toRight();     
+            require('ui/wizard').toRight();
         }
-        
+
         url = null;
         params = null;
         timeout = null;
-        headers = null; 
+        headers = null;
     }
-    makePOST (url,params,timeout,"","",headers,validate_callback);  
+    makePOST (url,params,timeout,"","",headers,validate_callback);
 }
 
 exports.getMenus = function() {
@@ -138,85 +138,85 @@ exports.getMenus = function() {
     var timeout = 30000; //miliseconds
     var headers = {
         "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
-        "X-TOKEN": Ti.App.Properties.getString("token")     
+        "X-TOKEN": Ti.App.Properties.getString("token")
     };
-    
-    var getMenus_callback = function (obj,e){   
+
+    var getMenus_callback = function (obj,e){
         if (e.error) {
                 Ti.App.fireEvent('gleb_getMenus_error');
         }
         else {
-        
+
             if (obj.responseText) {
                 //Ti.API.debug('GLEB - PATH= '+Titanium.Filesystem.applicationDataDirectory);
                 var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'ui');
                 if (!uiDir.exists()) {
                     uiDir.createDirectory();
                 }
-                var f = Titanium.Filesystem.getFile(uiDir.resolve(), "gui.json");                               
+                var f = Titanium.Filesystem.getFile(uiDir.resolve(), "gui.json");
                 if (f.write(obj.responseText)===false) {
                    // handle write error
                    Ti.API.debug("GLEB - Ha habido un error guardando el UI");
                 }
-            }       
+            }
             var ts = Math.round((new Date()).getTime());
             Ti.App.Properties.setString('lastUIDownload', ts);
-            Ti.API.debug('GLEB - gleb_getMenus_done Event called');    
-            Ti.App.fireEvent('gleb_getMenus_done'); 
+            Ti.API.debug('GLEB - gleb_getMenus_done Event called');
+            Ti.App.fireEvent('gleb_getMenus_done');
         }
-        
+
         url = null;
         params = null;
         timeout = null;
-        headers = null; 
+        headers = null;
     }
-    makeGET (url,params,timeout,headers,getMenus_callback); 
+    makeGET (url,params,timeout,headers,getMenus_callback);
 }
 
 
 exports.getView = function(name, f_callback) {
-    
-    var url = Ti.App.Properties.getString("getView_url");   
+
+    var url = Ti.App.Properties.getString("getView_url");
     var params = {
         "name" : name
     };
     var timeout = 30000;
     var headers = {
         "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
-        "X-TOKEN": Ti.App.Properties.getString("token") 
+        "X-TOKEN": Ti.App.Properties.getString("token")
     };
-    
-    var getView_callback = function (obj,e){    
+
+    var getView_callback = function (obj,e){
         if (e.error) {
-            Ti.API.debug('GLEB - onerror called, HTTP status = '+obj.status);                   
+            Ti.API.debug('GLEB - onerror called, HTTP status = '+obj.status);
             f_callback ({"error":"No se puede actualizar la vista. Error de red."});
         }
         else {
             //Ti.API.debug('GLEB - onload called, HTTP status = '+ obj.status);
-            //Ti.API.debug('GLEB - onload called, HTTP status = '+ obj.responseText);           
+            //Ti.API.debug('GLEB - onload called, HTTP status = '+ obj.responseText);
             if (obj.responseText) {
                 var response =  JSON.parse(obj.responseText);
-                var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'ui');                     
+                var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'ui');
                 var f = Titanium.Filesystem.getFile(uiDir.resolve(), "gui.json");
                 if (f.exists()){
                     var content = f.read();
-                    var json = JSON.parse(content.text); //UI JSON                  
+                    var json = JSON.parse(content.text); //UI JSON
                     for (var i=0 ; i< json.windows[0].views.length; i++){
-                        if (json.windows[0].views[i].name == response.name){    
-                            Ti.API.debug('GLEB - VISTA ENCONTRADA, ACTUALIZNADO UI.LOCAL');                     
+                        if (json.windows[0].views[i].name == response.name){
+                            Ti.API.debug('GLEB - VISTA ENCONTRADA, ACTUALIZNADO UI.LOCAL');
                             json.windows[0].views[i] = response;
                             if (f.write(JSON.stringify(json))===false) {
                                 // handle write error
                                 Ti.API.debug("GLEB - Ha habido un error guardando el UI");
                             }
-                        };  
-                    }       
+                        };
+                    }
                 }
-                Ti.API.debug('GLEB - gleb_getView_done Event called');              
-                f_callback (response);                  
-                
+                Ti.API.debug('GLEB - gleb_getView_done Event called');
+                f_callback (response);
+
                 //Ti.App.fireEvent('gleb_getView_done',{"name":name,"response":response});
-                
+
                 response = null;
                 uiDir = null;
                 f = null;
@@ -228,18 +228,18 @@ exports.getView = function(name, f_callback) {
                 headers = null;
             }
             else {
-                f_callback ({"error":"No se puede actualizar la vista, no existe."});                   
+                f_callback ({"error":"No se puede actualizar la vista, no existe."});
             }
-        }   
+        }
     }
-    makeGET (url,params,timeout,headers,getView_callback);  
+    makeGET (url,params,timeout,headers,getView_callback);
 }
 
 
 
-exports.getWindow = function(name) {    
-    
-    var url = Ti.App.Properties.getString("getWindow_url"); 
+exports.getWindow = function(name) {
+
+    var url = Ti.App.Properties.getString("getWindow_url");
     var params = {
         "name" : name
     };
@@ -248,32 +248,32 @@ exports.getWindow = function(name) {
         "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
         "X-TOKEN": Ti.App.Properties.getString("token")
     };
-    
-    var getWindow_callback = function (obj,e){  
+
+    var getWindow_callback = function (obj,e){
         if (e.error) {
             Ti.App.fireEvent('gleb_getWindow_error',{"name":name,"response":+JSON.stringify(e)});
         }
         else {
             if (obj.responseText) {
                 var response =  JSON.parse(obj.responseText);
-                var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'ui');                     
+                var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'ui');
                 var f = Titanium.Filesystem.getFile(uiDir.resolve(), "gui.json");
                 if (f.exists()){
                     var content = f.read();
-                    var json = JSON.parse(content.text); //UI JSON                  
+                    var json = JSON.parse(content.text); //UI JSON
                     for (var i=0 ; i< json.windows.length; i++){
-                        if (json.windows[i].name == response.name){ 
-                            Ti.API.debug('GLEB - VENTANA ENCONTRADA, ACTUALIZNADO UI.LOCAL');                       
+                        if (json.windows[i].name == response.name){
+                            Ti.API.debug('GLEB - VENTANA ENCONTRADA, ACTUALIZNADO UI.LOCAL');
                             json.windows[i] = response;
                             if (f.write(JSON.stringify(json))===false) {
                                 // handle write error
                                 Ti.API.debug("GLEB - Ha habido un error guardando el UI");
                             }
-                        };  
-                    }       
+                        };
+                    }
                 }
-                Ti.API.debug('GLEB - gleb_getWindow_done Event called'); 
-                Ti.App.fireEvent('gleb_getWindow_done',{"name":name,"response":response});                                              
+                Ti.API.debug('GLEB - gleb_getWindow_done Event called');
+                Ti.App.fireEvent('gleb_getWindow_done',{"name":name,"response":response});
                 response = null;
                 uiDir = null;
                 f = null;
@@ -283,7 +283,7 @@ exports.getWindow = function(name) {
                 params = null;
                 timeout = null;
                 headers = null;
-            }   
+            }
         }
     }
     makeGET (url,params,timeout,headers,getWindow_callback);
@@ -291,60 +291,60 @@ exports.getWindow = function(name) {
 
 
 exports.getMenuVersion = function() {
-    
-    var url = Ti.App.Properties.getString("getMenuVersion_url");    
+
+    var url = Ti.App.Properties.getString("getMenuVersion_url");
     var params = {};
     var timeout = 30000;
     var headers = {
         "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
-        "X-TOKEN": Ti.App.Properties.getString("token") 
+        "X-TOKEN": Ti.App.Properties.getString("token")
     };
-    
-    var getMenuVersion_callback = function (obj,e){ 
+
+    var getMenuVersion_callback = function (obj,e){
         if (e.error) {
             Ti.App.fireEvent('gleb_getMenuVersion_error');
         }
         else {
             if (obj.responseText) {
                 var response =  JSON.parse(obj.responseText);
-                Ti.API.debug('GLEB - gleb_getMenuVersion_done Event called');      
+                Ti.API.debug('GLEB - gleb_getMenuVersion_done Event called');
                 Ti.App.fireEvent('gleb_getMenuVersion_done',response);
             }
-        }   
+        }
     }
     makeGET (url,params,timeout,headers,getMenuVersion_callback);
 }
 
 exports.registerClient = function(e) {
-    
-    var url = Ti.App.Properties.getString("registerClient_url");    
+
+    var url = Ti.App.Properties.getString("registerClient_url");
     var body = "";
     var params ="";
     var timeout = 30000;
     var headers = {
         "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
-        "Content-Type": "application/json"  
-    };  
-    
-    var registerClient_callback = function (obj,e){ 
+        "Content-Type": "application/json"
+    };
+
+    var registerClient_callback = function (obj,e){
         if (e.error) {
             Ti.API.debug('GLEB - registerClient Error, HTTP status = '+obj.status);
             Ti.App.fireEvent('gleb_registerClient_error');
         }
         else {
             Ti.API.debug('GLEB - registerClient called, HTTP status = '+obj.status);
-            try {               
+            try {
                 var response =  JSON.parse(obj.responseText);
                 if (!Ti.App.Properties.hasProperty('token')){
                     if (response.token) {
                             Ti.App.Properties.setString('token',response.token);
                             Ti.API.debug('GLEB - registro inicial guardando token:'+response.token);
                             //Ti.App.fireEvent('gleb_closeActivityIndicator');
-                            Ti.App.Properties.setString("WIZARD","done");        
+                            Ti.App.Properties.setString("WIZARD","done");
                             Ti.App.Properties.setBool('registered',true);
                             Ti.App.fireEvent('gleb_wizard_end');
-                            require('ui/wizard').cleanup(); 
-                            Ti.API.info('GLEB- Wizard finished, booting app');
+                            require('ui/wizard').cleanup();
+                            Ti.API.info('GLEB - Wizard finished, booting app');
                         }
                     else {
                         Ti.API.debug('GLEB - El registro inicial no ha ido bien el server no ha devuelto token');
@@ -354,20 +354,20 @@ exports.registerClient = function(e) {
                 else {
                     Ti.API.debug('GLEB - registerClient response = '+obj.responseText);
                     //Ti.App.fireEvent('gleb_closeActivityIndicator');
-                    Ti.App.Properties.setString("WIZARD","done");        
+                    Ti.App.Properties.setString("WIZARD","done");
                     Ti.App.Properties.setBool('registered',true);
-                    Ti.App.fireEvent('gleb_wizard_end');                    
-                    Ti.API.info('GLEB- Wizard finished, booting app');  
+                    Ti.App.fireEvent('gleb_wizard_end');
+                    Ti.API.info('GLEB- Wizard finished, booting app');
                 }
             }catch (err){
                 Ti.App.fireEvent('gleb_registerClient_error');
             }
-        }       
+        }
     url = null;
     params = null;
     timeout = null;
     headers = null;
-    }   
+    }
 
     var UUID = Titanium.Platform.id;
     if(Titanium.Platform.osname === 'android') {
@@ -388,39 +388,39 @@ exports.registerClient = function(e) {
         var phone_number='';
         var simserial='';
     }
-    
+
     // Necesario pra obtener el battery Level
-    Titanium.Platform.batteryMonitoring = true;  
+    Titanium.Platform.batteryMonitoring = true;
     Ti.API.debug('GLEB - bodyContent: {"pushUserId":"'+Ti.App.Properties.getString("pushUserId")+'","deviceToken":"'+Ti.App.Properties.getString("deviceToken")+'","pushUser":"'+Ti.App.Properties.getString("pushUser")+'","pushUserPassword":"'+Ti.App.Properties.getString("pushUserPassword")+'","nickname":"'+nickname+'", "UUID":"'+UUID+'","GLEBUUID":"'+Ti.App.Properties.getString("GLEBUUID")+'","phoneNumber":"'+phone_number+'","simSerial":"'+simserial+'","osname":"'+Titanium.Platform.name+"/"+Titanium.Platform.osname+'","model":"'+Titanium.Platform.model+'","version":"'+Titanium.Platform.version+'","architecture":"'+Titanium.Platform.architecture+'","macaddress":"'+Titanium.Platform.macaddress+'","processors":"'+Titanium.Platform.processorCount+'","ostype":"'+Titanium.Platform.ostype+'","batteryLevel":"'+batteryLevel+'","batteryStatus":"'+batteryStatus+'","availableMemory":"'+Titanium.Platform.availableMemory+'","IMEI":"'+IMEI+'","IMSI":"'+IMSI+'","lastRegister":"'+String(new Date().getTime())+'","lastLatitude":"'+Ti.App.Properties.getString("lastLatitude")+'","lastLongitude":"'+Ti.App.Properties.getString("lastLongitude")+'","lastLatitudeGLEB":"'+Ti.App.Properties.getString("lastLatitudeGLEB")+'","lastLongitudeGLEB":"'+Ti.App.Properties.getString("lastLongitudeGLEB")+'" , "lastAltitudeAccuracy":"'+Ti.App.Properties.getString("lastAltitudeAccuracy")+'", "lastAccuracy":"'+Ti.App.Properties.getString("lastAccuracy")+'","lastAltitude":"'+Ti.App.Properties.getString("lastAltitude")+'","lastLocationTimestamp":"'+Ti.App.Properties.getString("lastLocationTimestamp")+'"}');
     var bodyContent ='{"pushUserId":"'+Ti.App.Properties.getString("pushUserId")+'","deviceToken":"'+Ti.App.Properties.getString("deviceToken")+'","pushUser":"'+Ti.App.Properties.getString("pushUser")+'","pushUserPassword":"'+Ti.App.Properties.getString("pushUserPassword")+'","nickname":"'+nickname+'", "UUID":"'+UUID+'","GLEBUUID":"'+Ti.App.Properties.getString("GLEBUUID")+'","phoneNumber":"'+phone_number+'","simSerial":"'+simserial+'","osname":"'+Titanium.Platform.name+"/"+Titanium.Platform.osname+'","model":"'+Titanium.Platform.model+'","version":"'+Titanium.Platform.version+'","architecture":"'+Titanium.Platform.architecture+'","macaddress":"'+Titanium.Platform.macaddress+'","processors":"'+Titanium.Platform.processorCount+'","ostype":"'+Titanium.Platform.ostype+'","batteryLevel":"'+batteryLevel+'","batteryStatus":"'+batteryStatus+'","availableMemory":"'+Titanium.Platform.availableMemory+'","IMEI":"'+IMEI+'","IMSI":"'+IMSI+'","lastRegister":"'+String(new Date().getTime())+'","lastLatitude":"'+Ti.App.Properties.getString("lastLatitude")+'","lastLongitude":"'+Ti.App.Properties.getString("lastLongitude")+'","lastLatitudeGLEB":"'+Ti.App.Properties.getString("lastLatitudeGLEB")+'","lastLongitudeGLEB":"'+Ti.App.Properties.getString("lastLongitudeGLEB")+'" , "lastAltitudeAccuracy":"'+Ti.App.Properties.getString("lastAltitudeAccuracy")+'", "lastAccuracy":"'+Ti.App.Properties.getString("lastAccuracy")+'","lastAltitude":"'+Ti.App.Properties.getString("lastAltitude")+'","lastLocationTimestamp":"'+Ti.App.Properties.getString("lastLocationTimestamp")+'"}';
     Titanium.Platform.batteryMonitoring = false;
-        
-    makePOST (url,params,timeout,bodyContent,'',headers,registerClient_callback);       
+
+    makePOST (url,params,timeout,bodyContent,'',headers,registerClient_callback);
     //queuePOST (url,timeout,bodyContent,'',headers, "registerClient_callback");
 }
 
 exports.updateStatus = function(id) {
-    
+
     // Create a notification
     var n = Ti.UI.createNotification({message:"updateStatus Called"});
     // Set the duration to either Ti.UI.NOTIFICATION_DURATION_LONG or NOTIFICATION_DURATION_SHORT
-    n.duration = Ti.UI.NOTIFICATION_DURATION_LONG;  
+    n.duration = Ti.UI.NOTIFICATION_DURATION_LONG;
     // Setup the X & Y Offsets
     n.offsetX = 100;
     n.offsetY = 75;
     n.show();
-    
-    var url = Ti.App.Properties.getString("updateStatus_url");  
+
+    var url = Ti.App.Properties.getString("updateStatus_url");
     var body = "";
     var timeout = 30000;
     var headers = {
         "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
         "X-TOKEN": Ti.App.Properties.getString("token"),
-        "Content-Type": "application/json"  
-    };  
-    var updateStatus_callback = function (obj,e){   
+        "Content-Type": "application/json"
+    };
+    var updateStatus_callback = function (obj,e){
         if (e.error) {
-            Ti.API.debug('GLEB - updateStatus Error, HTTP status = '+obj.status);        
+            Ti.API.debug('GLEB - updateStatus Error, HTTP status = '+obj.status);
             Ti.App.fireEvent('updateStatus_error');
         }
         else {
@@ -431,7 +431,7 @@ exports.updateStatus = function(id) {
         url = null;
         params = null;
         timeout = null;
-        headers = null; 
+        headers = null;
     }
 
     Ti.API.debug('GLEB - POST to ' + updateStatus_url);
@@ -447,19 +447,19 @@ exports.updateStatus = function(id) {
 }
 
 
-exports.confirmPUSH = function(id) {    
-    
-    var url = Ti.App.Properties.getString("confirmPUSH_url");   
+exports.confirmPUSH = function(id) {
+
+    var url = Ti.App.Properties.getString("confirmPUSH_url");
     var body = "";
     var timeout = 30000;
     var headers = {
         "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
         "X-TOKEN": Ti.App.Properties.getString("token"),
-        "Content-Type": "application/json"  
-    };  
-    var confirmPUSH_callback = function (obj,e){    
+        "Content-Type": "application/json"
+    };
+    var confirmPUSH_callback = function (obj,e){
         if (e.error) {
-            Ti.API.debug('GLEB - confirmPUSH Error, HTTP status = '+obj.status);        
+            Ti.API.debug('GLEB - confirmPUSH Error, HTTP status = '+obj.status);
             Ti.App.fireEvent('confirmPUSH_error');
         }
         else {
@@ -469,8 +469,8 @@ exports.confirmPUSH = function(id) {
     url = null;
     params = null;
     timeout = null;
-    headers = null; 
-    }   
+    headers = null;
+    }
 
     Ti.API.debug('GLEB - POST to ' + confirmPUSH_url);
     var bodyContent ='{"uuid":"'+id+'","status":1}';
@@ -479,19 +479,19 @@ exports.confirmPUSH = function(id) {
 
 
 
-exports.uploadTracking = function(e) {  
-    
-    var url = Ti.App.Properties.getString("uploadTracking_url");    
+exports.uploadTracking = function(e) {
+
+    var url = Ti.App.Properties.getString("uploadTracking_url");
     var body = "";
     var timeout = 30000;
     var headers = {
         "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
         "X-TOKEN": Ti.App.Properties.getString("token"),
-        "Content-Type": "application/json"  
-    };  
-    var uploadTracking_callback = function (obj,e){ 
+        "Content-Type": "application/json"
+    };
+    var uploadTracking_callback = function (obj,e){
         if (e.error) {
-            Ti.API.debug('GLEB - uploadTracking Error, HTTP status = '+obj.status);        
+            Ti.API.debug('GLEB - uploadTracking Error, HTTP status = '+obj.status);
             Ti.App.fireEvent('uploadTracking_error');
         }
         else {
@@ -502,22 +502,22 @@ exports.uploadTracking = function(e) {
     params = null;
     timeout = null;
     headers = null;
-    d = null;   
+    d = null;
     day = null;
     month = null;
     year = null;
     f = null;
-    
-    }   
+
+    }
 
     Ti.API.debug('GLEB - POST to ' + uploadTracking_url);
-    
+
     Ti.API.debug('GLEB - Leyendo fichero tracking de posición');
     var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory,'trackingGPS');
     if (!uiDir.exists()) {
         uiDir.createDirectory();
     }
-    var d = new Date;   
+    var d = new Date;
     var day=d.getDate();
     var month = d.getMonth();
     var year = d.getYear();
@@ -529,29 +529,29 @@ exports.uploadTracking = function(e) {
     }
     datestr=day+month+year;
     var f = Titanium.Filesystem.getFile(uiDir.resolve(), "tracking_"+datestr+".json");
-    if (f.exists()){                
+    if (f.exists()){
         var content = f.read();
-        var record =content.text.slice(0,-1);   
-        var bodyContent ='['+record+']';    
-        //if (e.mode=='now') makePOST (url,timeout,bodyContent,'',headers,uploadTracking_callback);     
+        var record =content.text.slice(0,-1);
+        var bodyContent ='['+record+']';
+        //if (e.mode=='now') makePOST (url,timeout,bodyContent,'',headers,uploadTracking_callback);
         queuePOST (url,timeout,bodyContent,'',headers, uploadTracking_callback);
     }
 }
 
 
-exports.sendForm = function(e) {    
-    
-    var url = Ti.App.Properties.getString("sendForm_url");  
+exports.sendForm = function(e) {
+
+    var url = Ti.App.Properties.getString("sendForm_url");
     var body = "";
     var timeout = 30000;
     var headers = {
         "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
         "X-TOKEN": Ti.App.Properties.getString("token"),
-        "Content-Type": "application/json"  
-    };  
-    var sendForm_callback = function (obj,e){   
+        "Content-Type": "application/json"
+    };
+    var sendForm_callback = function (obj,e){
         if (e.error) {
-            Ti.API.debug('GLEB - sendForm Error, HTTP status = '+obj.status);        
+            Ti.API.debug('GLEB - sendForm Error, HTTP status = '+obj.status);
             Ti.App.fireEvent('sendForm_error');
         }
         else {
@@ -561,8 +561,8 @@ exports.sendForm = function(e) {
     url = null;
     params = null;
     timeout = null;
-    headers = null; 
-    }   
+    headers = null;
+    }
 
     Ti.API.debug('GLEB - POST to ' + sendForm_url);
     queuePOST (url,timeout,JSON.stringify(e),'',headers,sendForm_callback);
@@ -573,7 +573,7 @@ exports.sendForm = function(e) {
 /******************** GET METHOD *********************/
 
 var makeGET = function(url,params,tout,headers,f_callback) {
-    
+
 var start = new Date().getTime();
 
 Ti.API.debug('GLEB - makeGET - Init GET request to -> ' + url);
@@ -587,7 +587,7 @@ xhr.setTimeout(tout);
 xhr.onload = function(e)
 {
     //Ti.API.debug('GLEB - GET - onload called, HTTP status = '+this.status);
-    //Ti.API.info('GLEB - Request loaded in ' + (new Date().getTime() - start) + 'ms.'); 
+    //Ti.API.info('GLEB - Request loaded in ' + (new Date().getTime() - start) + 'ms.');
     //Ti.API.info('GLEB - Content-Length: ' + this.allResponseHeaders);
     f_callback (this, e);
     xhr = null;
@@ -664,7 +664,7 @@ xhr.setRequestHeader("X-GPSTIMESTAMP",Ti.App.Properties.getString('lastLocationT
  *  "first" : "first";
  *  "second" : "second"
  *  }
- * 
+ *
  */
 if (params) xhr.send(params);
 else xhr.send();
@@ -675,14 +675,14 @@ else xhr.send();
 
 /********************* POST *************************************/
 var makePOST = function(url,params,tout,body,blob,headers,f_callback) {
-    
+
         Ti.API.debug('GLEB - UPLOADER - POST to ' + url);
-        
+
         // Creamos HTTP client
         var xhr = Ti.Network.createHTTPClient();
         // Establecemos el timeout
         xhr.setTimeout(tout);
-        
+
         // Establecemos la funcion onload
         xhr.onload = function(e)
         {
@@ -690,7 +690,7 @@ var makePOST = function(url,params,tout,body,blob,headers,f_callback) {
             f_callback (this, e);
             xhr = null;
         };
-        
+
         // Establecemos la funcion onerror
         xhr.onerror = function(e)
         {
@@ -698,16 +698,16 @@ var makePOST = function(url,params,tout,body,blob,headers,f_callback) {
             f_callback (this, e);
             xhr = null;
         };
-        
+
         xhr.ondatastream = function(e) {
             Ti.API.debug('GLEB - UPLOADER - ondatastream called, readyState = '+this.readyState);
         };
-        
+
         xhr.onsendstream = function(e) {
                 // function called as data is uploaded
            // Ti.API.debug('GLEB - UPLOADER - onsendstream called, readyState = '+this.readyState);
         };
-        
+
         xhr.onreadystatechange =  function(e) {
             switch(this.readyState) {
                 case 0:
@@ -733,19 +733,19 @@ var makePOST = function(url,params,tout,body,blob,headers,f_callback) {
                 break;
                 }
         }
-        
+
         //Desactivamos la validación del certificado
         xhr.setValidatesSecureCertificate (false);
-        
+
         xhr.open("POST", url);
-        
+
         if (headers) {
             for (var header in headers){
                 Ti.API.debug('GLEB - UPLOADER - '+header+':'+headers[header]);
                 xhr.setRequestHeader(header,headers[header]);
             }
         }
-        
+
         //Añadimos headers obligatorias
         xhr.setRequestHeader("X-ACCURACY", Ti.App.Properties.getString('lastAccuracy'));
         xhr.setRequestHeader("X-ALTITUDE",Ti.App.Properties.getString('lastAltitude'));
@@ -754,10 +754,10 @@ var makePOST = function(url,params,tout,body,blob,headers,f_callback) {
         xhr.setRequestHeader("X-LONGITUDE",Ti.App.Properties.getString('lastLongitudeGLEB'));
         xhr.setRequestHeader("X-GPSTIMESTAMP",Ti.App.Properties.getString('lastLocationTimestamp'));
 
-        
-        
+
+
         Ti.API.debug("GLEB - UPLOADER - BODY: " +body+" BLOB: " +blob);
-        
+
         // Si tenemos body y file, tiene prioridad el file
         if (body!="" && blob !="") {
             Ti.API.debug('GLEB - UPLOADER - SENDING BINARY DATA');
@@ -772,7 +772,7 @@ var makePOST = function(url,params,tout,body,blob,headers,f_callback) {
             xhr.send(body);
         }
         else xhr.send(params);
-        
+
 }
 /******************* FIN DEL POST  ******************************/
 
