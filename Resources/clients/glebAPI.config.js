@@ -22,9 +22,9 @@ exports.getWindow_url = protocol +"://"+host+":"+port+"/gleb/getWindow.php";
 
 //getMenuVersion
 exports.getMenuVersion_url = protocol +"://"+host+":"+port+"/gleb/getMenuVersion.php";
- 
+
 //registerClient
-exports.registerClient_url = protocol +"://"+host+":"+port+"/gleb/registerClient.php";
+exports.registerClient_url = protocol +"://"+host+":"+port+"/gleb/registerUser.php";
 
 //updateStatus
 exports.updateStatus_url = protocol +"://"+host+":"+port+"/gleb/updateStatus.php";

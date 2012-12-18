@@ -9,10 +9,10 @@ Ti.API.info("GLEB - INIT - Init New Gleb App");
 (function(){
 Ti.include('config/initial.js');
 
-Ti.App.glebUtils = require("modules/utils");    
-    
+Ti.App.glebUtils = require("modules/utils");
+
 Ti.API.debug("GLEB - INIT - Set background");
-Titanium.UI.setBackgroundImage('images/background.png');    
+Titanium.UI.setBackgroundImage('images/background.png');
 require('plugins/battery').start();
 require('plugins/gps').start();
 require('plugins/colaHTTP').start();
@@ -20,17 +20,17 @@ require('plugins/colaHTTP').start();
 
 wizard = function (){
     Ti.API.info("GLEB - INIT - Checking wizard status: "+Ti.App.Properties.getString("WIZARD"));
-    if (Ti.App.Properties.getString("WIZARD") != "done") {  
-        Ti.API.info("GLEB - INIT - Iniciando Wizard"); 
+    if (Ti.App.Properties.getString("WIZARD") != "done") {
+        Ti.API.info("GLEB - INIT - Iniciando Wizard");
         require('ui/wizard')._open();
-    } 
+    }
     else{
         Ti.App.fireEvent("gleb_wizard_end");
     }
 }
 
 Ti.API.debug("GLEB - INIT - Checking new endpoints");
-require("plugins/glebAPI").getGlebURLs(wizard);
+require("clients/glebAPI").getGlebURLs(wizard);
 
 
 })();

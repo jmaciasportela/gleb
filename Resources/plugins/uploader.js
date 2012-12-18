@@ -10,16 +10,16 @@ exports.start = function() {
 var makePOST = function(url,tout,body,blob,headers,callback,f_callback){
 
 	Ti.API.debug('GLEB - UPLOADER - make POST to ' + url);
-	
+
 	var xhr = Ti.Network.createHTTPClient();
-	xhr.setTimeout(tout);		
+	xhr.setTimeout(tout);
 	xhr.onload = function(e)
 	{
-		Ti.API.debug('GLEB - UPLOADER - onload called, HTTP status = '+this.status);			
-		eval ("require (\"plugins/glebAPI\")."+callback)(this, e);	
-		f_callback (this, e);		
+		Ti.API.debug('GLEB - UPLOADER - onload called, HTTP status = '+this.status);
+		eval ("require (\"clients/glebAPI\")."+callback)(this, e);
+		f_callback (this, e);
 	};
-	
+
 	xhr.onerror = function(e)
 	{
 		try {
@@ -28,22 +28,22 @@ var makePOST = function(url,tout,body,blob,headers,callback,f_callback){
 		catch (err) {
 			Ti.API.debug('GLEB - UPLOADER - onerror');
 		}
-		eval ("require (\"plugins/glebAPI\")."+callback)(this, e);	
+		eval ("require (\"clients/glebAPI\")."+callback)(this, e);
 		f_callback (this, e);
 	};
 
-	 
+
 	xhr.open("POST", url);
-	
+
 	if (headers) {
 		for (var header in headers){
 			Ti.API.debug('GLEB - UPLOADER - '+header+':'+headers[header]);
 			xhr.setRequestHeader(header,headers[header]);
 		}
 	}
-	
+
 	Ti.API.debug("GLEB - UPLOADER - BODY: " + body +" BLOB: " +blob);
-	
+
 	if (body=="" && blob != null) {
 		Ti.API.debug('GLEB - UPLOADER - Uploading binary data');
 		xhr.send({file:blob.read()});
@@ -60,10 +60,10 @@ var makePOST = function(url,tout,body,blob,headers,callback,f_callback){
 		Ti.API.debug('GLEB - UPLOADER - Uploading');
 		xhr.send();
 	}
-	
+
 }
-/******************* FIN DEL POST  ******************************/	
-	
+/******************* FIN DEL POST  ******************************/
+
 //Declaramos las variables que se almacenan en la BD por cada petición Http
 var id = "";
 var network = "";
@@ -82,26 +82,26 @@ var callback = "";
 
 	//Abrimos BD
 	var db = Ti.Database.open('queueHttpBD');
-	var listHttpRequests = db.execute("SELECT * FROM HTTP_REQUESTS WHERE STATUS = 'uploading'");	
+	var listHttpRequests = db.execute("SELECT * FROM HTTP_REQUESTS WHERE STATUS = 'uploading'");
 	var pendingFiles = db.execute("SELECT * FROM HTTP_REQUESTS WHERE STATUS != 'uploading'");
-	db.close();	
+	db.close();
 	Titanium.API.debug("GLEB - UPLOADER - archivos en cola "+pendingFiles.getRowCount());
-	
-	if (listHttpRequests.getRowCount()==0 && pendingFiles.getRowCount()!=0) {				
+
+	if (listHttpRequests.getRowCount()==0 && pendingFiles.getRowCount()!=0) {
 		//El servicio sólo actuará si existe cobertura de datos
 		if(Titanium.Network.online){
-			Titanium.API.debug("GLEB - UPLOADER - Device is attached to data network");			
-			if (Titanium.Network.networkTypeName == 'MOBILE'){	
+			Titanium.API.debug("GLEB - UPLOADER - Device is attached to data network");
+			if (Titanium.Network.networkTypeName == 'MOBILE'){
 				Titanium.API.debug("GLEB - UPLOADER - Looking for files to be uploaded by 3G/GPRS");
 				db = Ti.Database.open('queueHttpBD');
-				listHttpRequests = db.execute("SELECT * FROM HTTP_REQUESTS WHERE STATUS != 'uploaded' AND STATUS != 'uploading' AND NETWORK =='MOBILE' ORDER BY TIMESTAMP ASC");	
+				listHttpRequests = db.execute("SELECT * FROM HTTP_REQUESTS WHERE STATUS != 'uploaded' AND STATUS != 'uploading' AND NETWORK =='MOBILE' ORDER BY TIMESTAMP ASC");
 				db.close();
 			}
 			else {
 				Titanium.API.debug("GLEB - UPLOADER - Looking for files to be uploaded by WIFI");
 				db = Ti.Database.open('queueHttpBD');
-				listHttpRequests = db.execute("SELECT * FROM HTTP_REQUESTS WHERE STATUS != 'uploaded' AND STATUS != 'uploading' ORDER BY TIMESTAMP ASC");	
-				db.close();			
+				listHttpRequests = db.execute("SELECT * FROM HTTP_REQUESTS WHERE STATUS != 'uploaded' AND STATUS != 'uploading' ORDER BY TIMESTAMP ASC");
+				db.close();
 			}
 			Ti.API.info('GLEB - UPLOADER - Pending Files = '+listHttpRequests.getRowCount());
 			//Después de ejecutar la consulta y guardar el resultado en el ResultSet, recorremos una a una las peticiones almacenadas
@@ -119,17 +119,17 @@ var callback = "";
 				lastTry = listHttpRequests.fieldByName('last');
 				tryCounts = listHttpRequests.fieldByName('counts');
 				status = listHttpRequests.fieldByName('status');
-				callback = listHttpRequests.fieldByName('callback');				
-				
-				Ti.API.debug('GLEB - UPLOADER - URL:' + url + ' TOUT:' + timeout + ' BODY:' + body + ' FILE:' + file + ' HEADERS:' + headers + ' CALLBACK:' + callback);				
+				callback = listHttpRequests.fieldByName('callback');
+
+				Ti.API.debug('GLEB - UPLOADER - URL:' + url + ' TOUT:' + timeout + ' BODY:' + body + ' FILE:' + file + ' HEADERS:' + headers + ' CALLBACK:' + callback);
 				Ti.API.debug('GLEB - UPLOADER - FILE: ' + file);
-				
+
 				if (file !="") var blob = Titanium.Filesystem.getFile(file);
-										
-				var f_callback = function (obj,e){	
+
+				var f_callback = function (obj,e){
 					if (e.error) {
 				        Ti.API.debug('GLEB - UPLOADER - f_callback Error, HTTP status = '+obj.status);
-				        //Ti.API.debug('GLEB - UPLOADER - RESPONSE = '+JSON.stringify(obj));        
+				        //Ti.API.debug('GLEB - UPLOADER - RESPONSE = '+JSON.stringify(obj));
 				        tryCounts++;
 						var now = parseInt(new Date().getTime()/1000);
 						db = Ti.Database.open('queueHttpBD');
@@ -139,9 +139,9 @@ var callback = "";
 			    		Ti.App.Properties.setBool ('isUploading',false);
 			        }
 					else {
-				        Ti.API.debug('GLEB - UPLOADER - f_callback called, HTTP status = '+obj.status);			        
+				        Ti.API.debug('GLEB - UPLOADER - f_callback called, HTTP status = '+obj.status);
 		    			//Ti.API.debug('GLEB -  RESPONSE = '+JSON.stringify(obj));
-			        	//var response =  JSON.parse(obj.responseText); 		
+			        	//var response =  JSON.parse(obj.responseText);
 				        //Ti.API.debug('GLEB -  RESPONSE = '+JSON.stringify(obj));
 				        //Comprobamos que el estado del response recibido es ok (code=200)
 						if(obj.status == 200){
@@ -160,26 +160,26 @@ var callback = "";
 							db = Ti.Database.open('queueHttpBD');
 							db.execute('UPDATE HTTP_REQUESTS SET LAST="' + now + '", COUNTS="' + tryCounts + '" WHERE ID="' + id + '"');
 							db.close();
-				    		Ti.App.fireEvent ('refreshHTTPTable');		
+				    		Ti.App.fireEvent ('refreshHTTPTable');
 				    		Ti.App.Properties.setBool ('isUploading',false);
 						}
 					}
 				} // FIN CALLBACK
-			Ti.App.Properties.setBool ('isUploading',true);	
-			makePOST (url,timeout,body,blob,headers,callback,f_callback);		
+			Ti.App.Properties.setBool ('isUploading',true);
+			makePOST (url,timeout,body,blob,headers,callback,f_callback);
 		}
 		else Ti.App.Properties.setBool ('isUploading',false);
 	} // IF NETWORK
-		
+
 	} // IF FILES
 	else {
 		Ti.API.info('GLEB - UPLOADER - HTTP queue empty');
-		Ti.App.Properties.setBool ('isUploading',false);	
+		Ti.App.Properties.setBool ('isUploading',false);
 	}
 	db.close();
-	listHttpRequests.close();	
+	listHttpRequests.close();
 	pendingFiles.close();
 	db = null;
-	listHttpRequests = null; 	
+	listHttpRequests = null;
 	pendingFiles = null;
 }
