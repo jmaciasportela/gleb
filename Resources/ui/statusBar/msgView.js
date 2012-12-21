@@ -1,0 +1,79 @@
+//StatusBar Constructor
+
+exports._get = function() {
+
+Ti.API.info('GLEB - Cargando msgView View');
+	// create UI components
+	var view = Ti.UI.createView({		
+		backgroundImage: '../../images/statusBar.png',
+		height: '40dp',		
+		touchEnabled: true,
+		borderRadius: 0
+	});
+
+	var status_label = Ti.UI.createLabel({
+		name:"status_value",
+		text:"Estado",
+		color:'#fff',		
+		height:'auto',
+		width:'45dp',
+        top:'5dp',
+        left:'28dp',
+    	shadowColor:'#000',
+    	shadowOffset:{x:3,y:3},    	
+    	font:{fontSize:20},
+    	textAlign:'center'		
+		});
+
+	var msg_label = Ti.UI.createLabel({
+		name:"msg_value",
+		text:"Preparado",
+		color:'#fff',		
+		height:'auto',
+		width:'225dp',
+        top:'5dp',
+        left:'59dp',
+    	shadowColor:'#000',
+    	shadowOffset:{x:3,y:3},    	
+    	font:{fontSize:20},
+    	textAlign:'center'		
+		});
+		
+		
+	var buttonLeft = Titanium.UI.createButton({   		
+		backgroundColor: 'transparent',
+   		top: '0dp',
+   		width: '40dp',
+   		height: '40dp',
+   		left: '0dp'
+		});
+		buttonLeft.addEventListener('click',function(){require("ui/statusBar").statusBarToLeft();});	
+	
+				
+	var buttonRight = Titanium.UI.createButton({   		
+		backgroundColor: 'transparent',
+   		top: '0dp',
+   		width: '40dp',
+   		height: '40dp',
+   		left: '290dp'
+		});
+		buttonRight.addEventListener('click',function(){require("ui/statusBar").statusBarToRight();});	
+		
+	// assemble view hierarchy
+	view.add(status_label);
+	view.add(msg_label);
+	view.add(buttonLeft);
+	view.add(buttonRight);
+
+		
+	Ti.API.info('GLEB - Elementos añadidos a la vista');
+
+	Ti.App.addEventListener("gleb_showMSG_txt",function(e){
+		Ti.API.info("GLEB - Event gleb_showMSG - "+JSON.stringify(e));
+		msg_label.text  = e;
+	});
+
+
+
+return view;
+}

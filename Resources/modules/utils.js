@@ -90,7 +90,7 @@ var timer;
 
 exports.openActivityIndicator = function(message){
     Ti.API.info('GLEB- UTILS - Mostrando ActivityIndicator: '+message.text);
-    if (Ti.App.Properties.getBool('actInd')) clearTimeout(timer);
+    if (Ti.App.Properties.getBool('actInd') && timer!=null) clearTimeout(timer);
     actInd.hide();
     actInd.message = message.text;
     actInd.show();

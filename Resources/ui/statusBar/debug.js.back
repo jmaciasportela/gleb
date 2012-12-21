@@ -1,0 +1,220 @@
+//StatusBar Constructor
+
+exports.debugView = function() {
+	
+var utils = require("global_functions");
+
+Ti.API.info('GLEB - Cargando msgView View');
+	// create UI components
+	var view = Ti.UI.createView({		
+		backgroundImage: '../../images/statusBar.png',
+		height: utils._p(40),		
+		touchEnabled: true,
+		borderRadius: 0
+	});
+
+	var showProperties = Titanium.UI.createButton({   		
+   		top: utils._p(0),
+   		title: "P",
+   		width: utils._p(40),
+   		height: utils._p(40),
+   		left: utils._p(50)
+		});
+		showProperties.addEventListener('click',function(){
+			var win = Ti.UI.createWindow({			
+				backgroundColor:'#fff',
+				modal: true,				
+				fullscreen: false,
+				navBarHidden: true,
+				orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
+			});
+			var table = Ti.UI.createTableView(
+				{			
+				backgroundColor:'#fff',
+				scrollable: true,
+				touchEnabled: false				
+			});
+			var tableData = [];
+			var fighter, i, row, nameLabel, nickLabel;
+			var props = Ti.App.Properties.listProperties();
+			//props.short();
+			for (var i=0, ilen=props.length; i<ilen; i++){
+    			var prop = Ti.App.Properties.getString(props[i]);
+    			Ti.API.debug("GLEB - Property -- "+props[i] + ' = ' + prop);
+			    row = Ti.UI.createTableViewRow({
+    				height: 'auto'
+    				});
+    			nameLabel = Ti.UI.createLabel({
+        		text: props[i],
+        			font:{
+            			fontSize:'12dp',
+	    				fontWeight:'bold'
+					},
+					height:'auto',
+					left:'10dp',
+					top:'5dp',
+					color:'#000',
+					touchEnabled:false
+    				});
+    			nickLabel = Ti.UI.createLabel({
+					text:'"' + prop + '"',
+					font:{
+	    				fontSize:'10dp'
+						},
+					height:'auto',
+					left:'15dp',
+					top:'20dp',
+					color:'#000',
+					touchEnabled:false
+    				});
+    			row.add(nameLabel);
+    			row.add(nickLabel);
+    			tableData.push(row);
+    		}
+    		table.setData(tableData); 
+    		win.add(table);
+			require('modules/NavigationController').open(win);
+			});	
+			
+	var checkNetwork = Titanium.UI.createButton({   		
+   		top: utils._p(0),
+   		title: "N",
+   		width: utils._p(40),
+   		height: utils._p(40),
+   		left: utils._p(100)
+		});
+		checkNetwork.addEventListener('click',function(){
+		    Ti.API.info('GLEB - Connection Status:'+ Titanium.Network.online);
+		    
+		    alert (Titanium.Network.online);
+
+			});				
+			
+	var showTracking = Titanium.UI.createButton({   		
+   		top: utils._p(0),
+   		title: "T",
+   		width: utils._p(40),
+   		height: utils._p(40),
+   		left: utils._p(160)
+		});
+		showTracking.addEventListener('click',function(){
+
+		Ti.API.debug('GLEB - Guardando tracking de posición');
+        	var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'tracking');
+
+			var d = new Date;	
+			var day=d.getDate();
+			var month = d.getMonth();
+			var year = d.getYear();
+			if (day<= 10){
+			   day = "0"+day;
+			}
+			if (month<= 10){
+			   month = "0"+month;
+			}
+			datestr=day+month+year;
+        	var f = Titanium.Filesystem.getFile(uiDir.resolve(), "tracking_"+datestr+".json");
+        	if (f.exists()){        		
+        		var content = f.read();
+        		Ti.API.debug("GLEB - Tracking Content:"+content.text+" size: "+f.size+" bytes");
+        	}
+        	else {
+        		Ti.API.debug("GLEB - No tracking File");	
+        	}
+		});		
+	
+	
+	var showDB = Titanium.UI.createButton({   		
+   		top: utils._p(0),
+   		title: "DB",
+   		width: utils._p(40),
+   		height: utils._p(40),
+   		left: utils._p(210)
+		});
+		showDB.addEventListener('click',function(){
+			/*
+
+		Ti.API.debug('GLEB - Guardando tracking de posición');
+			var str = '';
+			var db = Ti.Database.open('queueHttpBD');
+		    var rows = db.execute('SELECT * FROM HTTP_REQUESTS');
+		    while (rows.isValidRow()) {
+		    	var file = rows.fieldByName('file');
+		    	var timestamp = rows.fieldByName('timestamp');
+		        var network = rows.fieldByName('network');
+		        var counts = rows.fieldByName('counts');
+		        var status = rows.fieldByName('status');
+		        //str = str + (getfName + ' ' + getlName).replace(/\\n/g, '\n');
+		        Ti.API.debug("\n File: "+file+" Timestamp: "+ timestamp+ " Network: "+ network + " COUNTS: "+ counts + " STATUS: "+ status);	        
+		        rows.next();
+		    }
+		    db.close();
+		    */
+		   
+		   require('ui/windows/colaHTTP/colaHTTP').colaHTTP();
+
+		});		
+	
+	
+	var showDB2 = Titanium.UI.createButton({   		
+   		top: utils._p(0),
+   		title: "DB2",
+   		width: utils._p(40),
+   		height: utils._p(40),
+   		left: utils._p(240)
+		});
+		showDB2.addEventListener('click',function(){
+			
+
+		Ti.API.debug('GLEB - Guardando tracking de posición');
+			var str = '';
+			var db = Ti.Database.open('queueHttpBD');
+		    var rows = db.execute('SELECT * FROM HTTP_REQUESTS');
+		    while (rows.isValidRow()) {
+		    	var file = rows.fieldByName('file');
+		    	var body = rows.fieldByName('body');
+		    	var timestamp = rows.fieldByName('timestamp');
+		        var network = rows.fieldByName('network');
+		        var counts = rows.fieldByName('counts');
+		        var status = rows.fieldByName('status');
+		        //str = str + (getfName + ' ' + getlName).replace(/\\n/g, '\n');
+		        Ti.API.debug("\n Body: "+body+" File: "+file+" Timestamp: "+ timestamp+ " Network: "+ network + " COUNTS: "+ counts + " STATUS: "+ status);	        
+		        rows.next();
+		    }
+		    db.close(); 
+
+		});		
+		
+		
+	var buttonLeft = Titanium.UI.createButton({   		
+		backgroundColor: 'transparent',
+   		top: '0dp',
+   		width: '40dp',
+   		height: '40dp',
+   		left: '0dp'
+		});
+		buttonLeft.addEventListener('click',function(){Ti.App.fireEvent('statusBarToLeft')});	
+	
+				
+	var buttonRight = Titanium.UI.createButton({   		
+		backgroundColor: 'transparent',
+   		top: '0dp',
+   		width: '40dp',
+   		height: '40dp',
+   		left: '290dp'
+		});
+		buttonRight.addEventListener('click',function(){Ti.App.fireEvent('statusBarToRight')});	
+		
+	// assemble view hierarchy
+	view.add(showProperties);
+	view.add(checkNetwork);
+	view.add(showTracking);
+	view.add(showDB);
+	view.add(showDB2);
+	view.add(buttonLeft);
+	view.add(buttonRight);
+		
+	Ti.API.info('GLEB - Elementos añadidos a la vista');
+
+return view;
+}
