@@ -20,8 +20,8 @@ require('plugins/colaHTTP').start();
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-// WIZARD 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////   
+// WIZARD
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 var wizard = function (){
     Ti.API.info("GLEB - INIT - Checking wizard status: "+Ti.App.Properties.getString("WIZARD"));
     if (Ti.App.Properties.getString("WIZARD") != "done") {
@@ -33,20 +33,21 @@ var wizard = function (){
     }
 }
 
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // LOAD MENUS
-/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 var gleb_loadMenus = function(){
-	Ti.App.glebUtils.openActivityIndicator({"text":"Cargando ..."});	
-	if (Ti.App.glebUtils.checkValidInterval()) {    	
-    	if (require('modules/glebData').checkGUI()){    	    
+	Ti.App.glebUtils.openActivityIndicator({"text":"Cargando ..."});
+	if (Ti.App.glebUtils.checkValidInterval()) {
+    	if (require('modules/glebData').checkGUI()){
     		gleb_loadMenusLocal();
-    	}	
-		else require("clients/glebAPI").getMenus(gleb_loadMenusLocal, gleb_loadMenus_error);	
+    	}
+		else require("clients/glebAPI").getMenus(gleb_loadMenusLocal, gleb_loadMenus_error);
 	}
-	else require("clients/glebAPI").getMenus(gleb_loadMenusLocal, gleb_loadMenus_error);		
-}	
-	
+	else require("clients/glebAPI").getMenus(gleb_loadMenusLocal, gleb_loadMenus_error);
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // LOAD MENUS LOCAL
@@ -59,20 +60,20 @@ var gleb_loadMenusLocal= function(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // INIT MAIN WINDOW
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-var gleb_initMainWindow = function(json){	
+var gleb_initMainWindow = function(json){
 	Ti.API.debug('GLEB - getMenus Callback');
 	Ti.API.debug('GLEB- JSON devuelto por getMenus: '+JSON.stringify(json));
 	if(json.windows[0]){
 		mainWin = new require('ui/mainWindow')._get(json.windows[0]);
 		Ti.API.info('GLEB - Abriendo main window');
 		require('modules/NavigationController').open(mainWin);
-	}	
-}	
+	}
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Evento que se ejecuta cdo ocurre un error descargando los Menus
-/////////////////////////////////////////////////////////////////////////////////////////////////////////   
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 var gleb_loadMenus_error = function(obj){
         Ti.App.glebUtils.closeActivityIndicator();
         Ti.API.debug('GLEB - Error descargando Menus');
@@ -80,39 +81,39 @@ var gleb_loadMenus_error = function(obj){
             title: 'Error',
             message:'Ha ocurrido un error descargando los datos gleb. Compruebe que tiene cobertura de red. ¿Desea reintentarlo?. Si pulsa NO se intentaran cargar los últimos datos disponibles',
             buttonNames: ['SI','NO']
-        });             
+        });
         alertDialog.addEventListener('click', function(e)
                 {
                 if (e.index==0) {
-                        loadMenus();                    
+                        loadMenus();
                 }
                 else {
                         Ti.App.glebUtils.closeActivityIndicator({"text":"Cargando ..."});
                         if (require('modules/glebData').checkGUI()){
-                           gleb_loadMenusLocal();                       
-                        }                       
-                        else {                          
+                           gleb_loadMenusLocal();
+                        }
+                        else {
                             var alertDialog2 = Titanium.UI.createAlertDialog({
                                 title: 'Error',
                                 message:'No existen datos previos, reintente la descarga de nuevo.',
                                 buttonNames: ['REINTENTAR','SALIR']
-                            });             
+                            });
                             alertDialog2.addEventListener('click', function(e)
                                     {
-                                    if (e.index==0) {   
+                                    if (e.index==0) {
                                         gleb_loadMenus();
                                     }
-                                    else{   
+                                    else{
                                         var activity = Titanium.Android.currentActivity;
-                                        activity.finish();  
+                                        activity.finish();
                                     }
                             });
-                            alertDialog2.show();                        
+                            alertDialog2.show();
                         }
                     }
-            }); 
-            alertDialog.show();     
-    }
+            });
+            alertDialog.show();
+}
 
 
 ////////////////////////////////////////////
@@ -120,4 +121,5 @@ var gleb_loadMenus_error = function(obj){
 ///////////////////////////////////////////
 Ti.API.debug("GLEB - INIT - Checking new endpoints");
 require("clients/glebAPI").getGlebURLs(wizard);
+
 })();

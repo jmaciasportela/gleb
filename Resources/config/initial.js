@@ -31,8 +31,8 @@ Ti.App.Properties.setString('prevTimestamp','0');
 Ti.App.Properties.setBool('isChatOpen',false);
 
 if (!Ti.App.Properties.getString("GLEBUUID")) {
-	Ti.API.info("GLEB - CONFIG - Device MAC: "+Titanium.Platform.macaddress);
-	Ti.API.info("GLEB - CONFIG - Device UUID: "+ Titanium.Platform.id);
+	Ti.API.debug("GLEB - CONFIG - Device MAC: "+Titanium.Platform.macaddress);
+	Ti.API.debug("GLEB - CONFIG - Device UUID: "+ Titanium.Platform.id);
 	if (Titanium.Platform.id == null) Ti.App.Properties.setString("GLEBUUID",Ti.Utils.base64encode(Ti.Utils.sha1(Titanium.Platform.macaddress)));
 	else Ti.App.Properties.setString("GLEBUUID",Ti.Utils.base64encode(Ti.Utils.sha1(Titanium.Platform.macaddress+Titanium.Platform.id)));
 }
@@ -60,5 +60,12 @@ if (!Ti.App.Properties.getString("sendForm_url")) Ti.App.Properties.setString("s
 if (!Ti.App.Properties.getString("getGlebURLs_url")) Ti.App.Properties.setString("getGlebURLs_url", require("clients/glebAPI.config").getGlebURLs_url);
 
 
+Ti.App.addEventListener('pause', function(){
+    Ti.API.debug("GLEB - CONFIG - Application is paused");
+});
+
+Ti.App.addEventListener('resume', function(){
+    Ti.API.debug("GLEB - CONFIG - Application is resumed");
+});
 
 
