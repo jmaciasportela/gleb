@@ -22,11 +22,13 @@ exports.getGUI = function(){
     return null;
 }
 
+// POR REVISAR
 exports.setGUI = function(){    
     if (f.exists()) return true;
     else return false;
 }
 
+// POR REVISAR
 exports.updateGUI = function(){
     if (f.exists()) return true;
     else return false;
