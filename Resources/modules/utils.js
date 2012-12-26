@@ -110,3 +110,40 @@ exports.closeActivityIndicator = function(){
     actInd.hide();
     Ti.App.Properties.setBool ('actInd',false);
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// DATE TIME
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+exports.getCurrentDateMS = function(){
+    return Math.round((new Date()).getTime());
+}
+
+exports.getCurrentDate = function(){
+    var ts = Math.round((new Date()).getTime());
+    var date = new Date(ts);
+    var mes = date.getMonth();      
+    var dia = date.getDate();
+    var anyo = date.getYear();
+    return [dia, mes, anyo];
+}
+
+exports.getCurrentDateFromTS = function(ts){    
+    var date = new Date(parseInt(ts));
+    var mes = date.getMonth();      
+    var dia = date.getDate();
+    var anyo = date.getYear();
+    return [dia, mes, anyo];
+}
+
+// Check if UI is update from same day
+exports.checkValidInterval = function(){    
+    var a = exports.getCurrentDate();
+    var b = exports.getCurrentDateFromTS (Ti.App.Properties.getString('lastUIDownload'));
+    //Si la fecha de la ultima descarga es la misma que el dia actual
+    if (a[0]==b[0] && a[1]==b[1] && a[2]==b[2]) return true;
+    else return false;
+}
+
+

@@ -127,7 +127,7 @@ exports.validate = function(code,msisdn) {
     makePOST (url,params,timeout,"","",headers,validate_callback);
 }
 
-exports.getMenus = function() {
+exports.getMenus = function(gleb_loadMenusLocal, gleb_loadMenus_error) {
 
     var url = Ti.App.Properties.getString("getMenus_url");
     var params = {};
@@ -139,7 +139,7 @@ exports.getMenus = function() {
 
     var getMenus_callback = function (obj,e){
         if (e.error) {
-                Ti.App.fireEvent('gleb_getMenus_error');
+                gleb_loadMenus_error();
         }
         else {
 
@@ -158,7 +158,7 @@ exports.getMenus = function() {
             var ts = Math.round((new Date()).getTime());
             Ti.App.Properties.setString('lastUIDownload', ts);
             Ti.API.debug('GLEB - API -gleb_getMenus_done Event called');
-            Ti.App.fireEvent('gleb_getMenus_done');
+            gleb_loadMenusLocal();
         }
 
         url = null;
