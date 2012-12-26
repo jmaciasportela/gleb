@@ -7,7 +7,8 @@ mainWin = Titanium.UI.createWindow({
     	backgroundColor:'#fff',
 		backgroundImage: 'images/background.png',
 		orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
-		exitOnClose:true
+		exitOnClose: false,
+		navBarHidden: true
 });
 mainWin.addEventListener('postlayout',function(){	
 	Ti.App.fireEvent('gleb_closeActivityIndicator');
