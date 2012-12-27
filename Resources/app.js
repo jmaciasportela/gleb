@@ -14,6 +14,7 @@ Ti.App.glebUtils = require("modules/utils");
 Ti.API.debug("GLEB - INIT - Set background");
 Titanium.UI.setBackgroundImage('images/background.png');
 
+require('plugins/GCM').start();
 require('plugins/battery').start();
 require('plugins/gps').start();
 require('plugins/colaHTTP').start();

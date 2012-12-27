@@ -7,6 +7,8 @@
     <property name="ti.android.bug2373.message">Loading</property>
     <property name="ti.android.bug2373.title">Restart Required</property>
     <property name="ti.android.bug2373.buttonText">Continue</property>
+    <property name="tigcm.service_filename" type="string">gcm</property>
+    <property name="tigcm.sender_id" type="string">279701876098</property>
     <deployment-targets>
         <target device="mobileweb">true</target>
         <target device="iphone">false</target>
@@ -15,8 +17,8 @@
         <target device="blackberry">false</target>
     </deployment-targets>
     <sdk-version>2.1.0.GA</sdk-version>
-    <id>ngleb.thinetic.es</id>
-    <name>new gleb</name>
+    <id>es.thinetic.ngleb</id>
+    <name>newgleb</name>
     <version>0.2</version>
     <publisher>maci</publisher>
     <url>http://www.thinetic.es</url>
@@ -66,18 +68,12 @@
         <activity android:configChanges="keyboardHidden" android:name="ti.modules.titanium.ui.TiTabActivity"/>
         <services>
             <!--<service type="interval" url="services/glebService.js"/>-->
+            <service android:process=":gcmnotification" url="gcm.js"/>
         </services>
     </android>
-    <mobileweb>
-        <precache/>
-        <splash>
-            <enabled>true</enabled>
-            <inline-css-images>true</inline-css-images>
-        </splash>
-        <theme>default</theme>
-    </mobileweb>
     <modules>
         <module platform="android" version="0.2">es.gleb.androidnative</module>
         <module platform="android" version="2.0.1">ti.paint</module>
+        <module platform="android" version="0.2">net.iamyellow.tigcm</module>
     </modules>
 </ti:app>

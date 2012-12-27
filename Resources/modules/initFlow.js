@@ -8,7 +8,7 @@
 // WIZARD
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.wizard = function (){
-    Ti.API.info("GLEB - INIT - Checking wizard status: "+Ti.App.Properties.getString("WIZARD"));
+    Ti.API.debug("GLEB - INIT - Checking wizard status: "+Ti.App.Properties.getString("WIZARD"));
     if (Ti.App.Properties.getString("WIZARD") != "done") {
         Ti.API.info("GLEB - INIT - Iniciando Wizard");
         require('ui/wizard')._open();
