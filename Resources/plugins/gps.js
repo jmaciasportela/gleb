@@ -90,7 +90,7 @@ function locationCallback(e)
 			}
 			datestr=day.toString()+month.toString()+year.toString();
         	var f = Titanium.Filesystem.getFile(uiDir.resolve(), "tracking_"+datestr+".json");
-        	var record =JSON.stringify(e.coords)+",\r\n";        	
+        	var record =' {"provider":"'+e.provider.name+'","coords":'+JSON.stringify(e.coords)+",\r\n";        	
         	if (f.write(record, true)===false) { 			   
  			   Ti.API.debug("GLEB - GPS - Ha habido un error guardando el tracking");
 			}
