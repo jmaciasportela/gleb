@@ -89,7 +89,7 @@ var actInd = Titanium.UI.createActivityIndicator({
 var timer;
 
 exports.openActivityIndicator = function(message){
-    Ti.API.info('GLEB- UTILS - Mostrando ActivityIndicator: '+message.text);
+    Ti.API.debug('GLEB- UTILS - Mostrando ActivityIndicator: '+message.text);
     if (Ti.App.Properties.getBool('actInd') && timer!=null) clearTimeout(timer);
     actInd.hide();
     actInd.message = message.text;
@@ -106,7 +106,7 @@ exports.openActivityIndicator = function(message){
 }
 
 exports.closeActivityIndicator = function(){
-    Ti.API.info('GLEB- UTILS - Ocultando ActivityIndicator: '+actInd.message);
+    Ti.API.debug('GLEB- UTILS - Ocultando ActivityIndicator: '+actInd.message);
     actInd.hide();
     Ti.App.Properties.setBool ('actInd',false);
 }
@@ -125,15 +125,18 @@ exports.getCurrentDate = function(){
     var date = new Date(ts);
     var mes = date.getMonth();      
     var dia = date.getDate();
-    var anyo = date.getYear();
-    return [dia, mes, anyo];
+    var anyo = date.getFullYear();
+    var hour = date.getHours();
+    var min = date.getMinutes();
+    
+    return [dia, mes, anyo, hour, min];
 }
 
 exports.getCurrentDateFromTS = function(ts){    
     var date = new Date(parseInt(ts));
     var mes = date.getMonth();      
     var dia = date.getDate();
-    var anyo = date.getYear();
+    var anyo = date.getFullYear();
     return [dia, mes, anyo];
 }
 

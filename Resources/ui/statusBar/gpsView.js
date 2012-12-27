@@ -1,3 +1,9 @@
+/**
+* @version 0.1
+* @author Jesus Macias Portela, Fernando Ruiz Hernandez, Mario Izquierdo Rodriguez
+**/
+
+
 var view;
 var radar;
 var signal;

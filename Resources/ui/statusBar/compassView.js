@@ -1,9 +1,9 @@
-//StatusBar Constructor
+/**
+* @version 0.1
+* @author Jesus Macias Portela, Fernando Ruiz Hernandez, Mario Izquierdo Rodriguez
+**/
 
-exports._get = function() {
-	
-////var utils = require("global_functions");
-
+module.exports = function(){  
 	
 Ti.API.info('GLEB - Cargando Compass View');
 	// create UI components

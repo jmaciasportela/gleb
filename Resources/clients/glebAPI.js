@@ -517,14 +517,14 @@ exports.uploadTracking = function(e) {
     var d = new Date;
     var day=d.getDate();
     var month = d.getMonth();
-    var year = d.getYear();
-    if (day<= 10){
+    var year = d.getFullYear();
+    if (day< 10){
        day = "0"+day;
     }
-    if (month<= 10){
+    if (month< 10){
        month = "0"+month;
     }
-    datestr=day+month+year;
+    datestr=day.toString()+month.toString()+year.toString();
     var f = Titanium.Filesystem.getFile(uiDir.resolve(), "tracking_"+datestr+".json");
     if (f.exists()){
         var content = f.read();

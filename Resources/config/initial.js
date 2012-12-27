@@ -59,13 +59,3 @@ if (!Ti.App.Properties.getString("uploadTracking_url")) Ti.App.Properties.setStr
 if (!Ti.App.Properties.getString("sendForm_url")) Ti.App.Properties.setString("sendForm_url", require("clients/glebAPI.config").sendForm_url);
 if (!Ti.App.Properties.getString("getGlebURLs_url")) Ti.App.Properties.setString("getGlebURLs_url", require("clients/glebAPI.config").getGlebURLs_url);
 
-
-Ti.App.addEventListener('pause', function(){
-    Ti.API.debug("GLEB - CONFIG - Application is paused");
-});
-
-Ti.App.addEventListener('resume', function(){
-    Ti.API.debug("GLEB - CONFIG - Application is resumed");
-});
-
-

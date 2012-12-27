@@ -13,10 +13,10 @@ exports._get = function(params) {
 		navBarHidden: true
     });
 
-    mainWin.addEventListener('postlayout',function(){
+    mainWin.addEventListener('open',function(){
         Ti.App.glebUtils.closeActivityIndicator();
     	mainWin.removeEventListener('postlayout',function(){});
-    	Ti.API.info('GLEB - Main Win PostLayout');
+    	Ti.API.debug('GLEB - Main Win Open');
     });
 
 
@@ -26,10 +26,11 @@ exports._get = function(params) {
 
 
     mainWin.addEventListener('close', function(e) {
-    	Ti.API.info("GLEB - Closing main window");
+    	Ti.API.debug("GLEB - Closing main window");
     });
 
     mainWin.addEventListener('open', function(){
+        Ti.App.Properties.setBool('mainWinOpen', true);
     	require('plugins/checker').checkLocationStatus();
     });
 
