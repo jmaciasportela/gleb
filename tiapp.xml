@@ -10,7 +10,7 @@
     <property name="tigcm.service_filename" type="string">gcm</property>
     <property name="tigcm.sender_id" type="string">279701876098</property>
     <deployment-targets>
-        <target device="mobileweb">true</target>
+        <target device="mobileweb">false</target>
         <target device="iphone">false</target>
         <target device="ipad">false</target>
         <target device="android">true</target>
@@ -52,20 +52,7 @@
             <uses-permission android:name="android.permission.VIBRATE"/>
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
             <application android:debuggable="true"/>
-        </manifest>
-        <activities>
-            <activity android:name="es.thinetic.ngleb.NewGlebActivity" url="app.js">
-                <intent-filter>
-                    <action android:name="android.intent.action.VIEW"/>
-                    <action android:name="android.intent.action.MAIN"/>
-                    <category android:name="android.intent.category.DEFAULT"/>
-                    <category android:name="android.intent.category.BROWSABLE"/>
-                </intent-filter>
-            </activity>
-        </activities>
-        <activity android:configChanges="keyboardHidden"
-            android:name="org.appcelerator.titanium.TiActivity" android:screenOrientation="portrait"/>
-        <activity android:configChanges="keyboardHidden" android:name="ti.modules.titanium.ui.TiTabActivity"/>
+        </manifest>           
         <services>
             <!--<service type="interval" url="services/glebService.js"/>-->
             <service android:process=":gcmnotification" url="gcm.js"/>
