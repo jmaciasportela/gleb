@@ -21,14 +21,23 @@ else {
 	Ti.App.Properties.setInt('platformHeight', Ti.Platform.displayCaps.platformHeight);
 }
 
+
+Ti.App.Properties.removeProperty('dailyNotifications');
+Ti.App.Properties.setString('dailyNotifications', '{"initial": "saved"}'); 
+
 Ti.App.Properties.setString('lastLatitudeGLEB','');
 Ti.App.Properties.setString('lastLongitudeGLEB','');
 
+Ti.App.Properties.setBool('actInd', false);
 Ti.App.Properties.setBool ('avisoGPS',false);
 Ti.App.Properties.setBool ('GPSOff', true);
 Ti.App.Properties.setInt('initialDegrees',0);
 Ti.App.Properties.setString('prevTimestamp','0');
 Ti.App.Properties.setBool('isChatOpen',false);
+Ti.App.Properties.setBool('onAction', false);
+
+Ti.App.Properties.setBool("actionsON", false);
+setTimeout (function(){ Ti.App.Properties.setBool("actionsON", true), require('plugins/bootAction').checkAction()}, 10000);
 
 if (!Ti.App.Properties.getString("GLEBUUID")) {
 	Ti.API.debug("GLEB - CONFIG - Device MAC: "+Titanium.Platform.macaddress);
@@ -55,6 +64,7 @@ if (!Ti.App.Properties.getString("getMenuVersion_url")) Ti.App.Properties.setStr
 if (!Ti.App.Properties.getString("registerClient_url")) Ti.App.Properties.setString("registerClient_url", require("clients/glebAPI.config").registerClient_url);
 if (!Ti.App.Properties.getString("updateStatus_url")) Ti.App.Properties.setString("updateStatus_url", require("clients/glebAPI.config").updateStatus_url);
 if (!Ti.App.Properties.getString("confirmPUSH_url")) Ti.App.Properties.setString("confirmPUSH_url", require("clients/glebAPI.config").confirmPUSH_url);
+if (!Ti.App.Properties.getString("setGCMId_url")) Ti.App.Properties.setString("setGCMId_url", require("clients/glebAPI.config").setGCMId_url);
 if (!Ti.App.Properties.getString("uploadTracking_url")) Ti.App.Properties.setString("uploadTracking_url", require("clients/glebAPI.config").uploadTracking_url);
 if (!Ti.App.Properties.getString("sendForm_url")) Ti.App.Properties.setString("sendForm_url", require("clients/glebAPI.config").sendForm_url);
 if (!Ti.App.Properties.getString("getGlebURLs_url")) Ti.App.Properties.setString("getGlebURLs_url", require("clients/glebAPI.config").getGlebURLs_url);

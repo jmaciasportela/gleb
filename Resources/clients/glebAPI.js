@@ -31,7 +31,7 @@ exports.getGlebURLs = function(callback) {
         }
        callback();
     }
-    makeGET (url,params,timeout,headers,getGlebURLs_callback);
+    makeGET(url,params,timeout,headers,getGlebURLs_callback);
 };
 
 exports.sendSMS = function(msisdn) {
@@ -391,8 +391,7 @@ exports.registerClient = function(e) {
     Ti.API.debug('GLEB - API -bodyContent: {"pushUserId":"'+Ti.App.Properties.getString("pushUserId")+'","deviceToken":"'+Ti.App.Properties.getString("deviceToken")+'","pushUser":"'+Ti.App.Properties.getString("pushUser")+'","pushUserPassword":"'+Ti.App.Properties.getString("pushUserPassword")+'","nickname":"'+nickname+'", "UUID":"'+UUID+'","GLEBUUID":"'+Ti.App.Properties.getString("GLEBUUID")+'","phoneNumber":"'+phone_number+'","simSerial":"'+simserial+'","osname":"'+Titanium.Platform.name+"/"+Titanium.Platform.osname+'","model":"'+Titanium.Platform.model+'","version":"'+Titanium.Platform.version+'","architecture":"'+Titanium.Platform.architecture+'","macaddress":"'+Titanium.Platform.macaddress+'","processors":"'+Titanium.Platform.processorCount+'","ostype":"'+Titanium.Platform.ostype+'","batteryLevel":"'+batteryLevel+'","batteryStatus":"'+batteryStatus+'","availableMemory":"'+Titanium.Platform.availableMemory+'","IMEI":"'+IMEI+'","IMSI":"'+IMSI+'","lastRegister":"'+String(new Date().getTime())+'","lastLatitude":"'+Ti.App.Properties.getString("lastLatitude")+'","lastLongitude":"'+Ti.App.Properties.getString("lastLongitude")+'","lastLatitudeGLEB":"'+Ti.App.Properties.getString("lastLatitudeGLEB")+'","lastLongitudeGLEB":"'+Ti.App.Properties.getString("lastLongitudeGLEB")+'" , "lastAltitudeAccuracy":"'+Ti.App.Properties.getString("lastAltitudeAccuracy")+'", "lastAccuracy":"'+Ti.App.Properties.getString("lastAccuracy")+'","lastAltitude":"'+Ti.App.Properties.getString("lastAltitude")+'","lastLocationTimestamp":"'+Ti.App.Properties.getString("lastLocationTimestamp")+'"}');
     var bodyContent ='{"pushUserId":"'+Ti.App.Properties.getString("pushUserId")+'","deviceToken":"'+Ti.App.Properties.getString("deviceToken")+'","pushUser":"'+Ti.App.Properties.getString("pushUser")+'","pushUserPassword":"'+Ti.App.Properties.getString("pushUserPassword")+'","nickname":"'+nickname+'", "UUID":"'+UUID+'","GLEBUUID":"'+Ti.App.Properties.getString("GLEBUUID")+'","phoneNumber":"'+phone_number+'","simSerial":"'+simserial+'","osname":"'+Titanium.Platform.name+"/"+Titanium.Platform.osname+'","model":"'+Titanium.Platform.model+'","version":"'+Titanium.Platform.version+'","architecture":"'+Titanium.Platform.architecture+'","macaddress":"'+Titanium.Platform.macaddress+'","processors":"'+Titanium.Platform.processorCount+'","ostype":"'+Titanium.Platform.ostype+'","batteryLevel":"'+batteryLevel+'","batteryStatus":"'+batteryStatus+'","availableMemory":"'+Titanium.Platform.availableMemory+'","IMEI":"'+IMEI+'","IMSI":"'+IMSI+'","lastRegister":"'+String(new Date().getTime())+'","lastLatitude":"'+Ti.App.Properties.getString("lastLatitude")+'","lastLongitude":"'+Ti.App.Properties.getString("lastLongitude")+'","lastLatitudeGLEB":"'+Ti.App.Properties.getString("lastLatitudeGLEB")+'","lastLongitudeGLEB":"'+Ti.App.Properties.getString("lastLongitudeGLEB")+'" , "lastAltitudeAccuracy":"'+Ti.App.Properties.getString("lastAltitudeAccuracy")+'", "lastAccuracy":"'+Ti.App.Properties.getString("lastAccuracy")+'","lastAltitude":"'+Ti.App.Properties.getString("lastAltitude")+'","lastLocationTimestamp":"'+Ti.App.Properties.getString("lastLocationTimestamp")+'"}';
     Titanium.Platform.batteryMonitoring = false;
-
-    makePOST (url,params,timeout,bodyContent,'',headers,registerClient_callback);
+    makePOST(url,params,timeout,bodyContent,'',headers,registerClient_callback);
     //queuePOST (url,timeout,bodyContent,'',headers, "registerClient_callback");
 }
 
@@ -473,6 +472,31 @@ exports.confirmPUSH = function(id) {
     var bodyContent ='{"uuid":"'+id+'","status":1}';
     queuePOST (url,timeout,bodyContent,'',headers,confirmPUSH_callback);
 }
+
+exports.setGCMId = function(id) {
+    var url = Ti.App.Properties.getString("setGCMId_url");
+    var body = "";
+    var timeout = 30000;
+    var intentos = 0;
+    var headers = {
+        "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
+        "X-TOKEN": Ti.App.Properties.getString("token"),
+        "Content-Type": "application/json"
+    };
+    var setGCMId_callback = function (obj,e){
+        if (e.error) {
+            Ti.API.debug('GLEB - API - setGCMId Error, HTTP status = '+obj.status);
+            setTimeout(exports.getGCMId(id),60000);
+        }
+        else {
+            Ti.API.debug('GLEB - API -setGCMId called, HTTP status = '+obj.status);            
+        }
+    }
+    Ti.API.debug('GLEB - API - POST to ' + url);
+    var bodyContent ='{"pushUserId":"'+id+'"}';
+    makePOST(url,'',timeout,bodyContent,'',headers,setGCMId_callback);    
+}
+
 
 
 

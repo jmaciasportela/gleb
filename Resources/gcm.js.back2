@@ -1,0 +1,86 @@
+// ****************************************************************************************************************
+// some init stuff
+
+var now = new Date(),
+serviceIntent = Ti.Android.currentService.getIntent(),
+tickerText = 'GGM Notification',
+contentText = 'Received at ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+
+// ****************************************************************************************************************
+// getting the payload
+
+Ti.API.info("GLEB - SERVICE GCM - ServiceIntent: "+ JSON.stringify(serviceIntent));
+
+Ti.API.info("GLEB - SERVICE GCM - PushId: "+ serviceIntent.getStringExtra('pushId'));
+Ti.API.info("GLEB - SERVICE GCM - Message: "+ serviceIntent.getStringExtra('message'));
+Ti.API.info("GLEB - SERVICE GCM - Payload: "+ serviceIntent.getStringExtra('payload'));
+
+if (serviceIntent.hasExtra('message')) {
+    tickerText = serviceIntent.getStringExtra('message');
+}
+
+if (serviceIntent.getStringExtra('pushId') == "0001"){
+    
+}
+
+if (serviceIntent.getStringExtra('pushId') == "0002"){
+    
+}
+
+if (serviceIntent.getStringExtra('pushId') == "0003"){
+    
+}
+
+if (serviceIntent.getStringExtra('pushId') == "0004"){
+    
+}
+
+if (serviceIntent.getStringExtra('pushId') == "0005"){
+    
+}
+
+
+// ****************************************************************************************************************
+// intents & notification
+
+// we an intent and a pending intent in order to open the app when the users clicks on the notification
+var notificationIntent = Ti.Android.createIntent({
+	className: 'es.thinetic.ngleb.NewglebActivity',
+	packageName: 'es.thinetic.ngleb',
+	flag: Titanium.Android.FLAG_ACTIVITY_CLEAR_TOP | Titanium.Android.FLAG_ACTIVITY_SINGLE_TOP
+});
+
+// Create a PendingIntent to tie together the Activity and Intent
+// check http://docs.appcelerator.com/titanium/2.1/index.html#!/api/Titanium.Android.PendingIntent
+var intent = Ti.Android.createPendingIntent({
+    intent: notificationIntent,
+    flags: Titanium.Android.FLAG_UPDATE_CURRENT | Titanium.Android.FLAG_ACTIVITY_REORDER_TO_FRONT
+});
+
+// check http://docs.appcelerator.com/titanium/2.1/index.html#!/api/Titanium.Android.Notification
+var notification = Ti.Android.createNotification({
+	contentIntent: intent,
+	contentTitle: tickerText,
+	contentText: tickerText,
+	tickerText: tickerText,
+	icon: Ti.App.Android.R.drawable.appicon,	
+	defaults: Titanium.Android.NotificationManager.DEFAULT_ALL,
+	flags : Titanium.Android.ACTION_DEFAULT | Titanium.Android.FLAG_AUTO_CANCEL | Titanium.Android.FLAG_SHOW_LIGHTS
+});
+
+Ti.Android.NotificationManager.notify((new Date().getTime()), notification);
+
+// stop this service
+Ti.Android.stopService(serviceIntent);
+
+
+
+
+
+
+
+
+
+
+
+

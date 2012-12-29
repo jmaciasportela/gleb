@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ti:app xmlns:ti="http://ti.appcelerator.org">
+    <property name="ti.android.bug2373.finishfalseroot" type="bool">true</property>
     <property name="ti.android.bug2373.disableDetection" type="bool">false</property>
     <property name="ti.android.bug2373.restartDelay" type="int">500</property>
     <property name="ti.android.bug2373.finishDelay" type="int">0</property>
@@ -52,7 +53,7 @@
             <uses-permission android:name="android.permission.VIBRATE"/>
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
             <application android:debuggable="true"/>
-        </manifest>           
+        </manifest>
         <services>
             <!--<service type="interval" url="services/glebService.js"/>-->
             <service android:process=":gcmnotification" url="gcm.js"/>

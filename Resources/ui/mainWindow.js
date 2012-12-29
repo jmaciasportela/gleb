@@ -27,15 +27,25 @@ exports._get = function(params) {
 
     mainWin.addEventListener('close', function(e) {
     	Ti.API.debug("GLEB - Closing main window");
+    	Ti.App.Properties.setBool('mainWinOpen', false);
     });
 
     mainWin.addEventListener('open', function(){
-        Ti.App.Properties.setBool('mainWinOpen', true);
+        Ti.App.Properties.setBool('mainWinOpen', true);        
+        // Para checkear si el GPS esta activo
     	require('plugins/checker').checkLocationStatus();
     });
 
+    mainWin.addEventListener('focus', function(){
+        Ti.API.debug("GLEB - Main win pilla el foco");
+        if (Ti.App.Properties.getBool("actionsON")){
+            require('plugins/bootAction').checkAction();
+        }
+    });
+
     //Añadimos el status Bar
-    mainWin.add(require('ui/statusBar').statusBar());
+    var stbar = require('ui/statusBar');
+    mainWin.add(new stbar());
 
     //Añadimos mainView
     mainWin.add(require('ui/mainUI')._get(params));

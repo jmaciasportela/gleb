@@ -88,27 +88,31 @@ var actInd = Titanium.UI.createActivityIndicator({
 
 var timer;
 
-exports.openActivityIndicator = function(message){
+exports.openActivityIndicator = function(message){    
     Ti.API.debug('GLEB- UTILS - Mostrando ActivityIndicator: '+message.text);
     if (Ti.App.Properties.getBool('actInd') && timer!=null) clearTimeout(timer);
-    actInd.hide();
-    actInd.message = message.text;
+    if (Ti.App.Properties.getBool('actInd')) {
+        actInd.hide();            
+    }    
+    actInd.setMessage(message.text);
     actInd.show();
-    Ti.App.Properties.setBool ('actInd', true);
+    Ti.App.Properties.setBool('actInd', true);
     // El activiti indicator bloquea la app, por si en algún momento tarda más de 45sg en ejecutar la acción se devuelve el control
+    
     timer = setTimeout(function(){
-        if (Ti.App.Properties.getBool ('actInd')){
+        if (Ti.App.Properties.getBool('actInd')){
             exports.closeActivityIndicator();
-            Ti.App.Properties.setBool ('actInd',false);
             alert("Parece que algo no va bien. Por favor reintentalo.");
         }
-    },45000);
+    },45000);      
 }
 
-exports.closeActivityIndicator = function(){
+exports.closeActivityIndicator = function(){    
     Ti.API.debug('GLEB- UTILS - Ocultando ActivityIndicator: '+actInd.message);
-    actInd.hide();
-    Ti.App.Properties.setBool ('actInd',false);
+    if (Ti.App.Properties.getBool('actInd')) {
+        actInd.hide();            
+    }  
+    Ti.App.Properties.setBool ('actInd',false);    
 }
 
 

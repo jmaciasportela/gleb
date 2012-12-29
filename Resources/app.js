@@ -19,9 +19,6 @@ require('plugins/battery').start();
 require('plugins/gps').start();
 require('plugins/colaHTTP').start();
 
-
-
-
 ////////////////////////////////////////////
 // ARRANQUE DE LA APP
 ///////////////////////////////////////////

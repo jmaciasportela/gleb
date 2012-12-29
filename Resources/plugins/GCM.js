@@ -7,16 +7,17 @@
 var tigcm = require('net.iamyellow.tigcm');
 var id = null;
 
-exports.start = function (){
-    
-    Ti.API.debug('GLEB - GCM - Loading Module');
-    
+exports.start = function (){    
+    Ti.API.debug('GLEB - GCM - Loading Module');    
     // GLEB - GCM -   message event 
     // setting this to true will force the module to execute the message event instead of the notification in gcm.js when the app is in foreground.
     tigcm.fireEventWhenInFg = true;    
-    tigcm.addEventListener('message', function (ev) {
-        Ti.API.debug('GLEB - GCM - Message received: '+ JSON.stringify(ev));
-        alert('a message from GCM  = ' + ev.message);
+    tigcm.addEventListener('message', function (ev) {        
+        if (!require('config/data').contains(ev.serial)){
+            require('config/data').push(ev.serial); 
+            Ti.API.debug('GLEB - GCM - Message received: '+ JSON.stringify(ev));
+            alert('a message from GCM  = ' + ev.message);
+        }
     });    
     // GLEB - GCM - end message event 
     
@@ -24,12 +25,16 @@ exports.start = function (){
     tigcm.addEventListener('registered', function (ev) {
         // here we have to send to our server this registrationId
         // the server uses it in order to send notifications to devices
+        //Lanzamos la peticion para actualizar el server
+        //Ponemos el icono en verde
+        require('clients/glebAPI').setGCMId(ev.registrationId);
         Ti.API.debug('GLEB - GCM - registered with id ' + ev.registrationId);
     });
     
     tigcm.addEventListener('unregistered', function (ev) {
         // here we have to send to our server the fact that we unregistered from GCM
         // the server uses it in order to send notifications to devices
+        // Ponemos el icono en rojo
         Ti.API.debug('GLEB - GCM - unregistered with id ' + ev.registrationId);
     });
     
@@ -51,6 +56,8 @@ exports.start = function (){
     else {
         // we could also unregister the device
         // tigcm.unregisterDevice();
+        // Lanzar la peticion para actualizar el ID en el servidor
+        require('clients/glebAPI').setGCMId(id);
         Ti.API.debug('GLEB - GCM - we had the registration ID, is = ' + id);
     }
 }    

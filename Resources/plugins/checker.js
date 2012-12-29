@@ -27,5 +27,5 @@ exports.checkLocationStatus = function (){
 			});	
 			alertDialog.show();
 			Ti.App.Properties.setBool('avisoGPS',true);      			
-			} 
+			}				
 };
