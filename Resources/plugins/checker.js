@@ -26,6 +26,8 @@ exports.checkLocationStatus = function (){
 				}
 			});	
 			alertDialog.show();
+			var date = require('modules/utils').getCurrentDate();
+			Ti.App.Properties.setString ('avisoGPSDay', date[0]);
 			Ti.App.Properties.setBool('avisoGPS',true);      			
 			}				
 };

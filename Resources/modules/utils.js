@@ -131,8 +131,7 @@ exports.getCurrentDate = function(){
     var dia = date.getDate();
     var anyo = date.getFullYear();
     var hour = date.getHours();
-    var min = date.getMinutes();
-    
+    var min = date.getMinutes();    
     return [dia, mes, anyo, hour, min];
 }
 

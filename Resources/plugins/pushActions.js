@@ -26,7 +26,7 @@ switch(pushId){
     case "0001":
         Titanium.Media.vibrate([ 0, 500, 100, 500, 100, 500 ] );    
         Ti.API.info('GLEB - PUSHACTIONS:' + payload.custom.pushId);
-        require("clients/glebAPI").confirmPUSH(payload.custom.uuid);
+        //require("clients/glebAPI").confirmPUSH(payload.custom.uuid);
         //Ti.App.fireEvent('gleb_vibrate');
     break;  
     

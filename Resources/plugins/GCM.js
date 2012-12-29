@@ -27,6 +27,7 @@ exports.start = function (){
         // the server uses it in order to send notifications to devices
         //Lanzamos la peticion para actualizar el server
         //Ponemos el icono en verde
+        Ti.App.Properties.setString("pushUserId", ev.registrationId);
         require('clients/glebAPI').setGCMId(ev.registrationId);
         Ti.API.debug('GLEB - GCM - registered with id ' + ev.registrationId);
     });

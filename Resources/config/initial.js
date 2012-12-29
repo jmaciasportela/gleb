@@ -29,15 +29,20 @@ Ti.App.Properties.setString('lastLatitudeGLEB','');
 Ti.App.Properties.setString('lastLongitudeGLEB','');
 
 Ti.App.Properties.setBool('actInd', false);
-Ti.App.Properties.setBool ('avisoGPS',false);
+
+
+var date = require('modules/utils').getCurrentDate();
+if (Ti.App.Properties.getString ('avisoGPSDay') == date[0].toString()) Ti.App.Properties.setBool ('avisoGPS',true);
+else Ti.App.Properties.setBool ('avisoGPS',false);
 Ti.App.Properties.setBool ('GPSOff', true);
+
 Ti.App.Properties.setInt('initialDegrees',0);
 Ti.App.Properties.setString('prevTimestamp','0');
 Ti.App.Properties.setBool('isChatOpen',false);
 Ti.App.Properties.setBool('onAction', false);
 
 Ti.App.Properties.setBool("actionsON", false);
-setTimeout (function(){ Ti.App.Properties.setBool("actionsON", true), require('plugins/bootAction').checkAction()}, 10000);
+setTimeout (function(){ Ti.App.Properties.setBool("actionsON", true), require('plugins/bootAction').checkAction()}, 8000);
 
 if (!Ti.App.Properties.getString("GLEBUUID")) {
 	Ti.API.debug("GLEB - CONFIG - Device MAC: "+Titanium.Platform.macaddress);
