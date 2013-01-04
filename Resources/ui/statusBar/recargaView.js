@@ -1,13 +1,13 @@
-/**
-* @version 0.1
-* @author Jesus Macias Portela, Fernando Ruiz Hernandez, Mario Izquierdo Rodriguez
-**/
+//StatusBar Constructor
 
-module.exports = function(){  
-    	
+exports._get = function() {
+	
+////var utils = require("global_functions");
+
+Ti.API.info('GLEB - Cargando msgView View');
 	// create UI components
 	var view = Ti.UI.createView({		
-		backgroundImage: '../../images/statusBar.png',
+		backgroundImage: '../../images/statusBar_left.png',
 		height: Ti.App.glebUtils._p(40),		
 		touchEnabled: true,
 		borderRadius: 0
@@ -15,40 +15,29 @@ module.exports = function(){
 
 	var recarga = Titanium.UI.createButton({   		
    		top: Ti.App.glebUtils._p(4),
-   		title: "Recarga",   		
-   		left: Ti.App.glebUtils._p(30),   		
+   		title: "RECARGA UI",   		
+   		left: Ti.App.glebUtils._p(30),
+   		right: Ti.App.glebUtils._p(30),
    		height: Ti.App.glebUtils._p(36),
-   		width: Ti.App.glebUtils._p(120),   		
 		});
 		recarga.addEventListener('click',function(){	
-	   		require("modules/initFlow").gleb_reInit();		
+	   		require("plugins/glebAPI").getMenus();		
 		});	
-
-    var salir = Titanium.UI.createButton({        
-        top: Ti.App.glebUtils._p(4),
-        title: "Salir",                
-        right: Ti.App.glebUtils._p(30),
-        height: Ti.App.glebUtils._p(36),
-        width: Ti.App.glebUtils._p(120),
-        });
-        salir.addEventListener('click',function(){    
-            var activity = Titanium.Android.currentActivity;
-            activity.finish();      
-        }); 
 				
 	var buttonRight = Titanium.UI.createButton({   		
 		backgroundColor: 'transparent',
-   		top: Ti.App.glebUtils._p(0),
-   		width: Ti.App.glebUtils._p(40),
-   		height: Ti.App.glebUtils._p(40),
-   		left: Ti.App.glebUtils._p(290)
+   		top: '0dp',
+   		width: '40dp',
+   		height: '40dp',
+   		left: '290dp'
 		});
 		buttonRight.addEventListener('click',function(){require("ui/statusBar").statusBarToRight();});	
 		
 	// assemble view hierarchy
 	view.add(recarga);
-    view.add(salir);
-	view.add(buttonRight);		
-	
-    return view;
+	view.add(buttonRight);
+		
+	Ti.API.info('GLEB - Elementos añadidos a la vista');
+
+return view;
 }

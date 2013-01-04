@@ -1,9 +1,6 @@
-/**
-* @version 0.1
-* @author Jesus Macias Portela, Fernando Ruiz Hernandez, Mario Izquierdo Rodriguez
-**/
+//StatusBar Constructor
 
-module.exports = function(){  
+exports._get = function() {
 
 Ti.API.info('GLEB - Cargando msgView View');
 	// create UI components

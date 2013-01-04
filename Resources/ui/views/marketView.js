@@ -10,9 +10,6 @@
 module.exports = function(params){	
 
 
-var contentView = require('ui/contents/marketContentElements');
-var style = require('ui/styles/styleView');
-
 /* MUY IMPORTANTE, creamos un container para almacenar el scrollview, para poder actualizar el contenido del scrollView de una forma comoda con un remove y un add del mismo
  * Se podria elimininar elemento por elemento de la vista sin usar el container, pero hay un leak y a veces tarda mas en eliminarse un elemento que en avanzar a la siguiente 
  * eliminación y se detiene el bucle.

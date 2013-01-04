@@ -1,10 +1,8 @@
-/**
-* @version 0.1
-* @author Jesus Macias Portela, Fernando Ruiz Hernandez, Mario Izquierdo Rodriguez
-**/
+//StatusBar Constructor
 
-module.exports = function(){  
-
+exports._get = function() {
+	
+////var utils = require("global_functions");
 
 Ti.API.info('GLEB - Cargando msgView View');
 	// create UI components
@@ -59,14 +57,14 @@ Ti.API.info('GLEB - Cargando msgView View');
 			var d = new Date;	
 			var day=d.getDate();
 			var month = d.getMonth();
-			var year = d.getFullYear();
-			if (day< 10){
+			var year = d.getYear();
+			if (day<= 10){
 			   day = "0"+day;
 			}
-			if (month< 10){
+			if (month<= 10){
 			   month = "0"+month;
 			}
-			datestr=day.toString()+month.toString()+year.toString();
+			datestr=day+month+year;
         	var f = Titanium.Filesystem.getFile(uiDir.resolve(), "tracking_"+datestr+".json");
         	if (f.exists()){        		
         		var content = f.read();

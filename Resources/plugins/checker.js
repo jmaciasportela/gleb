@@ -3,8 +3,9 @@
  */
 
 exports.checkLocationStatus = function (){
-		if (Ti.App.Properties.getBool('GPSOff') && !Ti.App.Properties.getBool('avisoGPS')) {	
-			Ti.API.debug('GLEB - GPS deshabilitado');
+
+		if (Ti.App.Properties.getBool('GPSOff') && !Ti.App.Properties.getBool('avisoGPS') ) {	
+			Ti.API.info('GLEB - GPS deshabilitado');
 			var alertDialog = Titanium.UI.createAlertDialog({
     			title: 'Aviso',
     			message:'Para conseguir un funcionamiento óptimo de la aplicación es necesario activar la localización GPS',
@@ -26,8 +27,6 @@ exports.checkLocationStatus = function (){
 				}
 			});	
 			alertDialog.show();
-			var date = require('modules/utils').getCurrentDate();
-			Ti.App.Properties.setString ('avisoGPSDay', date[0]);
 			Ti.App.Properties.setBool('avisoGPS',true);      			
-			}				
+			} 
 };

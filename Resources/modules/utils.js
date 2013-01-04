@@ -88,68 +88,25 @@ var actInd = Titanium.UI.createActivityIndicator({
 
 var timer;
 
-exports.openActivityIndicator = function(message){    
-    Ti.API.debug('GLEB- UTILS - Mostrando ActivityIndicator: '+message.text);
+exports.openActivityIndicator = function(message){
+    Ti.API.info('GLEB- UTILS - Mostrando ActivityIndicator: '+message.text);
     if (Ti.App.Properties.getBool('actInd') && timer!=null) clearTimeout(timer);
-    if (Ti.App.Properties.getBool('actInd')) {
-        actInd.hide();            
-    }    
-    actInd.setMessage(message.text);
+    actInd.hide();
+    actInd.message = message.text;
     actInd.show();
-    Ti.App.Properties.setBool('actInd', true);
+    Ti.App.Properties.setBool ('actInd', true);
     // El activiti indicator bloquea la app, por si en algún momento tarda más de 45sg en ejecutar la acción se devuelve el control
-    
     timer = setTimeout(function(){
-        if (Ti.App.Properties.getBool('actInd')){
+        if (Ti.App.Properties.getBool ('actInd')){
             exports.closeActivityIndicator();
+            Ti.App.Properties.setBool ('actInd',false);
             alert("Parece que algo no va bien. Por favor reintentalo.");
         }
-    },45000);      
+    },45000);
 }
 
-exports.closeActivityIndicator = function(){    
-    Ti.API.debug('GLEB- UTILS - Ocultando ActivityIndicator: '+actInd.message);
-    if (Ti.App.Properties.getBool('actInd')) {
-        actInd.hide();            
-    }  
-    Ti.App.Properties.setBool ('actInd',false);    
+exports.closeActivityIndicator = function(){
+    Ti.API.info('GLEB- UTILS - Ocultando ActivityIndicator: '+actInd.message);
+    actInd.hide();
+    Ti.App.Properties.setBool ('actInd',false);
 }
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-// DATE TIME
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-exports.getCurrentDateMS = function(){
-    return Math.round((new Date()).getTime());
-}
-
-exports.getCurrentDate = function(){
-    var ts = Math.round((new Date()).getTime());
-    var date = new Date(ts);
-    var mes = date.getMonth();      
-    var dia = date.getDate();
-    var anyo = date.getFullYear();
-    var hour = date.getHours();
-    var min = date.getMinutes();    
-    return [dia, mes, anyo, hour, min];
-}
-
-exports.getCurrentDateFromTS = function(ts){    
-    var date = new Date(parseInt(ts));
-    var mes = date.getMonth();      
-    var dia = date.getDate();
-    var anyo = date.getFullYear();
-    return [dia, mes, anyo];
-}
-
-// Check if UI is update from same day
-exports.checkValidInterval = function(){    
-    var a = exports.getCurrentDate();
-    var b = exports.getCurrentDateFromTS (Ti.App.Properties.getString('lastUIDownload'));
-    //Si la fecha de la ultima descarga es la misma que el dia actual
-    if (a[0]==b[0] && a[1]==b[1] && a[2]==b[2]) return true;
-    else return false;
-}
-
-

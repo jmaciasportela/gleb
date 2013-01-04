@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ti:app xmlns:ti="http://ti.appcelerator.org">
-    <property name="ti.android.bug2373.finishfalseroot" type="bool">true</property>
     <property name="ti.android.bug2373.disableDetection" type="bool">false</property>
     <property name="ti.android.bug2373.restartDelay" type="int">500</property>
     <property name="ti.android.bug2373.finishDelay" type="int">0</property>
@@ -8,18 +7,16 @@
     <property name="ti.android.bug2373.message">Loading</property>
     <property name="ti.android.bug2373.title">Restart Required</property>
     <property name="ti.android.bug2373.buttonText">Continue</property>
-    <property name="tigcm.service_filename" type="string">gcm</property>
-    <property name="tigcm.sender_id" type="string">279701876098</property>
     <deployment-targets>
-        <target device="mobileweb">false</target>
+        <target device="mobileweb">true</target>
         <target device="iphone">false</target>
         <target device="ipad">false</target>
         <target device="android">true</target>
         <target device="blackberry">false</target>
     </deployment-targets>
     <sdk-version>2.1.0.GA</sdk-version>
-    <id>es.thinetic.ngleb</id>
-    <name>newgleb</name>
+    <id>ngleb.thinetic.es</id>
+    <name>new gleb</name>
     <version>0.2</version>
     <publisher>maci</publisher>
     <url>http://www.thinetic.es</url>
@@ -54,14 +51,33 @@
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
             <application android:debuggable="true"/>
         </manifest>
+        <activities>
+            <activity android:name="es.thinetic.ngleb.NewGlebActivity" url="app.js">
+                <intent-filter>
+                    <action android:name="android.intent.action.VIEW"/>
+                    <action android:name="android.intent.action.MAIN"/>
+                    <category android:name="android.intent.category.DEFAULT"/>
+                    <category android:name="android.intent.category.BROWSABLE"/>
+                </intent-filter>
+            </activity>
+        </activities>
+        <activity android:configChanges="keyboardHidden"
+            android:name="org.appcelerator.titanium.TiActivity" android:screenOrientation="portrait"/>
+        <activity android:configChanges="keyboardHidden" android:name="ti.modules.titanium.ui.TiTabActivity"/>
         <services>
             <!--<service type="interval" url="services/glebService.js"/>-->
-            <service android:process=":gcmnotification" url="gcm.js"/>
         </services>
     </android>
+    <mobileweb>
+        <precache/>
+        <splash>
+            <enabled>true</enabled>
+            <inline-css-images>true</inline-css-images>
+        </splash>
+        <theme>default</theme>
+    </mobileweb>
     <modules>
         <module platform="android" version="0.2">es.gleb.androidnative</module>
         <module platform="android" version="2.0.1">ti.paint</module>
-        <module platform="android" version="0.2">net.iamyellow.tigcm</module>
     </modules>
 </ti:app>
