@@ -9,6 +9,7 @@ exports.createWindow = function (content){
 
     var win = new Titanium.UI.createWindow({
               orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
+              navBarHidden: true,              
            });    
     if (content != null) win.add (content);
     win.addEventListener('android:back', function(){

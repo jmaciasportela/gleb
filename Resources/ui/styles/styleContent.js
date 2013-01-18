@@ -16,8 +16,8 @@ exports.getStyleContent = function(params) {
 	style.borderWidth 	= params.borderWidth || 2;
 	style.borderColor 	= params.borderColor || "#000";
 	style.color 		= params.color || "#000";
-	style.iconWidth 	= params.iconWidth || 10;
-	style.iconHeight 	= params.iconHeight || 10;
+	style.iconWidth 	= params.iconWidth || 50;
+	style.iconHeight 	= params.iconHeight || 50;
 	style.labelH1Size 	= params.labelH1Size 	|| 16;
 	style.labelH1Color 	= params.labelH1Color 	|| "#000";
 	

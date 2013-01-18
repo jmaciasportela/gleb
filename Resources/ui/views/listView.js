@@ -115,14 +115,14 @@ function populateView (data, style){
 
 		var scrollView = Ti.UI.createScrollView({
 			zIndex:2,
-			height: Ti.App.glebUtils._p(Ti.App.Properties.getInt("platformHeight")),
+			height: Ti.App.glebUtils._p(Ti.App.Properties.getInt("platformHeight")),			
 			width: Ti.UI.FILL,
 			showVerticalScrollIndicator: true,
 		    backgroundColor: params.style.backgroundColor || '#ccc',		    
 		    scrollType: "vertical",
     		name: params.name,
     		contentOffset: {x: 0, y: Ti.App.glebUtils._p(60)},
-    		layout: "vertical"	
+    		layout: "vertical"
 		});		
 		
 		//Ti.API.debug('GLEB - DATA LENGTH:'+data.length);
@@ -196,6 +196,18 @@ function populateView (data, style){
 		//Ti.API.debug('GLEB - TABLEDATA A:'+JSON.stringify(data));
 		// Añadimos el PULL VIEW como primer row de la tabla
 		data.unshift(row);
+		Ti.API.debug("GLEB - TAMAÑO PROVISIONAL: "+data.length);
+        Ti.API.debug("GLEB - TAMAÑO PROVISIONAL: "+data.length * Ti.App.glebUtils._p(60));
+        Ti.API.debug("GLEB - TAMAÑO FIJO : "+Ti.App.glebUtils._p(900));
+        
+        if(data.length * Ti.App.glebUtils._p(60) < Ti.App.glebUtils._p(900)) {
+            var rowAux = Ti.UI.createView({
+                    width: "100%",
+                    height: Ti.App.glebUtils._p(900) - (data.length * Ti.App.glebUtils._p(60)),
+                    backgroundColor: 'transparent'
+            });
+            data.push(rowAux);
+        }		
 
         for(i=0;i<data.length;i++){
         	Ti.API.debug('GLEB - ROW: '+data[i]);
@@ -308,7 +320,7 @@ function populateView (data, style){
 				//scrollView.scrollTo(0,50);
 				Ti.API.info('Dont refresh, go back to base');
 			} 
-		});
+		});    
 
 	return scrollView;
 }

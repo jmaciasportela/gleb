@@ -13,7 +13,8 @@ exports.addAction = function(element, data) {
 			var win = require ("modules/controlWindow").createWindow();
 			win.title = "WebView";
 			win.modal = true;
-			var webview = Titanium.UI.createWebView({url:data.url});
+			var webview = Titanium.UI.createWebView({url:data.url, top: Ti.App.glebUtils._p(46)
+});
     		win.add(webview);
     		win.open();
 		});
@@ -31,9 +32,11 @@ exports.addAction = function(element, data) {
 				name: data.winContent.name,
 				headerTitle: data.winContent.headerTitle,
 				style: data.winContent.style,
-			    data: data.winContent.content
+			    data: data.winContent.content                
 			});
     		
+    		view.setTop(Ti.App.glebUtils._p(46));
+
     		win.add(view);
     		win.open();
 		});
