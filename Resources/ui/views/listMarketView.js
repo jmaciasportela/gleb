@@ -15,7 +15,7 @@ var pulling = false;
 var containerView = Ti.UI.createView({
 	name: params.name,
 	borderWidth: 0,
-	backgroundColor: "transparent",
+	backgroundColor: params.style.backgroundColor || "transparent",
 	layout: "vertical",
 	width: Ti.UI.FILL	
 }); 
@@ -60,7 +60,7 @@ buttonVolver.addEventListener('click',function(){
 	});		
 
 
-containerView._get = function(params) {
+containerView._get = function() {
 	
 	//Recibimos Params 
 	Ti.API.debug('GLEB - Actualizando vista: '+params.name);
@@ -79,8 +79,6 @@ containerView._get = function(params) {
 		//No vienen contents en el UI JSON
 		//var localData = contentView.listMarketContentView(params.content);
 	}	
-	
-	//Ti.API.debug("GLEB - OJO al local Data: "+JSON.stringify(localData));	
 		
 	Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
 	if (containerView.children[1]) containerView.remove (containerView.children[1]);
@@ -98,7 +96,7 @@ containerView._refresh = function (e){
 	require("clients/glebAPI").getView(params.name, containerView._get );
 }	
 
-return containerView._get(params);
+return containerView._get();
 
 function formatDate()
 {
@@ -124,7 +122,7 @@ function populateView (data, style){
 		height: Ti.UI.SIZE,
 		width: Ti.UI.FILL,		
 		showVerticalScrollIndicator:false,
-	    backgroundColor:'#ccc',
+	    backgroundColor: params.style.backgroundColor || '#ccc',
 	    scrollType: "vertical",
 		name: params.name,
 		contentOffset: {x: 0, y: Ti.App.glebUtils._p(60)},

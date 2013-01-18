@@ -2,13 +2,13 @@
 exports.listContentView = function(content) {
 var result=[];	
 var style = require('ui/styles/styleContent');	
+var actionFactory = require('ui/actions/actionFactory');	
 
 
 for (i in content) {
 		item=content[i];		
 		//Leemos el estilo del elemento que vamos a añadir y le aplicamos unos valores por defecto
 		var localStyle = style.getStyleContent(item.style || {});
-		//Ti.API.info("GLEB- LIST LOCALSTYLE:"+ JSON.stringify(localStyle));
 
 		if(item.type == 'row'){
 				row = Ti.UI.createView({
@@ -16,10 +16,11 @@ for (i in content) {
 	   					width: Ti.UI.FILL,
 	   					height: Ti.UI.SIZE,	   					
 						backgroundColor: localStyle.backgroundColor,
+						borderWidth: localStyle.borderWidth,
+						borderColor: localStyle.borderColor,
 						action: item.action,
 						winId: item.winId,
 						url: item.url,
-						intent: item.intent,
 						method: item.method,
 						methodParams: item.methodParams,
 						top: Ti.App.glebUtils._p(1)	
@@ -36,8 +37,6 @@ for (i in content) {
 	  					backgroundColor: "transparent",
 	  					height: item.iconHeight+"dp",
 						width: item.iconWidth+"dp",						
-						//top: "5dp",
-						//bottom: "5dp",
 						left: Ti.App.glebUtils._p(10),
 						touchEnabled:false
 				});				
@@ -46,44 +45,20 @@ for (i in content) {
 				var leftPosition = parseInt(item.iconWidth)+20;
 				
 				var label1 = Ti.UI.createLabel({
-					color: localStyle.color,
-					//top: "5dp",
-					font: { fontSize:"18dp",fontWeigh:"bold"},
 					text: Ti.App.glebUtils.textoClaro(item.labelH1),
+					color: localStyle.labelH1Color,
+					font: { fontSize: localStyle.labelH1Size+"dp", fontWeight:localStyle.labelH1Weight},
 					height:'auto',
 					width:Ti.UI.FILL,					
 	    			textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT,
 	    			left: leftPosition+"dp",
-	    			//left: "115dp",
 	    			touchEnabled:false
 				});		
 				row.add(label1);	
 			
-																	
+				//Si en el JSON se indica algún tipo de acción asociada al item, se le añade en este punto del código												
 	   			if (item.action && item.action != '') {
-	    			row.addEventListener('click', function(e){
-	    			Titanium.Media.vibrate([ 0, 100]);
-	    			if (e.source.action == 'openWebView') {
-						Ti.API.debug("GLEB - openWebView:"+e.source.url);
-						Ti.App.fireEvent('gleb_openWebView',e.source);
-					}   
-					else if (e.source.action == 'openWin') {
-						Ti.API.debug("GLEB - openWin:"+e.source.winId);
-						Ti.App.fireEvent('gleb_openWin',{"winName":e.source.winId});
-					}
-					else if (e.source.action == 'openIntent') {
-						Ti.API.debug("GLEB - openIntent:"+e.source.intent);
-						Ti.App.fireEvent('gleb_openIntent',e.source);
-					} 
-					else if (e.source.action == 'execMethod') {
-						Ti.API.debug("GLEB - raising custom method:"+e.source.method);
-						Ti.App.fireEvent(e.source.method,e.source.methodParams);
-					}	 			
-		     		else {
-		     			//Si la acción indicada no es ninguna de las permitidas, no hacemos nada
-		     		}
-		     		//Ti.API.debug("EVENT "+JSON.stringify(e));
-	    			});
+	   				actionFactory.addAction(row, content[i]);
 	   			}	   								
 	
 			result.push(row); 

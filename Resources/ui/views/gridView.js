@@ -1,10 +1,10 @@
 /**
  * grid
- * Returns a grid with autorefresh market styled
+ * Returns a grid with market styled
  * 
  * @param args		JSON to construct this View
   * 
- * @return Ti.UI.View grid Type with auto refresh
+ * @return Ti.UI.View grid Type
  */
 
 module.exports = function(params){	
@@ -16,13 +16,13 @@ module.exports = function(params){
  */
 var containerView = Ti.UI.createView({
 	borderWidth: 0,
-	backgroundColor: "transparent",		
+	backgroundColor: params.style.backgroundColor || "transparent",		
 	layout: "vertical",
 	width: Ti.UI.FILL,
 	name: params.name		
 }); 
 
-containerView._get = function(params) {
+containerView._get = function() {
 	
 	/*
 	 *  gridContentElements es el que se encarga de transformar los elementos del content del UI JSON en elementos de Titanium. Se le pasa el array content  []
@@ -32,7 +32,6 @@ containerView._get = function(params) {
 	var style = require('ui/styles/styleView');
 	
 	/* Creamos el estilo y los elementos de la primera llamada*/
-	//Ti.API.info("Creating view style... "+ this.name);
 	var localStyle = style.getStyleView(params.style || {});
 
 	if (params.data) {
@@ -42,9 +41,6 @@ containerView._get = function(params) {
 		//No vienen contents en el UI JSON
 		//var localData = contentView.gridContentView(params.content);
 	}
-	
-	
-	//Ti.API.debug("GLEB - OJO al local Data: "+JSON.stringify(localData));	
 		
 	Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
 	if (containerView.children[1]) containerView.remove (containerView.children[1]);
@@ -55,15 +51,7 @@ containerView._get = function(params) {
 	return containerView;
 };
 
-
-containerView._refresh = function (e){
-	Ti.App.fireEvent("gleb_openActivityIndicator",{"text":"Actualizando lista ..."});
-	Ti.API.debug("GLEB - Actualizando grid: "+params.name);		
-	require("clients/glebAPI").getView(params.name, containerView._get );
-}	
-
-return containerView._get(params);
-
+return containerView._get();
 
 
 /* Funcion que se encaga de crear la vista scroll vertical e ir añadiendo los elementos
@@ -75,7 +63,7 @@ function populateView (data, style){
     
     var view = Ti.UI.createScrollView({
 		//backgroundColor: style.backgroundColor,
-		backgroundColor: "transparent",
+		backgroundColor: params.style.backgroundColor || "transparent",
         scrollType: "vertical",
         data: data,
         contentHeight: "auto",

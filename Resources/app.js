@@ -153,7 +153,8 @@ var gleb_getMenus_done_f = function(){
 			}
 			mainWin = new require('ui/mainWindow')._get(json.windows[0]);
 			//Ti.App.glebUtils.closeActivityIndicator();
-			require('modules/NavigationController').open(mainWin);			
+			//DEJAMOS EL mainWin FUERA DEL CONTROLADOR DE NAVEGACIÓN
+			mainWin.open();			
 			Ti.API.info('GLEB - Abriendo main window');
 			//////// REMOVEMOS TODOS LOS LISTENERS INCESARIOS UNA VEZ ARRANCADA LA APP		
 			if (f_gleb_wizard_end != null){	

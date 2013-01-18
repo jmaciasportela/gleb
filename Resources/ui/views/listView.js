@@ -10,7 +10,7 @@
 module.exports = function(params){	
 
 
-// Para controla cuando se esta mostrando el row del PULL VIEW
+// Para controlar cuando se está mostrando el row del PULL VIEW
 var pulling = false;
 
 /* MUY IMPORTANTE, creamos un container para almacenar el scrollview, para poder actualizar el contenido del scrollView de una forma comoda con un remove y un add del mismo
@@ -21,7 +21,7 @@ var pulling = false;
 var containerView = Ti.UI.createView({
 	name: params.name,
 	borderWidth: 0,
-	backgroundColor: "transparent",
+	backgroundColor: params.style.backgroundColor || "transparent",
 	layout: "vertical",
 	width: Ti.UI.FILL,
 	height: Ti.UI.FILL
@@ -51,7 +51,7 @@ header.add(headerTitle);
 containerView.add(header);
 
 
-containerView._get = function(params) {
+containerView._get = function() {
 	
 	//Ti.API.debug('GLEB - LIST PARAMS:' +JSON.stringify(params));
 	
@@ -75,8 +75,6 @@ containerView._get = function(params) {
 		//No vienen contents en el UI JSON
 		//var localData = contentView.listContentView(params.content);
 	}	
-	
-	//Ti.API.debug("GLEB - OJO al local Data: "+JSON.stringify(localData));	
 		
 	Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
 	if (containerView.children[1]) containerView.remove (containerView.children[1]);
@@ -94,7 +92,7 @@ containerView._refresh = function (e){
 	require("clients/glebAPI").getView(params.name, containerView._get );
 }	
 
-return containerView._get(params);
+return containerView._get();
 
 
 
@@ -117,17 +115,17 @@ function populateView (data, style){
 
 		var scrollView = Ti.UI.createScrollView({
 			zIndex:2,
-			height: Ti.App.glebUtils._p(Ti.App.Properties.getInt("platformWidth")),
+			height: Ti.App.glebUtils._p(Ti.App.Properties.getInt("platformHeight")),
 			width: Ti.UI.FILL,
 			showVerticalScrollIndicator: true,
-		    backgroundColor:'#ccc',		    
+		    backgroundColor: params.style.backgroundColor || '#ccc',		    
 		    scrollType: "vertical",
     		name: params.name,
     		contentOffset: {x: 0, y: Ti.App.glebUtils._p(60)},
     		layout: "vertical"	
 		});		
 		
-		Ti.API.debug('GLEB - DATA LENGTH:'+JSON.stringify(data.length));
+		//Ti.API.debug('GLEB - DATA LENGTH:'+data.length);
 
 		
 		///// CREAMOS EL PULL VIEW ROW		

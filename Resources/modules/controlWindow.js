@@ -12,7 +12,7 @@ exports.createWindow = function (content){
            });    
     if (content != null) win.add (content);
     win.addEventListener('android:back', function(){
-        if (windows.length >1){   
+        if (windows.length >0){   
             windows[windows.length - 1].close();  
             Ti.App.glebUtils.machaca(windows[windows.length - 1]);   
             windows[windows.length - 1] = null;        

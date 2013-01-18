@@ -3,6 +3,7 @@
 exports.listMarketContentView = function(content) {
 	var result=[];	
 	var style = require('ui/styles/styleContent');	
+	var actionFactory = require('ui/actions/actionFactory');
 	
 	// Vamos recorriendo cada elemento content de la vista market
 	for (i in content) {
@@ -13,20 +14,18 @@ exports.listMarketContentView = function(content) {
 						name: item.name,
 						height:Ti.App.glebUtils._p(80),
 						width:Ti.App.glebUtils._p(160),					
-						color: localStyle.color,
 						backgroundColor: localStyle.backgroundColor,						
 						action: item.action,
 						winId: item.winId,
 						url: item.url,
-						intent: item.intent,
 						method: item.method,
 						methodParams: item.methodParams		
 					});		
 											
 				var label1 = Ti.UI.createLabel({
-					color: localStyle.color,
+					color: localStyle.labelH1Color,
 					top: Ti.App.glebUtils._p(2),
-					font: {fontSize:Ti.App.glebUtils._p(12)},
+					font: {fontSize: localStyle.labelH1Size+"dp", fontWeight:localStyle.labelH1Weight},
 					text: item.labelH1,
 					height:Ti.App.glebUtils._p(18),
 					width:Ti.UI.FILL,					
@@ -38,9 +37,9 @@ exports.listMarketContentView = function(content) {
 				button.add(label1);		
 				
 				var label2 = Ti.UI.createLabel({
-					color:localStyle.color,
+					color:localStyle.labelH2Color,
 					top: Ti.App.glebUtils._p(22),
-					font: {fontSize:Ti.App.glebUtils._p(12)},
+					font: {fontSize: localStyle.labelH2Size+"dp", fontWeight:localStyle.labelH2Weight},
 					text: item.labelH2,
 					height:Ti.App.glebUtils._p(18),
 					width:Ti.UI.FILL,					
@@ -52,9 +51,9 @@ exports.listMarketContentView = function(content) {
 				button.add(label2);	
 				
 				var label3 = Ti.UI.createLabel({
-					color:localStyle.color,
+					color:localStyle.labelH3Color,
 					top: Ti.App.glebUtils._p(45),
-					font: {fontSize:Ti.App.glebUtils._p(10)},
+					font: {fontSize: localStyle.labelH3Size+"dp", fontWeight:localStyle.labelH3Weight},
 					text: item.labelH3,
 					height:Ti.App.glebUtils._p(15),
 					width:Ti.UI.FILL,					
@@ -66,9 +65,9 @@ exports.listMarketContentView = function(content) {
 				button.add(label3);
 				
 				var label4 = Ti.UI.createLabel({
-					color:localStyle.color,
+					color:localStyle.labelH4Color,
 					top: Ti.App.glebUtils._p(63),
-					font: {fontSize:Ti.App.glebUtils._p(10)},
+					font: {fontSize: localStyle.labelH4Size+"dp", fontWeight:localStyle.labelH4Weight},
 					text: item.labelH4,
 					height:Ti.App.glebUtils._p(15),
 					width:Ti.UI.FILL,					
@@ -94,31 +93,11 @@ exports.listMarketContentView = function(content) {
 				});				
 				button.add(BS);
 				
-				if (item.action && item.action != '') {
-	    			button.addEventListener('click', function(e){
-	    			Titanium.Media.vibrate([ 0, 100]);
-	    			if (e.source.action == 'openWebView') {
-						Ti.API.debug("GLEB - openWebView:"+e.source.url);
-						Ti.App.fireEvent('gleb_openWebView',e.source);
-					}   
-					else if (e.source.action == 'openWin') {
-						Ti.API.debug("GLEB - openWin:"+e.source.winId);
-						Ti.App.fireEvent('gleb_openWin',{"winName":e.source.winId});
-					}
-					else if (e.source.action == 'openIntent') {
-						Ti.API.debug("GLEB - openIntent:"+e.source.intent);
-						Ti.App.fireEvent('gleb_openIntent',e.source);
-					} 
-					else if (e.source.action == 'execMethod') {
-						Ti.API.debug("GLEB - raising custom method:"+e.source.method);
-						Ti.App.fireEvent(e.source.method,e.source.methodParams);
-					}	 			
-		     		else {
-		     			//Si la acción indicada no es ninguna de las permitidas, no hacemos nada
-		     		}
-		     		//Ti.API.debug("EVENT "+JSON.stringify(e));		     	
-	    			});
-	   			}			
+				//Si en el JSON se indica algún tipo de acción asociada al item, se le añade en este punto del código												
+	   			if (item.action && item.action != '') {
+	   				actionFactory.addAction(button, content[i]);
+	   			}	   								
+			
 			result.push(button);
 		}
 		else {

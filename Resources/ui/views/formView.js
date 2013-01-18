@@ -16,7 +16,8 @@ module.exports = function(params){
  */
 var containerView = Ti.UI.createView({
 	name: params.name,
-	borderWidth: 0,		
+	borderWidth: 0,	
+	backgroundColor: params.style.backgroundColor || "transparent",	
 	backgroundImage: 'images/background.png',
 	layout: "vertical",
 	width: Ti.UI.FILL
@@ -46,7 +47,7 @@ header.add(headerTitle);
 //Añadmos el header al container
 containerView.add(header);
 
-containerView._get = function(params) {
+containerView._get = function() {
 	
 	//Recibimos Params 
 	Ti.API.debug('GLEB - Actualizando vista: '+params.name);
@@ -88,7 +89,7 @@ containerView._refresh = function (e){
 }	
 
 
-return containerView._get(params);
+return containerView._get();
 
 
 /* Funcion que se encaga de crear la vista scroll vertical e ir añadiendo los elementos
@@ -105,7 +106,7 @@ function populateView (data, style){
 			//height: Ti.App.glebUtils._p(Ti.App.Properties.getInt("platformWidth")),
 			width: Ti.UI.FILL,
 			showVerticalScrollIndicator: true,
-		    backgroundColor:'#ccc',		    
+			backgroundColor: params.style.backgroundColor || "#ccc",			    
 		    scrollType: "vertical",
     		name: params.name,
     		//contentOffset: {x: 0, y: Ti.App.glebUtils._p(60)},

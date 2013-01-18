@@ -17,14 +17,15 @@ module.exports = function(params){
  */
 var containerView = Ti.UI.createView({
 	name: params.name,
-	borderWidth: 0,		
+	borderWidth: 0,	
+	backgroundColor: params.style.backgroundColor || "transparent",	
 	backgroundImage: 'images/background.png',
 	layout: "vertical",
 	width: Ti.UI.FILL
 }); 
 
 
-containerView._get = function(params) {
+containerView._get = function() {
 	
 	//Recibimos Params 
 	Ti.API.debug('GLEB - Actualizando vista: '+params.name);
@@ -53,7 +54,7 @@ containerView._get = function(params) {
 	if (containerView.children[1]) containerView.remove (containerView.children[1]);
 	Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
 	/* Añadimos el scrollView al container View */    
-    containerView.add(populateView(localData, localStyle, params.data));
+    containerView.add(populateView(localData, localStyle));
 	Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
 	return containerView;
 };
@@ -66,19 +67,18 @@ containerView._refresh = function (e){
 }	
 
 
-return containerView._get(params);
+return containerView._get();
 
 
 /* Funcion que se encaga de crear la vista scroll vertical e ir añadiendo los elementos
  * Lo he metido en una funcion para poder llamarlo facilmente desde el listener de actualizar vista
  */
-function populateView (data, style, content){	
+function populateView (data, style){	
 	//Ti.API.debug("GLEB - DATA: "+JSON.stringify(data));
-	//Ti.API.debug("GLEB - STYLE: "+JSON.stringify(style));	
-	//Ti.API.debug("GLEB - STYLE: "+JSON.stringify(content));		
+	//Ti.API.debug("GLEB - STYLE: "+JSON.stringify(style));			
 	
     var view = Ti.UI.createScrollView({
-		backgroundColor: "transparent",
+		backgroundColor: params.style.backgroundColor || "transparent",
         scrollType: "vertical",
         data: data,
         contentHeight: "auto",
@@ -129,7 +129,7 @@ function populateView (data, style, content){
     
     // Por cada elemento definido en la scroll view que se los hemos pasado en la definicion de la vista procesados a traves del contentView !!
     for( i in view.data ){
-    	item=content[i]; // Es cada elemento de la seccion content del UI.json
+    	item=params.data[i]; // Es cada elemento de la seccion content del UI.json
     	obj=view.data[i];    	
     	//Ti.API.debug("OBJ:"+JSON.stringify(obj));
 	    //Ti.API.debug("ITEM: "+JSON.stringify(item));

@@ -4,8 +4,10 @@
 exports._get = function(params) {
 
 mainWin = Titanium.UI.createWindow({  
-    	backgroundColor:'#fff',
-		backgroundImage: 'images/background.png',
+    	backgroundColor: params.style.backgroundColor || 'transparent',
+    	borderColor: params.style.borderColor || 'black',
+    	borderWidth: params.style.borderWidth || 0,
+		backgroundImage: params.style.backgroundImage || 'images/background.png',
 		orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
 		exitOnClose: false,
 		navBarHidden: true
