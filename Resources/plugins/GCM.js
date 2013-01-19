@@ -48,6 +48,7 @@ exports.start = function (){
     });
     
     id = tigcm.registrationId;
+    tigcm.registerDevice();
 
     if (id === null) {
         // if not, register and wait for 'registered' event!

@@ -53,7 +53,9 @@ exports.gleb_initMainWindow = function(json){
     if(json.windows[0]){
         mainWin = new require('ui/mainWindow')._get(json.windows[0]);
         Ti.API.debug('GLEB - Abriendo main window');
-        require('modules/NavigationController').open(mainWin);
+        //require('modules/NavigationController').open(mainWin);
+        //DEJAMOS EL mainWin FUERA DEL CONTROLADOR DE NAVEGACIÓN
+        mainWin.open();         
     }
 }
 

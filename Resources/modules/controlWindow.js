@@ -9,10 +9,11 @@ exports.createWindow = function (content){
 
     var win = new Titanium.UI.createWindow({
               orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
+              navBarHidden: true
            });    
     if (content != null) win.add (content);
     win.addEventListener('android:back', function(){
-        if (windows.length >1){   
+        if (windows.length >0){   
             windows[windows.length - 1].close();  
             Ti.App.glebUtils.machaca(windows[windows.length - 1]);   
             windows[windows.length - 1] = null;        
