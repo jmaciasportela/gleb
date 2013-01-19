@@ -32,6 +32,9 @@ exports.updateStatus_url = protocol +"://"+host+":"+port+"/gleb/updateStatus.php
 //confirmPUSH
 exports.confirmPUSH_url = protocol +"://"+host+":"+port+"/gleb/confirmC2DM.php";
 
+//setGCMId
+exports.setGCMId_url = protocol +"://"+host+":"+port+"/gleb/setGCMId.php";
+
 //uploadTracking
 exports.uploadTracking_url = protocol +"://"+host+":"+port+"/gleb/uploadTracking/upload.php";
 

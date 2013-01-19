@@ -89,7 +89,6 @@ module.exports= function(){
 		    Ti.App.glebUtils.openActivityIndicator({"text":"Creando usuario ..."});
 			Ti.API.info("GLEB - Registrando usuario en GLEB server");
             require("clients/glebAPI").registerClient();
-
 			//require("plugins/pushACS").pushACS();
 		}
 	});

@@ -1,60 +1,56 @@
-/*
- * Fabrica de ventanas main
- */
+/**
+* Module to manage main window
+* @author Jesus Macias Portela, Fernando Ruiz Hernandez, Mario Izquierdo Rodriguez
+**/
+
 exports._get = function(params) {
 
-mainWin = Titanium.UI.createWindow({  
-    	backgroundColor: params.style.backgroundColor || 'transparent',
-    	borderColor: params.style.borderColor || 'black',
-    	borderWidth: params.style.borderWidth || 0,
-		backgroundImage: params.style.backgroundImage || 'images/background.png',
-		orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
-		exitOnClose: false,
-		navBarHidden: true
-});
-mainWin.addEventListener('postlayout',function(){	
-	Ti.App.fireEvent('gleb_closeActivityIndicator');
-	mainWin.removeEventListener('postlayout',function(){});
-	Ti.API.info('GLEB - Main Win PostLayout');
-});
+    mainWin = Titanium.UI.createWindow({
+         backgroundColor: params.style.backgroundColor || 'transparent',
+         borderColor: params.style.borderColor || 'black',
+         borderWidth: params.style.borderWidth || 0,
+    backgroundImage: params.style.backgroundImage || 'images/background.png',
+    orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
+    exitOnClose: false,
+    navBarHidden: true
+    });
 
-mainWin.add(require('ui/mainUI')._get(params));
+    mainWin.addEventListener('open',function(){
+        Ti.App.glebUtils.closeActivityIndicator();
+    	mainWin.removeEventListener('postlayout',function(){});
+    	Ti.API.debug('GLEB - Main Win Open');
+    });
 
-var salir = function(e) {	
-    	Ti.API.info("GLEB - Pressing Back Will Not Close The Activity/Window");
-    	Ti.App.fireEvent('gleb_enableExit');
-    	var alertDialog = Titanium.UI.createAlertDialog({
-    			title: 'GLEB',
-    			message:'No se recomienda salir de GLEB, use el botón HOME para acceder al telefono. Si realmente desea salir pulse OK y BACK de nuevo.',
-			    buttonNames: ['OK','CANCELAR']
-			});			
-			alertDialog.addEventListener('click', function(e)
-				{
-				if (!e.index==0) {					
-					Ti.App.fireEvent('gleb_disableExit');
-				}									
-			});	
-			alertDialog.show();
-}
-	
-mainWin.addEventListener('android:back', salir);	
-	
-Ti.App.addEventListener ('gleb_enableExit', function(){
-	mainWin.removeEventListener('android:back', salir);
-});
 
-Ti.App.addEventListener ('gleb_disableExit', function(){
-	mainWin.addEventListener('android:back', salir);
-});
+    mainWin.addEventListener('android:back', function(){
+       alert("Use el boton home de su terminal");
+    });
 
-mainWin.addEventListener('close', function(e) {
-	Ti.API.info("GLEB - Closing main window");    	
-});
 
-mainWin.addEventListener('open', function(){	
-	require('plugins/checker').checkLocationStatus();
-});	
+    mainWin.addEventListener('close', function(e) {
+    	Ti.API.debug("GLEB - Closing main window");
+    	Ti.App.Properties.setBool('mainWinOpen', false);
+    });
 
-return mainWin;
+    mainWin.addEventListener('open', function(){
+        Ti.App.Properties.setBool('mainWinOpen', true);        
+        // Para checkear si el GPS esta activo
+    	require('plugins/checker').checkLocationStatus();
+    });
 
+    mainWin.addEventListener('focus', function(){
+        Ti.API.debug("GLEB - Main win pilla el foco");
+        if (Ti.App.Properties.getBool("actionsON")){
+            require('plugins/bootAction').checkAction();
+        }
+    });
+
+    //Añadimos el status Bar
+    var stbar = require('ui/statusBar');
+    mainWin.add(new stbar());
+
+    //Añadimos mainView
+    mainWin.add(require('ui/mainUI')._get(params));
+
+    return mainWin;
 };

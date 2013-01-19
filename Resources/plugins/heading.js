@@ -55,6 +55,6 @@ exports.start = function (){
 
 exports.stop = function (){
 		Ti.App.Properties.setBool('headingActive',false);
-		Ti.API.info("GLEB - start monitoring Heading");
+		Ti.API.info("GLEB - stop monitoring Heading");
 		Titanium.Geolocation.removeEventListener('heading',heading_f);
 }
