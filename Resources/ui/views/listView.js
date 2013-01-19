@@ -76,12 +76,12 @@ containerView._get = function() {
         //var localData = contentView.listContentView(params.content);
     }   
         
-    Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
+    //Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
     if (containerView.children[1]) containerView.remove (containerView.children[1]);
-    Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
+    //Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
     /* Añadimos el scrollView al container View */    
     containerView.add(populateView(localData, localStyle));
-    Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
+    //Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
     return containerView;
 };
 
@@ -197,9 +197,9 @@ function populateView (data, style){
         // Añadimos el PULL VIEW como primer row de la tabla
         data.unshift(row);
         
-        Ti.API.debug("GLEB - TAMAÑO PROVISIONAL: "+data.length);
-        Ti.API.debug("GLEB - TAMAÑO PROVISIONAL: "+data.length * Ti.App.glebUtils._p(60));
-        Ti.API.debug("GLEB - TAMAÑO FIJO : "+Ti.App.glebUtils._p(900));
+        //Ti.API.debug("GLEB - TAMAÑO PROVISIONAL: "+data.length);
+        //Ti.API.debug("GLEB - TAMAÑO PROVISIONAL: "+data.length * Ti.App.glebUtils._p(60));
+        //Ti.API.debug("GLEB - TAMAÑO FIJO : "+Ti.App.glebUtils._p(900));
         
         if(data.length * Ti.App.glebUtils._p(60) < Ti.App.glebUtils._p(900)) {
             var rowAux = Ti.UI.createView({
@@ -211,7 +211,7 @@ function populateView (data, style){
         }           
 
         for(i=0;i<data.length;i++){
-            Ti.API.debug('GLEB - ROW: '+data[i]);
+            //Ti.API.debug('GLEB - ROW: '+data[i]);
             scrollView.add(data[i]);
         }
         

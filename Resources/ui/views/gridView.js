@@ -42,12 +42,12 @@ containerView._get = function() {
         //var localData = contentView.gridContentView(params.content);
     }
         
-    Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
+    //Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
     if (containerView.children[1]) containerView.remove (containerView.children[1]);
-    Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
+    //Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
     /* Añadimos el scrollView al container View */    
     containerView.add(populateView(localData, localStyle));
-    Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
+    //Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
     return containerView;
 };
 

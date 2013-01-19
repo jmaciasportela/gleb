@@ -10,7 +10,11 @@ exports.addAction = function(element, data) {
 	if (data.action == 'openWebView') {
 		element.addEventListener('click', function(e){
 			Titanium.Media.vibrate([ 0, 100]);
-			var win = require ("modules/controlWindow").createWindow();
+            var win = new Titanium.UI.createWindow({
+                      orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
+                      navBarHidden: true,
+                   });    			
+			//var win = require ("modules/controlWindow").createWindow();
 			win.title = "WebView";
 			win.modal = true;
 			var webview = Titanium.UI.createWebView({url:data.url, top: Ti.App.glebUtils._p(46)
@@ -18,25 +22,26 @@ exports.addAction = function(element, data) {
     		win.add(webview);
     		win.open();
 		});
-		Ti.API.debug("GLEB - openWebView:"+data.url);
+		//i.API.debug("GLEB - openWebView:"+data.url);
 	}   
 	
 	else if (data.action == 'openWin') {
 		element.addEventListener('click', function(e){
 			Titanium.Media.vibrate([ 0, 100]);
-			var win = require ("modules/controlWindow").createWindow();
-			win.modal = true;
-			
+            var win = new Titanium.UI.createWindow({
+                      orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
+                      navBarHidden: true,
+                   });    			
+			//var win = require ("modules/controlWindow").createWindow();
+			win.modal = true;			
 			var GlebListView = require('ui/views/listView');
 			var view = new GlebListView({
 				name: data.winContent.name,
 				headerTitle: data.winContent.headerTitle,
 				style: data.winContent.style,
 			    data: data.winContent.content                
-			});
-    		
+			});    		
     		view.setTop(Ti.App.glebUtils._p(46));
-
     		win.add(view);
     		win.open();
 		});
@@ -47,7 +52,7 @@ exports.addAction = function(element, data) {
 			Titanium.Media.vibrate([ 0, 100]);
 			eval ("customMethods."+data.method+"(data.methodParams)");
 		});
-		Ti.API.debug("GLEB - raising custom method:"+data.method);
+		//Ti.API.debug("GLEB - raising custom method:"+data.method);
 	}	
 			
 	else {

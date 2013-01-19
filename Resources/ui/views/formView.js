@@ -72,12 +72,12 @@ containerView._get = function() {
     
     //Ti.API.debug("GLEB - OJO al local Data: "+JSON.stringify(localData)); 
         
-    Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
+    //Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
     if (containerView.children[1]) containerView.remove (containerView.children[1]);
-    Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
+    //Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
     /* Añadimos el scrollView al container View */    
     containerView.add(populateView(localData, localStyle));
-    Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
+    //Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
     return containerView;
 };
 
@@ -99,7 +99,7 @@ function populateView (data, style){
 
     //TODO PENDIENTE DE CODIFICAR LA FORMA DE PINTAR LOS CONTENTS DEL FORMVIEW  
     
-    Ti.API.debug('GLEB - VAMOS A PINTAR EL FORMULARIO: ' + JSON.stringify(data));
+    //Ti.API.debug('GLEB - VAMOS A PINTAR EL FORMULARIO: ' + JSON.stringify(data));
     
     var view = Ti.UI.createScrollView({
             zIndex:2,
@@ -121,8 +121,8 @@ function populateView (data, style){
     
    
     for(i=0;i<data.length;i++){
-        Ti.API.debug('GLEB FORMULARIO- El tamano de result es: '+data.length);
-        Ti.API.debug('GLEB FORMULARIO- Cada item del result : '+JSON.stringify(view.data[i]));
+        //Ti.API.debug('GLEB FORMULARIO- El tamano de result es: '+data.length);
+        //Ti.API.debug('GLEB FORMULARIO- Cada item del result : '+JSON.stringify(view.data[i]));
         row.add(data[i]);
     }
     

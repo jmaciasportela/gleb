@@ -1,12 +1,3 @@
-var GlebGridView = require('ui/views/gridView');
-var GlebMarketView = require('ui/views/marketView');
-var GlebListMarketView = require('ui/views/listMarketView');
-var GlebGridView3 = require('ui/views/grid3View');
-var GlebListView = require('ui/views/listView');
-var FormView = require('ui/views/formView');
-var GlebWebView = require('ui/views/webView');  
-
-
 exports._get = function(params) {
 
     var views=[];   
@@ -14,10 +5,11 @@ exports._get = function(params) {
     
     Ti.API.debug("GLEB - Creating Window="+params.name);
     Ti.API.debug("GLEB - defaultView="+params.defaultView|| 0);
-    Ti.API.debug('GLEB - DATOS DEL JSON: ' + JSON.stringify(params));
+    //Ti.API.debug('GLEB - DATOS DEL JSON: ' + JSON.stringify(params));
     
     for(v in params.views) {
         if( params.views[v].contentType =='grid' ){
+            var GlebGridView = require('ui/views/gridView');                
             var view = new GlebGridView({
                 name: params.views[v].name,
                 style: params.views[v].style,
@@ -26,6 +18,7 @@ exports._get = function(params) {
             views.push(view);
         }
         else if( params.views[v].contentType =='market' ){
+            var GlebMarketView = require('ui/views/marketView');            
             var view = new GlebMarketView({
                 name: params.views[v].name,
                 style: params.views[v].style,
@@ -34,6 +27,7 @@ exports._get = function(params) {
             views.push(view);
         }
         else if( params.views[v].contentType =='listMarket' ){
+            var GlebListMarketView = require('ui/views/listMarketView');            
             var view = new GlebListMarketView({
                 name: params.views[v].name,
                 headerTitle: params.views[v].headerTitle,
@@ -41,7 +35,7 @@ exports._get = function(params) {
                 data: params.views[v].content
             });
             //INTENTS////////////////////
-            Ti.API.debug('GLEB - DATOS DEL VIEW: ' + JSON.stringify(view));
+            //Ti.API.debug('GLEB - DATOS DEL VIEW: ' + JSON.stringify(view));
             Ti.API.debug('GLEB - NOMBRE DEL VIEW: ' + view.name);
             if(view.name == 'listaOTs'){
                 view.addEventListener('longclick', function(e) {
@@ -64,6 +58,7 @@ exports._get = function(params) {
             views.push(view);
         }
         else if(params.views[v].contentType =='grid_3' ){
+            var GlebGridView3 = require('ui/views/grid3View');            
             var view = new GlebGridView3({
                 name: params.views[v].name,
                 style: params.views[v].style,
@@ -72,6 +67,7 @@ exports._get = function(params) {
             views.push(view);
         }
         else if(params.views[v].contentType =='list' ){
+            var GlebListView = require('ui/views/listView');            
             var view = new GlebListView({
                 name: params.views[v].name,
                 headerTitle: params.views[v].headerTitle,
@@ -79,7 +75,7 @@ exports._get = function(params) {
                 data: params.views[v].content
             });
             //INTENTS////////////////////
-            Ti.API.debug('GLEB - DATOS DEL VIEW: ' + JSON.stringify(view));
+            //Ti.API.debug('GLEB - DATOS DEL VIEW: ' + JSON.stringify(view));
             Ti.API.debug('GLEB - NOMBRE DEL VIEW: ' + view.name);
             if(view.name == 'listaTecnicos'){
                 view.addEventListener('longclick', function(e) {
@@ -100,7 +96,8 @@ exports._get = function(params) {
             views.push(view);
         }
         else if(params.views[v].contentType =='form' ){
-            Ti.API.debug("GLEB - FORM_VIEW"+ JSON.stringify(params.views[v]));
+            //Ti.API.debug("GLEB - FORM_VIEW"+ JSON.stringify(params.views[v]));
+            var FormView = require('ui/views/formView');            
             var view = new FormView({
                 name: params.views[v].name,
                 headerTitle: params.views[v].headerTitle,
@@ -110,7 +107,8 @@ exports._get = function(params) {
             views.push(view);
         }
         else if(params.views[v].contentType =='webView' ){      
-            Ti.API.info("GLEB - WEBVIEW URL"+ JSON.stringify(params.views[v]));         
+            //Ti.API.info("GLEB - WEBVIEW URL"+ JSON.stringify(params.views[v]));     
+            var GlebWebView = require('ui/views/webView');
             var view = new GlebWebView({
                 name: params.views[v].name,
                 url: params.views[v].url            

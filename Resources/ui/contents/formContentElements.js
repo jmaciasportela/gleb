@@ -72,7 +72,7 @@ var validateTextField = function(result) {
     var bResult = true; 
     
     for(i=0;i<result.length;i++){
-        Ti.API.debug('GLEB FORMULARIO- El tamano de result es: '+result.length);
+        //Ti.API.debug('GLEB FORMULARIO- El tamano de result es: '+result.length);
         var item = result[i];
         //Primero comprobamos que el elemento del formulario es un textField
         if(item.typeField === "textField"){
@@ -109,7 +109,7 @@ exports.formContentView = function(content) {
         switch (item.type)
         {
             case 'label':
-            Ti.API.debug('GLEB FORMULARIO - LABEL');
+            //Ti.API.debug('GLEB FORMULARIO - LABEL');
                 label = Ti.UI.createLabel({
                         name: item.name,
                         text: item.labelH1,
@@ -127,7 +127,7 @@ exports.formContentView = function(content) {
                 break;
                 
             case 'textField':
-                Ti.API.debug('GLEB FORMULARIO - TEXTFIELD');
+                //Ti.API.debug('GLEB FORMULARIO - TEXTFIELD');
                 
                 result.push(insertTitle(item.name));    
                 
@@ -148,7 +148,7 @@ exports.formContentView = function(content) {
                         typeField: item.type
                     }); 
                 
-                Ti.API.debug('GLEB FORMULARIO- Cada textField antes del result : '+JSON.stringify(textField));
+                //Ti.API.debug('GLEB FORMULARIO- Cada textField antes del result : '+JSON.stringify(textField));
                 offsetTop += Ti.App.glebUtils._p(heightTextField+distance);
                 result.push(textField);
                 break;
@@ -192,7 +192,7 @@ exports.formContentView = function(content) {
             */
                 
             case 'date':
-                Ti.API.debug('GLEB FORMULARIO - DATE');
+                //Ti.API.debug('GLEB FORMULARIO - DATE');
                 
                 result.push(insertTitle(item.name));
                 
@@ -225,7 +225,7 @@ exports.formContentView = function(content) {
             
             //TODO 
             case 'checkBox':
-                Ti.API.debug('GLEB FORMULARIO - CHECKBOX');
+                //Ti.API.debug('GLEB FORMULARIO - CHECKBOX');
                 if (isAndroid) {
                     var checkBox = Ti.UI.createSwitch({
                         name: item.name,
@@ -286,7 +286,7 @@ exports.formContentView = function(content) {
                 
             
             case 'button':
-                Ti.API.debug('GLEB FORMULARIO - BUTTON');
+                //Ti.API.debug('GLEB FORMULARIO - BUTTON');
                 button = Ti.UI.createButton({
                         name: item.name,
                         title:item.labelH1,

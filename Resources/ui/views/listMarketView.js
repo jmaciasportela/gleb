@@ -80,12 +80,12 @@ containerView._get = function() {
         //var localData = contentView.listMarketContentView(params.content);
     }   
         
-    Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
+    //Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
     if (containerView.children[1]) containerView.remove (containerView.children[1]);
-    Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
+    //Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
     /* Añadimos el scrollView al container View */    
     containerView.add(populateView(localData, localStyle));
-    Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
+    //Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
     return containerView;
 };
 
@@ -198,7 +198,7 @@ function populateView (data, style){
     var i = 0;
     for(j in sView.data){       
         if (sView.data[i]){
-            Ti.API.debug("GLEB - listMarket añadiendo fila "+j);
+            //Ti.API.debug("GLEB - listMarket añadiendo fila "+j);
             objA=sView.data[i];  
             objB=sView.data[i+1];
             //Ti.API.debug("OBJ:"+JSON.stringify(objA));
