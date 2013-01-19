@@ -561,10 +561,33 @@ exports.uploadTracking = function(e) {
 }
 
 
-exports.sendForm = function(e) {
+exports.sendForm = function(fields) {
 
     var url = Ti.App.Properties.getString("sendForm_url");
-    var body = "";
+
+    var bodyContent = "";
+    var firstTime = true;
+    for(i=0;i<fields.length;i++){
+        var item = fields[i];
+        //Primero comprobamos de que tipo es cada campo del formulario
+        if(item.typeField === "textField" || item.typeField === "select" || item.typeField === "date" || item.typeField === "checkBox"){
+            if(firstTime){
+                firstTime = false;
+                bodyContent+='{"' + item.name + '":"' + item.value + '"'; 
+            }
+            else{
+                bodyContent+=',"' + item.name + '":"' + item.value + '"'; 
+            }  
+        }
+    }
+    if(bodyContent != ""){
+        bodyContent+='}';
+    }
+    
+    Ti.API.debug('GLEB - ENVIAR FORM - URL = '+url);
+    Ti.API.debug('GLEB - ENVIAR FORM - BODY = '+bodyContent);
+    
+    var params = "";
     var timeout = 30000;
     var headers = {
         "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
@@ -572,13 +595,35 @@ exports.sendForm = function(e) {
         "Content-Type": "application/json"
     };
     var sendForm_callback = function (obj,e){
+        Ti.API.debug('GLEB - ENVIAR FORM - BODY = '+obj.status);
         if (e.error) {
             Ti.API.debug('GLEB - API -sendForm Error, HTTP status = '+obj.status);
-            Ti.App.fireEvent('sendForm_error');
+            
+            Ti.App.glebUtils.closeActivityIndicator();
+            var dialog = Ti.UI.createAlertDialog({
+                cancel: 0,
+                buttonNames: ['CANCELAR', 'REENVIAR'],
+                message: '¿Desea reintentar el envío del formulario?',
+                title: 'Error envío formulario'
+            });
+            dialog.addEventListener('click', function(e){
+                if (e.index === e.source.cancel){
+                    Ti.API.info('The cancel button was clicked');
+                }
+                else if (e.index === 1){
+                    Ti.App.glebUtils.openActivityIndicator({"text":"Enviando formulario ..."});
+                    exports.sendForm(fields);
+                }
+            });
+            dialog.show();
         }
         else {
+            Ti.App.glebUtils.closeActivityIndicator();
             Ti.API.debug('GLEB - API -sendForm called, HTTP status = '+obj.status);
-            Ti.App.fireEvent('sendForm_done');
+            var dialog = Ti.UI.createAlertDialog({
+                message: 'El formulario se ha enviado correctamente',
+                ok: 'OK',
+            }).show();
         }
     url = null;
     params = null;
@@ -586,8 +631,7 @@ exports.sendForm = function(e) {
     headers = null;
     }
 
-    Ti.API.debug('GLEB - API -POST to ' + sendForm_url);
-    queuePOST (url,timeout,JSON.stringify(e),'',headers,sendForm_callback);
+    makePOST (url,params,timeout,bodyContent,'',headers,sendForm_callback);
 }
 
 

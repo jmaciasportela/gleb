@@ -80,8 +80,8 @@ exports._get = function(params) {
 			Ti.API.debug('GLEB - MAIN WINDOW - NOMBRE DEL VIEW: ' + view.name);
 			if(view.name == 'listaTecnicos'){
 				view.addEventListener('longclick', function(e) {
-				    Ti.API.debug('GLEB - MAIN WINDOW - LONG CLICK SOBRE LIST PARA LANZAR INTENT: ' + JSON.stringify(e));
-				    var intent = Ti.Android.createIntent({
+                        Ti.API.debug('GLEB - LONG CLICK SOBRE LIST PARA LANZAR INTENT: ' + JSON.stringify(e));
+            		    var intent = Ti.Android.createIntent({
 				        action: Ti.Android.ACTION_SEND,
 				        type: "text/plain"
 				    });
@@ -97,16 +97,28 @@ exports._get = function(params) {
 			views.push(view);
 			GlebListView = null;
 		}
-		else if(params.views[v].contentType =='webView' ){
-			var GlebWebView = require('ui/views/webView');
-			Ti.API.info("GLEB - MAIN WINDOW - WEBVIEW URL"+ JSON.stringify(params.views[v]));
-			var view = new GlebWebView({
-			    url: params.views[v].url,
-   			    name: params.views[v].name,
-			});
-			views.push(view);
-			GlebWebView = null;
-		}
+        else if(params.views[v].contentType =='form' ){
+            var FormView = require('ui/views/formView');
+            Ti.API.debug("GLEB - FORM_VIEW"+ JSON.stringify(params.views[v]));
+            var view = new FormView({
+                data: params.views[v].content,
+                style: params.views[v].style,
+                name: params.views[v].name,
+                headerTitle: params.views[v].headerTitle
+            });
+            views.push(view);
+            FormView = null;
+        }
+        else if(params.views[v].contentType =='webView' ){
+            var GlebWebView = require('ui/views/webView');          
+            Ti.API.info("GLEB - WEBVIEW URL"+ JSON.stringify(params.views[v]));         
+            var view = new GlebWebView({
+                url: params.views[v].url,               
+                name: params.views[v].name,
+            });
+            views.push(view);
+            GlebWebView = null;
+        }
 
 		else {
 			Ti.API.info("Type unsupported="+params.views[v].contentType);
