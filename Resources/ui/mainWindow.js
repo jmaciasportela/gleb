@@ -23,7 +23,7 @@ exports._get = function(params) {
 
 
     mainWin.addEventListener('android:back', function(){
-       alert("Use el boton home de su terminal");
+       alert("Use el botón home de su terminal");
     });
 
 

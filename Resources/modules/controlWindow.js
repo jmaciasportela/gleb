@@ -21,6 +21,7 @@ exports.createWindow = function (content){
             Ti.API.debug("GLEB - UICONTROL - Quedan ventanas: " + windows.length);  
         }
         else{
+        	Ti.API.debug("Este es el back del controlWindow");
             alert("Use el boton home de su terminal");
         }
     });    

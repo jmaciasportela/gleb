@@ -8,9 +8,6 @@
  */
 
 module.exports = function(params){  
-    
-// Para controla cuando se esta mostrando el row del PULL VIEW
-var pulling = false;
 
 var containerView = Ti.UI.createView({
     name: params.name,
@@ -19,7 +16,6 @@ var containerView = Ti.UI.createView({
     layout: "vertical",
     width: Ti.UI.FILL   
 }); 
-
 
 
 // Creamos el header de la tabla. FIJO
@@ -111,12 +107,10 @@ function formatDate()
 }
 
 
-function populateView (data, style){
-    //if (scrollView !== null) scrollView = null; //Ti.App.glebUtils.machaca (scrollView);
-    //if (containerView.children[1]) containerView.remove (containerView.children[1]);      
+function populateView (data, style){    
+	
+	var rowsArray = [];
     // Creamos el scrollview que va a contener el tableView 
-    //Ti.API.debug("GLEB - VIEW NAME: "+data.name); 
-    //Ti.API.debug("GLEB - VIEW DATA: "+JSON.stringify(data));
     sView = Ti.UI.createScrollView({
         zIndex:2,
         height: Ti.UI.SIZE,
@@ -125,75 +119,23 @@ function populateView (data, style){
         backgroundColor: params.style.backgroundColor || '#ccc',
         scrollType: "vertical",
         name: params.name,
-        contentOffset: {x: 0, y: Ti.App.glebUtils._p(60)},
-        data: data
+        layout: "vertical",
+        data:data
     });
 
-    ///// CREAMOS EL PULL VIEW ROW      
-    row = Ti.UI.createView({
-            width: Ti.UI.FILL,
-            height: Ti.App.glebUtils._p(60),
-            backgroundColor: '#90EE90',
-            color:"#BFBFBF",
-            top: Ti.App.glebUtils._p(0)
-    });
-
-    var arrow = Ti.UI.createView({
-        backgroundImage:Titanium.Filesystem.resourcesDirectory+"images/refreshArrow.png",
-        width:Ti.App.glebUtils._p(48),
-        height:Ti.App.glebUtils._p(48),
-        bottom:Ti.App.glebUtils._p(6),
-        left:Ti.App.glebUtils._p(10)
-    });
-
-    var arrow2 = Ti.UI.createView({
-        backgroundImage:Titanium.Filesystem.resourcesDirectory+"images/refreshArrow.png",
-        width:Ti.App.glebUtils._p(48),
-        height:Ti.App.glebUtils._p(48),
-        bottom:Ti.App.glebUtils._p(6),
-        right:Ti.App.glebUtils._p(10)
-    });
-     
-    var statusLabel = Ti.UI.createLabel({
-        text:"Empuja para actualizar",
-        left:Ti.App.glebUtils._p(60),
-        width: Ti.App.glebUtils._p(200),
-        top:Ti.App.glebUtils._p(8),
-        height:"auto",
-        color:"#576c89",
-        textAlign:"center",
-        font:{fontSize:Ti.App.glebUtils._p(13),fontWeight:"bold"},
-        shadowColor:"#999",
-        shadowOffset:{x:Ti.App.glebUtils._p(1),y:Ti.App.glebUtils._p(1)}
-    });
-     
-    var lastUpdatedLabel = Ti.UI.createLabel({
-        text:"Ultima actualización: "+formatDate(),
-        left:Ti.App.glebUtils._p(60),
-        width:Ti.App.glebUtils._p(200),
-        top:Ti.App.glebUtils._p(30),
-        height:"auto",
-        color:"#576c89",
-        textAlign:"center",
-        font:{fontSize:Ti.App.glebUtils._p(12),fontWeight:"bold"},
-        shadowColor:"#999",
-        shadowOffset:{x:Ti.App.glebUtils._p(1),y:Ti.App.glebUtils._p(1)}
-    });
-
-
-    row.add(arrow);
-    row.add(arrow2);
-    row.add(statusLabel);
-    row.add(lastUpdatedLabel);
-    sView.add(row);
+    //Comprobamos si esta vista tiene que llevar la barra de refresco
+    if((params.refresh) && (params.refresh.toUpperCase() == 'ON'))
+    {
+    	//OBTENEMOS EL PULL VIEW ROW PARA EL REFRESCO DE LA VISTA
+		var RefreshBar = require('ui/refreshBar');
+		var refreshBarListMarketView = new RefreshBar();
         
-        
-        //////////// PARTE DEL MARKET
-    // Esto no se puede calcular a base de dp porque tienen que ser enteros para poder sumar y restar
-    var _firsttop=Ti.App.glebUtils._p(2);
-    var height=Ti.App.glebUtils._p(80);
-    var ySpace=Ti.App.glebUtils._p(2);
-
+        sView.setContentOffset({x: 0, y: Ti.App.glebUtils._p(60)});
+        sView.add(refreshBarListMarketView);
+    }  
+    
+    
+    //////////// PARTE DEL MARKET
     // Por cada elemento definido en la scroll view que se los hemos pasado en la definicion de la vista procesados a traves del contentView !!
     var i = 0;
     for(j in sView.data){       
@@ -201,13 +143,9 @@ function populateView (data, style){
             //Ti.API.debug("GLEB - listMarket añadiendo fila "+j);
             objA=sView.data[i];  
             objB=sView.data[i+1];
-            //Ti.API.debug("OBJ:"+JSON.stringify(objA));
-            //Ti.API.debug("OBJ:"+objB);            
-            var _top=j*(height+ySpace)+_firsttop+Ti.App.glebUtils._p(60);           
             var fila = Ti.UI.createView({
                 layout: "horizontal",
                 focusable: false,
-                top: _top,
                 width: Ti.UI.FILL,
                 height: Ti.App.glebUtils._p(80),
                 name: "market_row_"+j,
@@ -222,51 +160,27 @@ function populateView (data, style){
     
     ////////// FINDE LA PARTE DEL MARKET
 
+    // update the offset value whenever scroll event occurs
+    if((params.refresh) && (params.refresh.toUpperCase() == 'ON'))
+    {
+    	//Añadimos un relleno transparente a la vista
+        if( (((rowsArray.length/2)+1) * Ti.App.glebUtils._p(60)) < Ti.App.glebUtils._p(900)) {
+            var rowAux = Ti.UI.createView({
+                    width: "100%",
+                    height: Ti.App.glebUtils._p(900) - (rowsArray.length * Ti.App.glebUtils._p(60)),
+                    backgroundColor: 'transparent'
+            });
+            sView.add(rowAux);
+        } 
+        
         // update the offset value whenever scroll event occurs
-        var offset = 0;
-        sView.addEventListener('scroll', function(e) {
-            if (e.y!=null) {
-                offset = e.y;
-                Ti.API.debug('GLEB - LIST VIEW offset: '+offset+"pulling: "+pulling);               
-                if (offset <= Ti.App.glebUtils._p(30) && !pulling){
-                    pulling = true;
-                    var t = Ti.UI.create2DMatrix();
-                    t = t.rotate(-180);         
-                    arrow.animate({transform:t,duration:300});
-                    arrow2.animate({transform:t,duration:300});     
-                }       
-                else if (offset == 0 && pulling)
-                {           
-                    statusLabel.text = "Suelta para refrescar...";
-                }
-                else if (pulling && offset > Ti.App.glebUtils._p(60))
-                {
-                    pulling = false;                    
-                }
-                else if (pulling && offset > Ti.App.glebUtils._p(30)){
-                    var t = Ti.UI.create2DMatrix();
-                    t = t.rotate(-180);
-                    arrow.animate({transform:t,duration:300});
-                    arrow2.animate({transform:t,duration:300});
-                    statusLabel.text = "Empuja para actualizar";
-                }
-            }   
-        });             
-        
-        
-        sView.addEventListener('touchend', function() {
-            if (offset<=Ti.App.glebUtils._p(10)) {
-                Ti.API.debug('REFRESH !!!!');
-                containerView._refresh();
-                sView.scrollTo(0,Ti.App.glebUtils._p(60));
-                lastUpdatedLabel.text="Ultima actualización: "+formatDate();
-                statusLabel.text = "Empuja para actualizar";
-            }
-            else {
-                //sView.scrollTo(0,50);
-                Ti.API.debug('Dont refresh, go back to base');
-            } 
-        });
+  		RefreshBar.addListenersRefreshBar(refreshBarListMarketView, sView, containerView);
+  	}
+  	
+  	for(i=0;i<rowsArray.length;i++){
+        //Ti.API.debug('GLEB - ROW: '+data[i]);
+        sView.add(rowsArray[i]);
+    }
         
     Ti.API.debug('GLEB - SCROLLVIEW TYPE: '+sView);
     return sView;

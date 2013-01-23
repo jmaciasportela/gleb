@@ -12,17 +12,21 @@ exports.addAction = function(element, data) {
 			Titanium.Media.vibrate([ 0, 100]);
             var win = new Titanium.UI.createWindow({
                       orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
+                      backgroundColor:'transparent',
                       navBarHidden: true,
                    });    			
 			//var win = require ("modules/controlWindow").createWindow();
 			win.title = "WebView";
 			win.modal = true;
-			var webview = Titanium.UI.createWebView({url:data.url, top: Ti.App.glebUtils._p(46)
-});
+		
+			var webview = Titanium.UI.createWebView({url:data.url, top: Ti.App.glebUtils._p(46)});
+	
+			//var stbar = require('ui/statusBar');
+       		//win.add(new stbar());
+    		
     		win.add(webview);
-    		win.open();
+    		require('modules/NavigationController').open(win);  
 		});
-		//i.API.debug("GLEB - openWebView:"+data.url);
 	}   
 	
 	else if (data.action == 'openWin') {
@@ -42,8 +46,12 @@ exports.addAction = function(element, data) {
 			    data: data.winContent.content                
 			});    		
     		view.setTop(Ti.App.glebUtils._p(46));
+    		
+    		//var stbar = require('ui/statusBar');
+       		//win.add(new stbar());
+       		
     		win.add(view);
-    		win.open();
+    		require('modules/NavigationController').open(win);  
 		});
 	}
 	
@@ -52,7 +60,6 @@ exports.addAction = function(element, data) {
 			Titanium.Media.vibrate([ 0, 100]);
 			eval ("customMethods."+data.method+"(data.methodParams)");
 		});
-		//Ti.API.debug("GLEB - raising custom method:"+data.method);
 	}	
 			
 	else {
