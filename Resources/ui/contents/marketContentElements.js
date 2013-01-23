@@ -1,5 +1,7 @@
 // Content View mapea los elementos del JSON a elementos UI de Titanium
 
+var MapView = require('ui/views/mapView');
+
 exports.marketContentView = function(content) {
     var result=[];  
     var style = require('ui/styles/styleContent');  
@@ -53,7 +55,8 @@ exports.marketContentView = function(content) {
                     }
                     });                 
                     button.addEventListener('longclick', function(e){
-                        Ti.App.fireEvent('gleb_openActivityIndicator',{"text":"Cargando Mapa..."});
+                    	Ti.API.debug("GLEB - Has hecho longclick con action:"+ JSON.stringify(e));
+                    	Ti.App.glebUtils.openActivityIndicator({"text":"Cargando Mapa ..."});
                         Ti.App.fireEvent('gleb_openDailyMap');
                     });
                 }                           
