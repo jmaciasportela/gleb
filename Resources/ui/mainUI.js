@@ -12,6 +12,7 @@ exports._get = function(params) {
             var GlebGridView = require('ui/views/gridView');                
             var view = new GlebGridView({
                 name: params.views[v].name,
+                refresh: params.views[v].refresh || "OFF",
                 style: params.views[v].style,
                 data: params.views[v].content       
             });
@@ -21,6 +22,7 @@ exports._get = function(params) {
             var GlebMarketView = require('ui/views/marketView');            
             var view = new GlebMarketView({
                 name: params.views[v].name,
+                refresh: params.views[v].refresh || "OFF",
                 style: params.views[v].style,
                 data: params.views[v].content
             });
@@ -30,6 +32,7 @@ exports._get = function(params) {
             var GlebListMarketView = require('ui/views/listMarketView');            
             var view = new GlebListMarketView({
                 name: params.views[v].name,
+                refresh: params.views[v].refresh || "OFF",
                 headerTitle: params.views[v].headerTitle,
                 style: params.views[v].style,
                 data: params.views[v].content
@@ -61,6 +64,7 @@ exports._get = function(params) {
             var GlebGridView3 = require('ui/views/grid3View');            
             var view = new GlebGridView3({
                 name: params.views[v].name,
+                refresh: params.views[v].refresh || "OFF",
                 style: params.views[v].style,
                 data: params.views[v].content
             });
@@ -70,6 +74,7 @@ exports._get = function(params) {
             var GlebListView = require('ui/views/listView');            
             var view = new GlebListView({
                 name: params.views[v].name,
+                refresh: params.views[v].refresh || "OFF",
                 headerTitle: params.views[v].headerTitle,
                 style: params.views[v].style,
                 data: params.views[v].content
@@ -100,6 +105,7 @@ exports._get = function(params) {
             var FormView = require('ui/views/formView');            
             var view = new FormView({
                 name: params.views[v].name,
+                refresh: params.views[v].refresh || "OFF",
                 headerTitle: params.views[v].headerTitle,
                 style: params.views[v].style,
                 data: params.views[v].content

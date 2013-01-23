@@ -18,7 +18,7 @@ exports.open = function(windowToOpen) {
 			 // close "parent" window, do not use animation (it looks wierd with animation)
 			 (_navGroup) ? _navGroup.close(this.toClose, {animated : false}) : this.toClose.close();
 		}
-
+		
 		Ti.API.debug("End event 'close'. Stack: " + _windowStack.map(function(v) {return v.title}));
 	});
 
