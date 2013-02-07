@@ -55,6 +55,7 @@ buttonVolver.addEventListener('click',function(){
     containerView._refresh ();
     });     
 
+var loadListMarketMainWin = false;
 
 containerView._get = function() {
     
@@ -82,12 +83,16 @@ containerView._get = function() {
     /* Añadimos el scrollView al container View */    
     containerView.add(populateView(localData, localStyle));
     //Ti.API.debug('GLEB - Container views childrens: '+containerView.getChildren());
+    if(loadListMarketMainWin){
+    	Ti.App.glebUtils.closeActivityIndicator();
+    }
+    loadListMarketMainWin = true;
     return containerView;
 };
 
 
 containerView._refresh = function (e){
-    Ti.App.fireEvent("gleb_openActivityIndicator",{"text":"Actualizando lista ..."});
+    Ti.App.glebUtils.openActivityIndicator({"text":"Actualizando lista ..."});
     Ti.API.debug("GLEB - Actualizando listMarket: "+params.name);       
     require("clients/glebAPI").getView(params.name, containerView._get );
 }   
