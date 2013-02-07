@@ -47,6 +47,8 @@ header.add(headerTitle);
 containerListView.add(header);
 
 
+var loadListMainWin = false;
+
 containerListView._get = function() {
     
     //Ti.API.debug('GLEB - LIST PARAMS:' +JSON.stringify(params));
@@ -78,12 +80,16 @@ containerListView._get = function() {
     /* Añadimos el scrollView al container View */    
     containerListView.add(populateView(localData, localStyle));
     //Ti.API.debug('GLEB - Container views childrens: '+containerListView.getChildren());
+    if(loadListMainWin){
+    	Ti.App.glebUtils.closeActivityIndicator();
+    }
+    loadListMainWin = true;
     return containerListView;
 };
 
 
 containerListView._refresh = function (e){
-    Ti.App.fireEvent("gleb_openActivityIndicator",{"text":"Actualizando lista ..."});
+    Ti.App.glebUtils.openActivityIndicator({"text":"Actualizando lista ..."});
     Ti.API.debug("GLEB - Actualizando list: "+params.name);     
     require("clients/glebAPI").getView(params.name, containerListView._get );
 }   
