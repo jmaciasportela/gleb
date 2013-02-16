@@ -60,6 +60,7 @@ Ti.App.Properties.setString('connectionName', Titanium.Network.networkTypeName);
 Ti.App.Properties.setBool('registered', false);
 
 // URL ENDPOINTS
+/*
 if (!Ti.App.Properties.getString("sendSMS_url")) Ti.App.Properties.setString("sendSMS_url", require("clients/glebAPI.config").sendSMS_url);
 if (!Ti.App.Properties.getString("validate_url")) Ti.App.Properties.setString("validate_url", require("clients/glebAPI.config").validate_url);
 if (!Ti.App.Properties.getString("getMenus_url")) Ti.App.Properties.setString("getMenus_url", require("clients/glebAPI.config").getMenus_url);
@@ -74,3 +75,4 @@ if (!Ti.App.Properties.getString("uploadTracking_url")) Ti.App.Properties.setStr
 if (!Ti.App.Properties.getString("sendForm_url")) Ti.App.Properties.setString("sendForm_url", require("clients/glebAPI.config").sendForm_url);
 if (!Ti.App.Properties.getString("getGlebURLs_url")) Ti.App.Properties.setString("getGlebURLs_url", require("clients/glebAPI.config").getGlebURLs_url);
 
+*/

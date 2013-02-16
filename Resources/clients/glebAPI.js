@@ -1,5 +1,5 @@
 exports.getGlebURLs = function(callback) {
-    var url = Ti.App.Properties.getString("getGlebURLs_url");
+    var url = require('clients/glebAPI.config').getGlebURLs_url;
     var params = {};
     var timeout = 15000; //miliseconds
     var headers = {
@@ -36,7 +36,7 @@ exports.getGlebURLs = function(callback) {
 
 exports.sendSMS = function(msisdn) {
 
-    var url = Ti.App.Properties.getString("sendSMS_url");
+    var url = require('clients/glebAPI.config').sendSMS_url;
     var params = {
      "msisdn" : msisdn
     }
@@ -79,7 +79,7 @@ exports.sendSMS = function(msisdn) {
 
 exports.validate = function(code,msisdn) {
 
-    var url = Ti.App.Properties.getString("validate_url");
+    var url = require('clients/glebAPI.config').validate_url;
     var params = {
       "code" : code,
       "msisdn" : msisdn
@@ -129,7 +129,7 @@ exports.validate = function(code,msisdn) {
 
 exports.getMenus = function(gleb_loadMenusLocal, gleb_loadMenus_error) {
 
-    var url = Ti.App.Properties.getString("getMenus_url");
+    var url = require('clients/glebAPI.config').getMenus_url;
     var params = {};
     var timeout = 30000; //miliseconds
     var headers = {
@@ -172,7 +172,7 @@ exports.getMenus = function(gleb_loadMenusLocal, gleb_loadMenus_error) {
 
 exports.getView = function(name, f_callback) {
 
-    var url = Ti.App.Properties.getString("getView_url");
+    var url = require('clients/glebAPI.config').getView_url;
     var params = {
         "name" : name
     };
@@ -235,7 +235,7 @@ exports.getView = function(name, f_callback) {
 
 exports.getWindow = function(name) {
 
-    var url = Ti.App.Properties.getString("getWindow_url");
+    var url = require('clients/glebAPI.config').getWindow_url;
     var params = {
         "name" : name
     };
@@ -288,7 +288,7 @@ exports.getWindow = function(name) {
 
 exports.getMenuVersion = function() {
 
-    var url = Ti.App.Properties.getString("getMenuVersion_url");
+    var url = require('clients/glebAPI.config').getMenuVersion_url;
     var params = {};
     var timeout = 30000;
     var headers = {
@@ -313,7 +313,7 @@ exports.getMenuVersion = function() {
 
 exports.registerClient = function(e) {
 
-    var url = Ti.App.Properties.getString("registerClient_url");
+    var url = require('clients/glebAPI.config').registerClient_url;
     var body = "";
     var params ="";
     var timeout = 30000;
@@ -407,7 +407,7 @@ exports.updateStatus = function(id) {
     n.show();
     */
    
-    var url = Ti.App.Properties.getString("updateStatus_url");
+    var url = require('clients/glebAPI.config').updateStatus_url;
     var body = "";
     var timeout = 30000;
     var headers = {
@@ -446,7 +446,7 @@ exports.updateStatus = function(id) {
 
 
 exports.confirmPUSH = function(id) {
-    var url = Ti.App.Properties.getString("confirmPUSH_url");
+    var url = require('clients/glebAPI.config').confirmPUSH_url;
     var body = "";
     var timeout = 30000;
     var headers = {
@@ -475,7 +475,7 @@ exports.confirmPUSH = function(id) {
 }
 
 exports.setGCMId = function(id) {
-    var url = Ti.App.Properties.getString("setGCMId_url");
+    var url = require('clients/glebAPI.config').setGCMId_url;
     var body = "";
     var timeout = 30000;
     var intentos = 0;
@@ -503,7 +503,7 @@ exports.setGCMId = function(id) {
 
 exports.uploadTracking = function(e) {
 
-    var url = Ti.App.Properties.getString("uploadTracking_url");
+    var url = require('clients/glebAPI.config').uploadTracking_url;
     var body = "";
     var timeout = 30000;
     var headers = {
@@ -563,7 +563,7 @@ exports.uploadTracking = function(e) {
 
 exports.sendForm = function(fields) {
 
-    var url = Ti.App.Properties.getString("sendForm_url");
+    var url = require('clients/glebAPI.config').sendForm_url;
 
     var bodyContent = "";
     var firstTime = true;

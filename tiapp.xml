@@ -20,7 +20,7 @@
     <sdk-version>2.1.1.GA</sdk-version>
     <id>es.thinetic.ngleb</id>
     <name>newgleb</name>
-    <version>0.4</version>
+    <version>0.4.2</version>
     <publisher>maci</publisher>
     <url>http://www.thinetic.es</url>
     <description>not specified</description>
@@ -61,7 +61,11 @@
     </android>
     <modules>
         <module platform="android" version="0.2">es.gleb.androidnative</module>
-        <module platform="android" version="2.0.1">ti.paint</module>
         <module platform="android" version="0.2">net.iamyellow.tigcm</module>
+        <module platform="android" version="2.2">ti.imagefactory</module>
+        <module platform="iphone" version="1.1">ti.imagefactory</module>
+        <module platform="android" version="2.0.1">ti.paint</module>
+        <module platform="android" version="2.3.2">ti.barcode</module>
+        <module platform="iphone" version="1.8.1">ti.barcode</module>
     </modules>
 </ti:app>

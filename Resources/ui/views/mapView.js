@@ -9,17 +9,6 @@ exports._open = function () {
        	navBarHidden: true
 	});
 	
-	/*
-	mapWin.addEventListener('android:back', function(e) {	
-	Ti.API.info("GLEB - Pressing Back Will Not Close The Activity/Window");	    	
-	var alertDialog = Titanium.UI.createAlertDialog({
-			title: 'GLEB',
-			message:'Pulsa el botón Volver para cerrar la ventana',
-		    buttonNames: ['OK']
-		});				
-	alertDialog.show();
-	});	
-	*/
 	
 var mainView = Ti.UI.createView({
     name: "MapView",

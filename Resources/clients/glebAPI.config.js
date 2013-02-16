@@ -1,6 +1,11 @@
 // Fichero de configuración
 
 //Endpoints
+//var protocol = "https";
+//var host = "plusdb.net";
+//var port = "443";
+
+//Endpoints
 var protocol = "http";
 var host = "thinetic.com";
 var port = "80";

@@ -56,25 +56,7 @@ Ti.API.info('GLEB - Cargando Compass View');
     	font:{fontSize:Ti.App.glebUtils._p(30),fontWeight:"bold"},
     	textAlign:'center'		
 		});	
-	
-	var buttonLeft = Titanium.UI.createButton({   		
-		backgroundColor: 'transparent',
-		top: Ti.App.glebUtils._p(0),
-		width: Ti.App.glebUtils._p(40),
-		height: Ti.App.glebUtils._p(40),
-		left: Ti.App.glebUtils._p(25)
-		});
-		buttonLeft.addEventListener('click',function(){require("ui/statusBar").statusBarToLeft();});	
-
-			
-	var buttonRight = Titanium.UI.createButton({   		
-		backgroundColor: 'transparent',
-		top: Ti.App.glebUtils._p(0),
-		width: Ti.App.glebUtils._p(40),
-		height: Ti.App.glebUtils._p(40),
-		left: Ti.App.glebUtils._p(290)
-		});
-		buttonRight.addEventListener('click',function(){require("ui/statusBar").statusBarToRight();});			
+		
 		
 		var initialDegrees  = Ti.App.Properties.getInt('initialDegrees');
 		
@@ -82,9 +64,7 @@ Ti.API.info('GLEB - Cargando Compass View');
 	view.add(orientacion_value);
 	view.add(flecha);
 	view.add(flecha2);
-	view.add(buttonRight);
-	view.add(buttonLeft);
-	
+
 	var moving = false;
 	var last = 0;	
 	Ti.App.addEventListener("gleb_compassUpdated",function(e){	

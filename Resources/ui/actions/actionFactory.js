@@ -54,6 +54,13 @@ exports.addAction = function(element, data) {
     		require('modules/NavigationController').open(win);  
 		});
 	}
+
+    else if (data.action == 'openIntent') {
+        element.addEventListener('click', function(e){
+            Titanium.Media.vibrate([ 0, 100]);
+            customMethods.openIntent(data);
+        });
+    }
 	
 	else if (data.action == 'execMethod') {
 		element.addEventListener('click', function(e){
