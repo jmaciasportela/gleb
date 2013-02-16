@@ -23,5 +23,6 @@ require('plugins/colaHTTP').start();
 // ARRANQUE DE LA APP
 ///////////////////////////////////////////
 Ti.API.debug("GLEB - INIT - Checking new endpoints");
-require("clients/glebAPI").getGlebURLs(require('modules/initFlow').wizard);
+//require("clients/glebAPI").getGlebURLs(require('modules/initFlow').wizard);
+require('modules/initFlow').wizard();
 })();

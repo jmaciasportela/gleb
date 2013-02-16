@@ -43,30 +43,9 @@ Ti.API.info('GLEB - Cargando msgView View');
 		});
 		
 		
-	var buttonLeft = Titanium.UI.createButton({   		
-		backgroundColor: 'transparent',
-   		top: '0dp',
-   		width: '40dp',
-   		height: '40dp',
-   		left: '0dp'
-		});
-		buttonLeft.addEventListener('click',function(){require("ui/statusBar").statusBarToLeft();});	
-	
-				
-	var buttonRight = Titanium.UI.createButton({   		
-		backgroundColor: 'transparent',
-   		top: '0dp',
-   		width: '40dp',
-   		height: '40dp',
-   		left: '290dp'
-		});
-		buttonRight.addEventListener('click',function(){require("ui/statusBar").statusBarToRight();});	
-		
 	// assemble view hierarchy
 	view.add(status_label);
 	view.add(msg_label);
-	view.add(buttonLeft);
-	view.add(buttonRight);
 
 		
 	Ti.API.info('GLEB - Elementos añadidos a la vista');

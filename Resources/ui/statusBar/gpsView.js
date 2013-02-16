@@ -125,17 +125,7 @@ exports._get = function() {
     	font:{fontSize:Ti.App.glebUtils._p(10)},
     	textAlign:'center'		
 		});		
-		
-	
-	buttonRight = Titanium.UI.createButton({   		
-		backgroundColor: 'transparent',
-   		top: Ti.App.glebUtils._p(0),
-   		width: Ti.App.glebUtils._p(40),
-   		height: Ti.App.glebUtils._p(40),
-   		left: Ti.App.glebUtils._p(290)
-		});
-		buttonRight.addEventListener('click',function(){require("ui/statusBar").statusBarToRight();});	
-		
+				
 		
 		var acc  = Ti.App.Properties.getString('lastAccuracy');
 		var currentProvider = Ti.App.Properties.getString('lastProvider');
@@ -159,7 +149,6 @@ exports._get = function() {
 	view.add(latitud_value);
 	view.add(longitud_value);
 	view.add(accuracy_value);
-	view.add(buttonRight);
 
 	//view.add(provider);
 	//view.add(reverseGeo);

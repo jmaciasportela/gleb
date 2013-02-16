@@ -36,19 +36,10 @@ module.exports = function(){
             activity.finish();      
         }); 
 				
-	var buttonRight = Titanium.UI.createButton({   		
-		backgroundColor: 'transparent',
-   		top: Ti.App.glebUtils._p(0),
-   		width: Ti.App.glebUtils._p(40),
-   		height: Ti.App.glebUtils._p(40),
-   		left: Ti.App.glebUtils._p(290)
-		});
-		buttonRight.addEventListener('click',function(){require("ui/statusBar").statusBarToRight();});	
 		
 	// assemble view hierarchy
 	view.add(recarga);
     view.add(salir);
-	view.add(buttonRight);		
 	
     return view;
 }
