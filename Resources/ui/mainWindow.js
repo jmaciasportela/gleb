@@ -20,12 +20,12 @@ exports._get = function(params) {
     	mainWin.removeEventListener('postlayout',function(){});
     	Ti.API.debug('GLEB - Main Win Open');
     });
-
-
+    
     mainWin.addEventListener('android:back', function(){
-       alert("Use el botón home de su terminal");
+        var activity = Titanium.Android.currentActivity;
+        activity.finish();
     });
-
+    
 
     mainWin.addEventListener('close', function(e) {
     	Ti.API.debug("GLEB - Closing main window");
