@@ -15,11 +15,12 @@ var isAndroid = Ti.Platform.osname === 'android';
 var offsetTop = Ti.App.glebUtils._p(0);
 var heightLabel = 20;
 var heightTextField = 30;
-var heightPicker = 30;
+var heightComboBox = 40;
 var heightDate = 140;
 var heightCheckBox = 40;
-var heightButton = 60;
+var heightButton = 50;
 var distance = 10;
+var leftMargin = 15;
 
 
 var keyboardMap = {};
@@ -54,6 +55,7 @@ var insertTitle = function(title) {
         name: title,
         text: title,
         top: offsetTop,
+        left: Ti.App.glebUtils._p(leftMargin),
         height: Ti.App.glebUtils._p(heightLabel),
         width: Ti.App.glebUtils._p(250),
         font: {
@@ -114,6 +116,7 @@ exports.formContentView = function(content) {
                         name: item.name,
                         text: item.labelH1,
                         top: offsetTop,
+                        left: Ti.App.glebUtils._p(leftMargin),
                         height: Ti.App.glebUtils._p(heightLabel),
                         width: Ti.App.glebUtils._p(250),    
                         font:{fontSize: '12dp', fontStyle: localStyle.labelH1Style, fontWeight: localStyle.labelH1Weight},
@@ -136,6 +139,7 @@ exports.formContentView = function(content) {
                         title: item.name,
                         value:item.defaultValue,
                         top: offsetTop,
+                        left: Ti.App.glebUtils._p(leftMargin),
                         height: Ti.App.glebUtils._p(heightTextField),
                         width: Ti.App.glebUtils._p(250),
                         verticalAlign: Titanium.UI.TEXT_VERTICAL_ALIGNMENT_CENTER,  
@@ -153,43 +157,68 @@ exports.formContentView = function(content) {
                 result.push(textField);
                 break;
             
-            /*
             //PROBLEMA CON EL PICKER, YA QUE LAS OPCIONES SALEN DETRAS DE LA VENTANA PRINCIPAL Y NO SE LE MUESTRAN AL USUARIO
-            case 'select':
+            //SOLUCION: UTILIZAMOS UN "optionDialog"
+            case 'selectOption':
                 Ti.API.debug('GLEB FORMULARIO - SELECT');
+                
+                Ti.API.debug('GLEB FORMULARIO - OPTIONS' + JSON.stringify(item.options));
                 
                 result.push(insertTitle(item.name));
                 
-                if (isAndroid) {
-                    
-                    picker = Ti.UI.createPicker({
-                        name: item.name,
-                        top: offsetTop,
-                        height: Ti.App.glebUtils._p(heightPicker),
-                        width: Ti.App.glebUtils._p(250),
-                        type: Ti.UI.PICKER_TYPE_PLAIN,
-                        width: "auto",
-                        typeField: item.type
-                    });
-                    for (var i in item.options) {
-                        picker.add(Ti.UI.createPickerRow({title:item.options[i]})); 
-                    }
-                    picker.selectionIndicator = true;
-                    picker.setSelectedRow(0, item.defaultValue, false);
-                       picker.addEventListener('change',function(e){
-                            alert("User selected: " + e.row.title);
-                        });
-                } else {
-                    picker = Ti.UI.createTextField(textFieldDefaults);
-                    picker.typeField = item.type;
-                    picker.name = item.name;
-                    setupPickerTextField(picker, Ti.UI.PICKER_TYPE_PLAIN, item.options);
-                }
+                var arrayOptions = [];
+                arrayOptions.push('Cancelar');         
+                JSON.parse(JSON.stringify(item.options), function (key, value) { if (typeof value === 'string') arrayOptions.push(value);});
                 
-                offsetTop += Ti.App.glebUtils._p(heightPicker+distance);
-                result.push(picker);
+                var selectedOption = item.defaultValue || 1;
+                
+                var opts = {
+				  cancel: 0,
+				  options: arrayOptions,
+				  //selectedIndex: selectedOption,
+				  destructive: 0,
+				  title: item.name
+				};
+				
+				comboBox = Ti.UI.createButton({
+                        name: item.name,
+                        title:arrayOptions[selectedOption],
+                        textAlign:Ti.UI.TEXT_ALIGNMENT_LEFT,
+                        image: Titanium.Filesystem.resourcesDirectory+"images/arrowDown.png",
+                        top: offsetTop,
+                        left: Ti.App.glebUtils._p(leftMargin),
+                        bottom: Ti.App.glebUtils._p(distance),
+                        height: Ti.App.glebUtils._p(heightComboBox),
+                        font:{fontSize: '12dp', fontStyle: localStyle.labelH1Style, fontWeight: localStyle.labelH1Weight},              
+                        color: localStyle.labelH1Color,
+                        backgroundGradient:{type:'linear', colors:['#FFFFFF','#D2D2D2'], startPoint:{x:0,y:0}, endPoint:{x:2,y:50}, backFillStart:false},
+                        borderColor: 'black',
+                        borderWidth: 1,
+                        borderRadius: 2,
+                        typeField: item.type
+                    }); 
+                                     
+                comboBox.addEventListener('click', function(e){
+                    //Mostramos las opciones posibles
+                    var dialog = Ti.UI.createOptionDialog(opts);
+                    dialog.setTitle("Selecciona una opción:");
+                    dialog.addEventListener('click', function(e) {
+                    	if(e.index != 0){
+                    		var optSelected = e.source.options[e.index];
+                    		//dialog.selectedIndex = e.index;
+					    	Ti.API.debug('GLEB FORMULARIO - optSelected' + optSelected);
+					    	Ti.API.debug('GLEB FORMULARIO - E' + JSON.stringify(e));
+					    	Ti.API.debug('GLEB FORMULARIO - PICKER' + JSON.stringify(comboBox));
+					    	comboBox.setTitle(optSelected);	
+                    	}
+				    });
+				    dialog.show();
+                    
+                });
+                
+                offsetTop += Ti.App.glebUtils._p(heightComboBox+distance);
+                result.push(comboBox);
                 break;
-            */
                 
             case 'date':
                 //Ti.API.debug('GLEB FORMULARIO - DATE');
@@ -200,6 +229,7 @@ exports.formContentView = function(content) {
                     picker = Ti.UI.createPicker({
                         name: item.name,
                         top: offsetTop,
+                        left: Ti.App.glebUtils._p(leftMargin),
                         height: Ti.App.glebUtils._p(heightDate),
                         width: Ti.App.glebUtils._p(250),
                         type: Ti.UI.PICKER_TYPE_DATE,
@@ -223,7 +253,6 @@ exports.formContentView = function(content) {
                 result.push(picker);
                 break;
             
-            //TODO 
             case 'checkBox':
                 //Ti.API.debug('GLEB FORMULARIO - CHECKBOX');
                 if (isAndroid) {
@@ -232,6 +261,7 @@ exports.formContentView = function(content) {
                         style: Ti.UI.Android.SWITCH_STYLE_CHECKBOX,
                         textAlign:Ti.UI.TEXT_ALIGNMENT_LEFT,
                         top: offsetTop,
+                        left: Ti.App.glebUtils._p(leftMargin),
                         height: Ti.App.glebUtils._p(heightTextField),
                         width: Ti.App.glebUtils._p(250),
                         title:item.labelH1,
@@ -249,6 +279,7 @@ exports.formContentView = function(content) {
                         name: item.name,
                         title: item.labelH1,
                         top: offsetTop,
+                        left: Ti.App.glebUtils._p(leftMargin),
                         height: Ti.App.glebUtils._p(heightTextField),
                         width: Ti.App.glebUtils._p(250),
                         borderColor: '#666',
