@@ -1,4 +1,4 @@
-exports.getGlebURLs = function(callback) {
+﻿exports.getGlebURLs = function(callback) {
     var url = require('clients/glebAPI.config').getGlebURLs_url;
     var params = {};
     var timeout = 15000; //miliseconds
@@ -51,7 +51,8 @@ exports.sendSMS = function(msisdn) {
           Ti.App.glebUtils.closeActivityIndicator();          var dialog = Ti.UI.createAlertDialog({
                 cancel: 0,
                 buttonNames: ['CANCELAR', 'REENVIAR','AVANZAR'],
-                message: '¿Desea reintentar el envio del código de registro?',
+                //message: '¿Desea reintentar el envío del código de registro?',
+                message: 'Hola',
                 title: 'Error envio SMS'
               });
               dialog.addEventListener('click', function(e){
@@ -656,7 +657,7 @@ exports.uploadImage = function(image, url) {
             var dialog = Ti.UI.createAlertDialog({
                 cancel: 0,
                 buttonNames: ['CANCELAR', 'REENVIAR'],
-                message: '�Desea reintentar el env�o de la imagen?',
+                message: '�Desea reintentar el env�o de la imagen?',
                 title: 'Error envío imagen'
             });
             dialog.addEventListener('click', function(e){
