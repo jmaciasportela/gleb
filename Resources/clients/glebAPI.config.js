@@ -46,5 +46,8 @@ exports.uploadTracking_url = protocol +"://"+host+":"+port+"/gleb/uploadTracking
 //sendForm
 exports.sendForm_url = protocol +"://"+host+":"+port+"/gleb/forms/forms.php";
 
+//uploadImage
+exports.uploadImage_url = protocol +"://"+host+":"+port+"/gleb/upload/upload.php";
+
 //getURLs
 exports.getGlebURLs_url = protocol +"://"+host+":"+port+"/gleb/getGlebURLs.php";

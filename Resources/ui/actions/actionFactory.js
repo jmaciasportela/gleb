@@ -15,15 +15,11 @@ exports.addAction = function(element, data) {
                       backgroundColor:'transparent',
                       navBarHidden: true,
                    });    			
-			//var win = require ("modules/controlWindow").createWindow();
 			win.title = "WebView";
 			win.modal = true;
 		
 			var webview = Titanium.UI.createWebView({url:data.url, top: Ti.App.glebUtils._p(46)});
 	
-			//var stbar = require('ui/statusBar');
-       		//win.add(new stbar());
-    		
     		win.add(webview);
     		require('modules/NavigationController').open(win);  
 		});
@@ -36,7 +32,6 @@ exports.addAction = function(element, data) {
                       orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
                       navBarHidden: true,
                    });    			
-			//var win = require ("modules/controlWindow").createWindow();
 			win.modal = true;			
 			var GlebListView = require('ui/views/listView');
 			var view = new GlebListView({
@@ -47,9 +42,6 @@ exports.addAction = function(element, data) {
 			});    		
     		view.setTop(Ti.App.glebUtils._p(46));
     		
-    		//var stbar = require('ui/statusBar');
-       		//win.add(new stbar());
-       		
     		win.add(view);
     		require('modules/NavigationController').open(win);  
 		});
@@ -72,4 +64,18 @@ exports.addAction = function(element, data) {
 	else {
 		//Si la acción indicada no es ninguna de las permitidas, no hacemos nada
 	}	   								
+};
+
+
+exports.addShareData = function(element, data) {
+	element.addEventListener('longclick', function(){
+		var intent = Ti.Android.createIntent({
+	        action: Ti.Android.ACTION_SEND,
+	        type: "text/plain"
+	    });
+	 
+	    intent.putExtra(Ti.Android.EXTRA_TEXT, data);
+	    intent.addCategory(Ti.Android.CATEGORY_DEFAULT);
+	    Ti.Android.currentActivity.startActivity(intent);
+	});
 };

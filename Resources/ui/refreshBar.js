@@ -28,7 +28,7 @@ module.exports = function(){
 	});
 	 
 	var statusLabel = Ti.UI.createLabel({
-	    text:"Tira hacia abajo para actualizar",
+	    text:"Desliza hacia abajo para refrescar",
 	    left:Ti.App.glebUtils._p(60),
 	    width: Ti.App.glebUtils._p(200),
 	    top:Ti.App.glebUtils._p(8),
@@ -109,7 +109,7 @@ module.exports.addListenersRefreshBar = function (row, scrollView, containerView
                     t = t.rotate(0);
                     row.getChildren()[0].animate({transform:t,duration:300});
                     row.getChildren()[1].animate({transform:t,duration:300});
-                    row.getChildren()[2].text = "Tira hacia abajo para actualizar";
+                    row.getChildren()[2].text = "Desliza hacia abajo para refrescar";
                 }
             }   
         });             
@@ -131,7 +131,7 @@ module.exports.addListenersRefreshBar = function (row, scrollView, containerView
 			                containerView._refresh();               
 			                scrollView.scrollTo(0,Ti.App.glebUtils._p(60));
 			                row.getChildren()[3].text="Ultima actualización: "+formatDate();
-			                row.getChildren()[2].text = "Empuja para actualizar";
+			                row.getChildren()[2].text = "Desliza hacia abajo para refrescar";
 			            }
 			            else if (offset<Ti.App.glebUtils._p(60)){
 			                scrollView.scrollTo(0,Ti.App.glebUtils._p(60));
