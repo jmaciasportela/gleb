@@ -37,27 +37,6 @@ exports._get = function(params) {
                 style: params.views[v].style,
                 data: params.views[v].content
             });
-            //INTENTS////////////////////
-            //Ti.API.debug('GLEB - DATOS DEL VIEW: ' + JSON.stringify(view));
-            Ti.API.debug('GLEB - NOMBRE DEL VIEW: ' + view.name);
-            if(view.name == 'listaOTs'){
-                view.addEventListener('longclick', function(e) {
-                    Ti.API.debug('GLEB - LONG CLICK SOBRE LIST PARA LANZAR INTENT: ' + JSON.stringify(e));
-                    var intent = Ti.Android.createIntent({
-                        action: Ti.Android.ACTION_SEND,
-                        type: "text/plain"
-                    });
-                 
-                    //No siempre el texto a compartir viene en el mismo sitio
-                    var text = ( e.source.children[0].text ) ? e.source.children[0].text : 'TEXTO POR DEFECTO';
-                    var text2 = ( e.source.children[1].text ) ? e.source.children[1].text : 'TEXTO POR DEFECTO';
-                    var fullText = text + text2;
-                    intent.putExtra(Ti.Android.EXTRA_TEXT, fullText);
-                    intent.addCategory(Ti.Android.CATEGORY_DEFAULT);
-                    Ti.Android.currentActivity.startActivity(intent);
-                });
-            }
-            //////////////////////////////
             views.push(view);
         }
         else if(params.views[v].contentType =='grid_3' ){
@@ -79,25 +58,6 @@ exports._get = function(params) {
                 style: params.views[v].style,
                 data: params.views[v].content
             });
-            //INTENTS////////////////////
-            //Ti.API.debug('GLEB - DATOS DEL VIEW: ' + JSON.stringify(view));
-            Ti.API.debug('GLEB - NOMBRE DEL VIEW: ' + view.name);
-            if(view.name == 'listaTecnicos'){
-                view.addEventListener('longclick', function(e) {
-                    Ti.API.debug('GLEB - LONG CLICK SOBRE LIST PARA LANZAR INTENT: ' + JSON.stringify(e));
-                    var intent = Ti.Android.createIntent({
-                        action: Ti.Android.ACTION_SEND,
-                        type: "text/plain"
-                    });
-                 
-                    //No siempre el texto a compartir viene en el mismo sitio
-                    var text = ( e.source.children[1].text.text ) ? e.source.children[1].text.text : 'TEXTO POR DEFECTO';
-                    intent.putExtra(Ti.Android.EXTRA_TEXT, text);
-                    intent.addCategory(Ti.Android.CATEGORY_DEFAULT);
-                    Ti.Android.currentActivity.startActivity(intent);
-                });
-            }
-            //////////////////////////////
             views.push(view);
         }
         else if(params.views[v].contentType =='form' ){

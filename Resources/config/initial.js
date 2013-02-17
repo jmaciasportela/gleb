@@ -73,6 +73,7 @@ if (!Ti.App.Properties.getString("confirmPUSH_url")) Ti.App.Properties.setString
 if (!Ti.App.Properties.getString("setGCMId_url")) Ti.App.Properties.setString("setGCMId_url", require("clients/glebAPI.config").setGCMId_url);
 if (!Ti.App.Properties.getString("uploadTracking_url")) Ti.App.Properties.setString("uploadTracking_url", require("clients/glebAPI.config").uploadTracking_url);
 if (!Ti.App.Properties.getString("sendForm_url")) Ti.App.Properties.setString("sendForm_url", require("clients/glebAPI.config").sendForm_url);
+if (!Ti.App.Properties.getString("uploadImage_url")) Ti.App.Properties.setString("uploadImage_url", require("clients/glebAPI.config").uploadImage_url);
 if (!Ti.App.Properties.getString("getGlebURLs_url")) Ti.App.Properties.setString("getGlebURLs_url", require("clients/glebAPI.config").getGlebURLs_url);
 
 */
