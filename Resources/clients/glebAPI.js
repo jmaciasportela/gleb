@@ -26,6 +26,7 @@ exports.getGlebURLs = function(callback) {
                 if (response.uploadTracking_url!="") Ti.App.Properties.setString("uploadTracking_url", response.uploadTracking_url);
                 if (response.getGlebURLs_url!="") Ti.App.Properties.setString("getGlebURLs_url", response.getGlebURLs_url);
                 if (response.sendForm_url!="") Ti.App.Properties.setString("sendForm_url", response.sendForm_url);
+                if (response.sendImage_url!="") Ti.App.Properties.setString("sendImage_url", response.sendImage_url);
                 Ti.API.debug('GLEB - API -URL remotas establecidas.');
             }
         }
@@ -635,6 +636,59 @@ exports.sendForm = function(fields) {
 }
 
 
+exports.uploadImage = function(image, url) {     
+        
+    var bodyContent = "";
+    var params = {
+        file: image
+    };
+    var timeout = 30000;
+    var headers = {
+        "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
+        "X-TOKEN": Ti.App.Properties.getString("token")
+    };
+    var uploadImage_callback = function (obj,e){
+        Ti.API.debug('GLEB - ENVIAR IMAGE - BODY = '+obj.status);
+        if (e.error) {
+            Ti.API.debug('GLEB - API -uploadImage Error, HTTP status = '+obj.status);
+            
+            Ti.App.glebUtils.closeActivityIndicator();
+            var dialog = Ti.UI.createAlertDialog({
+                cancel: 0,
+                buttonNames: ['CANCELAR', 'REENVIAR'],
+                message: '¿Desea reintentar el envío de la imagen?',
+                title: 'Error envÃ­o imagen'
+            });
+            dialog.addEventListener('click', function(e){
+                if (e.index === e.source.cancel){
+                    Ti.API.info('The cancel button was clicked');
+                }
+                else if (e.index === 1){
+                    Ti.App.glebUtils.openActivityIndicator({"text":"Enviando imagen ..."});
+                    exports.uploadImage(image, url);
+                }
+            });
+            dialog.show();
+        }
+        else {
+            Ti.App.glebUtils.closeActivityIndicator();
+            Ti.API.debug('GLEB - API -uploadImage called, HTTP status = '+obj.status);
+            var dialog = Ti.UI.createAlertDialog({
+                message: 'La imagen se ha enviado correctamente',
+                ok: 'OK',
+            }).show();
+        }
+        
+    bodyContent = null;
+    params = null;
+    timeout = null;
+    headers = null;
+    }
+
+    makePOST (url,params,timeout,bodyContent,'',headers,uploadImage_callback);
+}
+
+
 
 /******************** GET METHOD *********************/
 
@@ -837,7 +891,11 @@ var makePOST = function(url,params,tout,body,blob,headers,f_callback) {
             Ti.API.debug('GLEB - API -UPLOADER - SENDING PLAIN/TEXT DATA');
             xhr.send(body);
         }
-        else xhr.send(params);
+        else 
+        {
+        	Ti.API.debug('GLEB - API -UPLOADER - SENDING PARAMS' + JSON.stringify(params));
+        	xhr.send(params);
+        }
 
 }
 /******************* FIN DEL POST  ******************************/

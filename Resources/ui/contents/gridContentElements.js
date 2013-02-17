@@ -31,6 +31,11 @@ exports.gridContentView = function(content) {
                     actionFactory.addAction(button, content[i]);
                 }
                 
+                //Si en el JSON se informa el parámetro "share", entonces se añadirá el intent correspondiente asociado al evento longclick del item                                               
+                if (item.share && item.share != '') {
+                    actionFactory.addShareData(button, item.share);
+                } 
+                
             result.push(button);
         }
         else {

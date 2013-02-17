@@ -215,3 +215,218 @@ exports.openIntent = function(e){
     }
     else  Ti.Platform.openURL('market://details?id='+e.intent);
 }
+
+/* MÈtodo para el envÌo de im·genes al server
+ * @param1: es la url donde se enviar· la imagen. Si no se informa este par·metro, se coger· la url definida en la aplicaciÛn 
+ */
+exports.sendImage = function(params) {
+    var dialog = Titanium.UI.createOptionDialog({
+    options: ['Capturar foto','GalerÌa de im·genes', 'Cancelar'],
+    cancel:2});
+    
+    var url = (params.param1 && params.param1 != '') ? params.param1 : Ti.App.Properties.getString("uploadImage_url");
+    
+    dialog.addEventListener('click', function(e) {
+    	//OPCION "CAPTURAR FOTO"
+        if (e.index == 0) {
+			Titanium.Media.showCamera({
+				saveToPhotoGallery:true,
+				allowEditing:true,
+				mediaTypes:[Ti.Media.MEDIA_TYPE_VIDEO,Ti.Media.MEDIA_TYPE_PHOTO],
+				success:function(event) {
+					// called when media returned from the camera
+					if(event.mediaType == Ti.Media.MEDIA_TYPE_PHOTO) {
+						//Se envÌa la imagen al server mediante un POST
+	                    Ti.App.glebUtils.closeActivityIndicator();
+	                    Ti.App.glebUtils.openActivityIndicator({"text":"Enviando imagen ..."});
+	                    Ti.API.info("GLEB - Enviando imagen al GLEB server");
+	                    require("clients/glebAPI").uploadImage(event.media, url);
+					} else {
+						alert("El fichero seleccionado no es una imagen ="+event.mediaType);
+					}
+				},
+				cancel:function() {
+					// called when user cancels taking a picture
+				},
+				error:function(error) {
+					// called when there's an error
+					var a = Titanium.UI.createAlertDialog({title:'C·mara GLEB'});
+					if (error.code == Titanium.Media.NO_CAMERA) {
+						a.setMessage('Error al abrir la c·mara del dispositivo');
+					} else {
+						a.setMessage('Error inesperado: ' + error.code);
+					}
+					a.show();
+				}
+			});
+        } 
+        //OPCI√ìN "GALERIA DE IMAÅGENES"
+        else if (e.index == 1) {
+            Titanium.Media.openPhotoGallery({
+            	mediaTypes : [Ti.Media.MEDIA_TYPE_PHOTO],
+			    success : function(event) {
+			    	//Se envÌa la imagen al server mediante un POST
+                    Ti.App.glebUtils.closeActivityIndicator();
+                    Ti.App.glebUtils.openActivityIndicator({"text":"Enviando imagen ..."});
+                    Ti.API.info("GLEB - Enviando imagen al GLEB server");
+                    require("clients/glebAPI").uploadImage(event.media, url);
+				},
+			    cancel : function() {
+			 
+			    },
+			    error : function(error) {
+			    }
+			});
+        }
+    });
+    dialog.show();
+};
+
+
+/* Abre una ventana para la firma de un documento
+ * @param1: es la url del documento a firmar 
+ */
+exports.openSignWindow = function(params) {
+	Ti.API.info("GLEB - openSignWindow");
+    var win = new Titanium.UI.createWindow({
+		orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
+		navBarHidden: true
+	});    			
+	win.modal = true;	
+
+	var imageView = Ti.UI.createImageView({
+	  image: params.param1,
+	});
+		
+	var scrollView = Ti.UI.createScrollView({
+	  showVerticalScrollIndicator: true,
+	  showHorizontalScrollIndicator: false
+	});
+	scrollView.scrollTo(0,0);
+	scrollView.add(imageView)
+	
+	var viewDocument = new Titanium.UI.createView({
+		backgroundColor:'white',
+		width:'auto',
+   		height:'auto'            
+	});    		
+	viewDocument.setTop(Ti.App.glebUtils._p(46));
+	
+	viewDocument.add(scrollView);
+	win.add(viewDocument);
+	
+	
+	// Creamos el header de la tabla. FIJO
+	var viewTitle = Ti.UI.createView({
+		backgroundColor:"#575252",
+		width:Ti.App.glebUtils._p(320),
+		height:Ti.App.glebUtils._p(20),
+		top:Ti.App.glebUtils._p(0)
+	});
+	var labelTitle = Ti.UI.createLabel({
+		text: "Firme a continuaciÛn:",
+		width:Ti.App.glebUtils._p(245),	
+		height:"auto",
+		color:"white",
+		textAlign:"left",
+		left: Ti.App.glebUtils._p(10),
+		font:{fontSize:Ti.App.glebUtils._p(14),fontWeight:"bold"},
+		shadowColor:"#A7A7A7",
+		shadowOffset:{x:Ti.App.glebUtils._p(1),y:Ti.App.glebUtils._p(1)},
+		minimumFontSize: Ti.App.glebUtils._p(8)
+	});
+	viewTitle.setTop(Ti.App.glebUtils._p(350));
+	viewTitle.add(labelTitle);
+	win.add(viewTitle);
+	
+	var Paint = require('ti.paint');
+	var viewSign = new Titanium.UI.createView({
+		backgroundColor:'white',
+		width:'auto',
+   		height:'auto'            
+	});    		
+	viewSign.setTop(Ti.App.glebUtils._p(370));
+	
+	var paintView = Paint.createPaintView({
+	    top:Ti.App.glebUtils._p(0), 
+	    right:Ti.App.glebUtils._p(0), 
+	    bottom:Ti.App.glebUtils._p(30), 
+	    left:Ti.App.glebUtils._p(0),
+	    // strokeWidth (float), strokeColor (string), strokeAlpha (int, 0-255)
+	    strokeColor:'black', strokeAlpha:255, strokeWidth:Ti.App.glebUtils._p(3),
+	    eraseMode:false
+	});
+	
+	viewSign.add(paintView);
+	win.add(viewSign);
+	
+	var viewFooter = new Titanium.UI.createView({
+		backgroundColor:'white',
+		bottom:Ti.App.glebUtils._p(0),  
+		height:Ti.App.glebUtils._p(30)         
+	});    		
+	
+	var clear = Ti.UI.createButton({ 
+			bottom:Ti.App.glebUtils._p(0), 
+			left:Ti.App.glebUtils._p(50), 
+			width:Ti.App.glebUtils._p(100), 
+			height:Ti.App.glebUtils._p(30), 
+			title:'Borrar',
+	 	    font: { fontSize: Ti.App.glebUtils._p(14)}
+	});
+	clear.addEventListener('click', function() { 
+		//Titanium.Media.vibrate([ 0, 100]); 
+		paintView.clear(); 
+	});
+	viewFooter.add(clear);
+
+	var save = Ti.UI.createButton({ 
+		bottom:Ti.App.glebUtils._p(0), 
+		right:Ti.App.glebUtils._p(50), 
+		width:Ti.App.glebUtils._p(100), 
+		height:Ti.App.glebUtils._p(30), 
+		title:'Guardar',
+ 	    font: { fontSize: Ti.App.glebUtils._p(14)}
+	});
+	save.addEventListener('click', function() {	 
+		//Titanium.Media.vibrate([ 0, 100]);
+		var captura = viewSign.toImage();	
+		var tmpImageView = Titanium.UI.createImageView({
+	        width: Ti.UI.FILL,
+	        height: Ti.UI.SIZE,
+	        image: captura,
+	        top:0,
+	        left:0,
+	        borderColor: 'black',
+	        borderWidth: 2
+	    });
+	    viewSign.add(tmpImageView); //you must add it to your window!
+		var saveImageData = tmpImageView.toBlob();	        
+		var isExternalStoragePresent = Ti.Filesystem.isExternalStoragePresent();
+		if (isExternalStoragePresent) {	
+			Ti.API.debug('GLEB - Objeto'+captura);		
+			Ti.API.debug('GLEB - PATH= '+Titanium.Filesystem.externalStorageDirectory);
+			var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory,'gleb');
+			if (!uiDir.exists()) {
+				uiDir.createDirectory();
+			}
+		   var f = Titanium.Filesystem.getFile(uiDir.resolve(), "firma.jpeg");
+		   Ti.API.debug("GLEB - Path firma:"+f.resolve());
+			if (f.write(saveImageData)===false) {
+			   // handle write error
+			   Ti.API.debug("GLEB - Ha habido un error guardando el UI");
+			}
+			else {			
+				Ti.API.debug("GLEB - Firma guardada");
+				alert ("Firma guardada");
+				viewSign.remove (tmpImageView);
+				tmpImageView = null;
+			}
+		}
+	});
+	viewFooter.add(save);
+
+	win.add(viewFooter);
+	
+	require('modules/NavigationController').open(win);
+};
