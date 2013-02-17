@@ -572,13 +572,22 @@ exports.sendForm = function(fields) {
     for(i=0;i<fields.length;i++){
         var item = fields[i];
         //Primero comprobamos de que tipo es cada campo del formulario
-        if(item.typeField === "textField" || item.typeField === "select" || item.typeField === "date" || item.typeField === "checkBox"){
+        if(item.typeField === "textField" || item.typeField === "date" || item.typeField === "checkBox"){
             if(firstTime){
                 firstTime = false;
                 bodyContent+='{"' + item.name + '":"' + item.value + '"'; 
             }
             else{
                 bodyContent+=',"' + item.name + '":"' + item.value + '"'; 
+            }  
+        }
+        else if(item.typeField === "selectOption"){
+            if(firstTime){
+                firstTime = false;
+                bodyContent+='{"' + item.name + '":"' + item.title + '"'; 
+            }
+            else{
+                bodyContent+=',"' + item.name + '":"' + item.title + '"'; 
             }  
         }
     }
