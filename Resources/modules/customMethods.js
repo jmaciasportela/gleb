@@ -1,4 +1,4 @@
-/*
+Ôªø/*
  * En este m√≥dulo definimos todos los m√©todos personalizados solicitados por el cliente
  */
 
@@ -216,12 +216,12 @@ exports.openIntent = function(e){
     else  Ti.Platform.openURL('market://details?id='+e.intent);
 }
 
-/* MÈtodo para el envÌo de im·genes al server
- * @param1: es la url donde se enviar· la imagen. Si no se informa este par·metro, se coger· la url definida en la aplicaciÛn 
+/* Metodo para el envio de imagenes al server
+ * @param1: es la url donde se enviar√° la imagen. Si no se informa este parametro, se cogera la url definida en la aplicacion 
  */
 exports.sendImage = function(params) {
     var dialog = Titanium.UI.createOptionDialog({
-    options: ['Capturar foto','GalerÌa de im·genes', 'Cancelar'],
+    options: ['Capturar foto','Galer√≠a de im√°genes', 'Cancelar'],
     cancel:2});
     
     var url = (params.param1 && params.param1 != '') ? params.param1 : Ti.App.Properties.getString("uploadImage_url");
@@ -236,7 +236,7 @@ exports.sendImage = function(params) {
 				success:function(event) {
 					// called when media returned from the camera
 					if(event.mediaType == Ti.Media.MEDIA_TYPE_PHOTO) {
-						//Se envÌa la imagen al server mediante un POST
+						//Se envia la imagen al server mediante un POST
 	                    Ti.App.glebUtils.closeActivityIndicator();
 	                    Ti.App.glebUtils.openActivityIndicator({"text":"Enviando imagen ..."});
 	                    Ti.API.info("GLEB - Enviando imagen al GLEB server");
@@ -250,9 +250,9 @@ exports.sendImage = function(params) {
 				},
 				error:function(error) {
 					// called when there's an error
-					var a = Titanium.UI.createAlertDialog({title:'C·mara GLEB'});
+					var a = Titanium.UI.createAlertDialog({title:'C√°mara GLEB'});
 					if (error.code == Titanium.Media.NO_CAMERA) {
-						a.setMessage('Error al abrir la c·mara del dispositivo');
+						a.setMessage('Error al abrir la c√°mara del dispositivo');
 					} else {
 						a.setMessage('Error inesperado: ' + error.code);
 					}
@@ -260,12 +260,12 @@ exports.sendImage = function(params) {
 				}
 			});
         } 
-        //OPCI√ìN "GALERIA DE IMAÅGENES"
+        //OPCI√ìN "GALERIA DE IMAGENES"
         else if (e.index == 1) {
             Titanium.Media.openPhotoGallery({
             	mediaTypes : [Ti.Media.MEDIA_TYPE_PHOTO],
 			    success : function(event) {
-			    	//Se envÌa la imagen al server mediante un POST
+			    	//Se envia la imagen al server mediante un POST
                     Ti.App.glebUtils.closeActivityIndicator();
                     Ti.App.glebUtils.openActivityIndicator({"text":"Enviando imagen ..."});
                     Ti.API.info("GLEB - Enviando imagen al GLEB server");
@@ -324,7 +324,7 @@ exports.openSignWindow = function(params) {
 		top:Ti.App.glebUtils._p(0)
 	});
 	var labelTitle = Ti.UI.createLabel({
-		text: "Firme a continuaciÛn:",
+		text: "Firme a continuaci√≥n:",
 		width:Ti.App.glebUtils._p(245),	
 		height:"auto",
 		color:"white",
