@@ -6,6 +6,12 @@
 
 Ti.API.info("GLEB - INIT - Init New Gleb App");
 
+
+
+var intent = Ti.Android.currentActivity.getIntent();
+Ti.API.debug('GLEB - START INTENT- '+ intent.getData());
+
+
 (function(){
 Ti.include('config/initial.js');
 
