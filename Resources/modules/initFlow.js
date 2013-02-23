@@ -25,7 +25,7 @@ exports.wizard = function (){
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.gleb_loadMenus = function(){
     require('plugins/GCM').start();
-    //require('modules/pushACS').pushACS();
+    require('modules/pushACS').pushACS();
     //require("clients/glebAPI").updateStatus();
     Ti.App.glebUtils.openActivityIndicator({"text":"Cargando ..."});
     if (Ti.App.glebUtils.checkValidInterval()) {

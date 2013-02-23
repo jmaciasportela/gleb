@@ -2,6 +2,7 @@ exports.pushACS = function (){
 
 var Cloud = require('ti.cloud');
 Cloud.debug = true;
+Cloud.useSecure = true;
 
 var androidPushModule = null;
 var pushDeviceToken = null;
@@ -161,7 +162,7 @@ function deviceTokenSuccess(e) {
     pushDeviceToken = e.deviceToken;
     Ti.App.Properties.setString("ACSdeviceToken",pushDeviceToken);
     // Equivalente al setGCMId
-    require("plugins/glebAPI").setACSId(Ti.App.Properties.getString('ACSpushUserId'), pushDeviceToken);
+    require("clients/glebAPI").setACSId(Ti.App.Properties.getString('ACSpushUserId'), pushDeviceToken);
     glebACS_setUpPush();
 }
 
@@ -173,7 +174,7 @@ function deviceTokenError(e) {
 
 
 // Comprobamos si existe un usuario, si no existe lo creamos
-if (!Ti.App.Properties.hasProperty('ACSpushUserId')){
+if (Ti.App.Properties.getString('ACSdeviceToken')==""){
     Ti.API.debug('GLEB - ACS - Creating new User'); 
     // Primero hacemos login para ver si el usuario ya existe   
     Cloud.Users.login({         
@@ -182,7 +183,7 @@ if (!Ti.App.Properties.hasProperty('ACSpushUserId')){
         }, function (e) {
             if (e.success) {                
                 Ti.API.debug('GLEB - ACS - SUCESS LOGIN: '+JSON.stringify(e));
-                Ti.App.Properties.setString('pushUserId',e.users[0].id);
+                Ti.App.Properties.setString('ACSpushUserId',e.users[0].id);
                 glebACS_retrieveDeviceToken();                                
                 Ti.App.Properties.setBool('isPushSuscribed', false);
             }
@@ -241,9 +242,4 @@ else {
     if (!Ti.App.Properties.getBool('ACSisPushSuscribed')) glebACS_suscribeChannel();       
 }
 
-
-    
 }
-
-
-
