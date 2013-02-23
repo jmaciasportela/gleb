@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ti:app xmlns:ti="http://ti.appcelerator.org">
-    <property name="acs-oauth-secret-production" type="string">FhMXxlaxLTEH4gtPiqvYb4CaylTQRVOo</property>
-    <property name="acs-oauth-key-production" type="string">fhmi5TlL9rq0CHKQkjYciIFM0JHtD8V0</property>
-    <property name="acs-api-key-production" type="string">Dk6gWjYTzMuIhDI73swLkoO9LUH9wuFy</property>
-    <property name="acs-oauth-secret-development" type="string">kgDCpvh5FRuN04BE9TrhUdluV8QJl61p</property>
-    <property name="acs-oauth-key-development" type="string">CLjkpSaIYaFYg7JKBtKDIFUonaFgMpfV</property>
-    <property name="acs-api-key-development" type="string">169u112WnOLkRVjewaWAz5CkXxVM3ISW</property>
+    <property name="acs-oauth-secret-production" type="string">O4GGcA6l2EenRBCeoGiRAzp6YdWQXlQ6</property>
+    <property name="acs-oauth-key-production" type="string">feFmyieygZRWTofzEU6AGrlzryNSU1l4</property>
+    <property name="acs-api-key-production" type="string">pEGpWRSqNctbsf9LACNQosup4pCxBhmC</property>
+    <property name="acs-oauth-secret-development" type="string">Iwjxv6wGTLbGJGgNwpBwuEX9XCqJftbN</property>
+    <property name="acs-oauth-key-development" type="string">ys2U0vKtcALtp9PjIL2wq2q9wMjfEJlH</property>
+    <property name="acs-api-key-development" type="string">PG4kxNCjqzVW6a0Y7XDzxEY3JmFuCRF9</property>
     <property name="ti.android.bug2373.finishfalseroot" type="bool">true</property>
     <property name="ti.android.bug2373.disableDetection" type="bool">false</property>
     <property name="ti.android.bug2373.restartDelay" type="int">500</property>
@@ -59,20 +59,41 @@
             <uses-permission android:name="android.permission.VIBRATE"/>
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
             <application android:debuggable="true"/>
+            <application>
+                <activity
+                    android:configChanges="keyboardHidden|orientation"
+                    android:label="GLEB" android:name=".GlebActivity" android:theme="@style/Theme.Titanium">
+                    <intent-filter>
+                        <action android:name="android.intent.action.MAIN"/>
+                        <category android:name="android.intent.category.LAUNCHER"/>
+                    </intent-filter>
+                    <intent-filter>
+                        <data android:host="thinetic.com" android:scheme="http"/>
+                        <category android:name="android.intent.category.DEFAULT"/>
+                        <category android:name="android.intent.category.BROWSABLE"/>
+                        <action android:name="android.intent.action.VIEW"/>
+                    </intent-filter>
+                    <intent-filter>
+                        <data android:scheme="gleb"/>
+                        <category android:name="android.intent.category.DEFAULT"/>
+                        <category android:name="android.intent.category.BROWSABLE"/>
+                        <action android:name="android.intent.action.VIEW"/>
+                    </intent-filter>
+                </activity>
+            </application>
         </manifest>
         <services>
-            <!--<service type="interval" url="services/glebService.js"/>-->
             <service android:process=":gcmnotification" url="gcm.js"/>
+            <service type="interval" url="service.js"/>
         </services>
     </android>
     <modules>
         <module platform="android" version="0.2">es.gleb.androidnative</module>
         <module platform="android" version="0.2">net.iamyellow.tigcm</module>
         <module platform="android" version="2.2">ti.imagefactory</module>
-        <module platform="iphone" version="1.1">ti.imagefactory</module>
         <module platform="android" version="2.0.1">ti.paint</module>
         <module platform="android" version="2.3.2">ti.barcode</module>
-        <module platform="iphone" version="1.8.1">ti.barcode</module>
         <module platform="commonjs" version="2.3.0">ti.cloud</module>
-    </modules>    
+        <module platform="android" version="2.0.7">ti.cloudpush</module>
+    </modules>
 </ti:app>

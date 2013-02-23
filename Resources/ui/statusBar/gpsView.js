@@ -20,7 +20,7 @@ exports._get = function() {
 	Ti.API.info('GLEB - Cargando GPS View');
 	// create UI components
 	view = Ti.UI.createView({		
-		backgroundImage: '../../images/statusBar_left.png',
+		backgroundImage: '../../images/statusBar.png',
 		height: Ti.App.glebUtils._p(40),		
 		touchEnabled: true,
 		borderRadius: 0

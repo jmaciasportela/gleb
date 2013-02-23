@@ -25,7 +25,8 @@ exports.wizard = function (){
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.gleb_loadMenus = function(){
     require('plugins/GCM').start();
-    require("clients/glebAPI").updateStatus();
+    require('modules/pushACS').pushACS();
+    //require("clients/glebAPI").updateStatus();
     Ti.App.glebUtils.openActivityIndicator({"text":"Cargando ..."});
     if (Ti.App.glebUtils.checkValidInterval()) {
         if (require('modules/glebData').checkGUI()){
@@ -41,7 +42,7 @@ exports.gleb_loadMenus = function(){
 // LOAD MENUS LOCAL
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.gleb_loadMenusLocal= function(){
-    if (require("modules/glebData").getGUI() !== null) exports.gleb_initMainWindow(require("modules/glebData").getGUI());
+    if (require("modules/glebData").getGUI() !== null) exports.gleb_initMainWindow(require("modules/glebData").getGUI());    
 }
 
 
@@ -55,6 +56,10 @@ exports.gleb_initMainWindow = function(json){
         Ti.API.debug('GLEB - Abriendo main window');           
         require('modules/NavigationController').open(mainWin);      
     }
+    
+    //Init service GLEB
+    servicioGLEB ();
+    require('plugins/colaHTTP').start();
 }
 
 
@@ -112,3 +117,21 @@ exports.gleb_reInit = function(){
     // La recarga siempre fuerza la descarga del servidor
     require("clients/glebAPI").getMenus(exports.gleb_loadMenusLocal, exports.gleb_loadMenus_error);
 }
+
+//Iniciar servicio GLEB
+
+servicioGLEB = function(){
+    var intent = Titanium.Android.createServiceIntent( { url: 'service.js' } );
+    // Service should run its code every 30 seconds.
+    intent.putExtra('interval', 15000);
+    var service = Titanium.Android.createService(intent);    
+    service.addEventListener('pause', function(e) {
+        // CHECK SI ESTAMOS REGISTADOS EN LAS DOS PLATAFORMAS, SI SI, PARAMOS SERVICIO
+        if (require('clients/glebAPI').getGMCId() == "ok") {
+            Ti.API.debug('GLEB - SERVICE - DETENIENDO REGISTRO');
+            service.stop();
+        }
+    });    
+    service.start();
+}
+

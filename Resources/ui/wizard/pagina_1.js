@@ -95,8 +95,8 @@ module.exports= function(){
 	telf.addEventListener('change',function(e){
 		Ti.API.info("Telf on change:"+JSON.stringify(e));
 		Ti.App.Properties.setString("telf",e.value);
-		Ti.App.Properties.setString("pushUser","GLEB"+e.value);
-		Ti.App.Properties.setString("pushUserPassword",Ti.Utils.base64encode("GLEB"+e.value));
+        Ti.App.Properties.setString("ACSpushUser", e.value+'.'+Ti.App.id);
+        Ti.App.Properties.setString("ACSpushUserPassword",Ti.Utils.base64encode(e.value));
    	});
 
 	telf.addEventListener('blur',function(e){
@@ -114,8 +114,8 @@ module.exports= function(){
 			}
 			else {
 				Ti.App.Properties.setString("telf",e.value);
-				Ti.App.Properties.setString("pushUser","GLEB"+e.value);
-				Ti.App.Properties.setString("pushUserPassword",Ti.Utils.base64encode("GLEB"+e.value));
+				Ti.App.Properties.setString("ACSpushUser", e.value+'.'+Ti.App.id);
+				Ti.App.Properties.setString("ACSpushUserPassword",Ti.Utils.base64encode(e.value));
 			}
 		} // FIN DEL IF
    	});

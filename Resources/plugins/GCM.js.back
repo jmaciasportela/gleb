@@ -7,6 +7,7 @@
 var tigcm = require('net.iamyellow.tigcm');
 var id = null;
 
+    
 Ti.API.debug('GLEB - GCM - Loading Module');    
 // GLEB - GCM -   message event 
 // setting this to true will force the module to execute the message event instead of the notification in gcm.js when the app is in foreground.
@@ -26,9 +27,10 @@ tigcm.addEventListener('registered', function (ev) {
     // the server uses it in order to send notifications to devices
     //Lanzamos la peticion para actualizar el server
     //Ponemos el icono en verde
-    Ti.API.debug('GLEB - GCM - registered event');
+    id = ev.registrationId;
     Ti.App.Properties.setString("GCMpushUserId", ev.registrationId);
     require('clients/glebAPI').setGCMId(ev.registrationId);
+    // PONER VERDE EL ICONITO 
     Ti.API.debug('GLEB - GCM - registered with id ' + ev.registrationId);
 });
 
@@ -40,27 +42,27 @@ tigcm.addEventListener('unregistered', function (ev) {
 });
 
 tigcm.addEventListener('error', function (ev) {
-    Ti.API.debug('GLEB - GCM - error with id ' + ev.id);
+    tigcm.unregisterDevice();
+    tigcm.registerDevice();
 });
 
 tigcm.addEventListener('recoverableError', function (ev) {
     Ti.API.debug('GLEB - GCM - recoverable error with id ' + ev.id);
 });
 
-exports.start = function (){    
-    Ti.API.debug('GLEB - GCM - Start registering');    
-    id = tigcm.registrationId;
-    if (id === null) {
-        // if not, register and wait for 'registered' event!
-        Ti.API.debug('GLEB - GCM - Registering device ...');        
-        tigcm.registerDevice();
+exports.register = function (){
+    Ti.API.debug('GLEB - GCM - Registering device');
+    if (id != null){
+        id = null;
+        tigcm.unregisterDevice();
     }
-    else {        
-        Ti.API.debug('GLEB - GCM - we had the registration ID, is = ' + id);
-        Ti.App.Properties.setString("GCMpushUserId", id);
-        require('clients/glebAPI').setGCMId(id);
-    }
-}    
-    
-    
-    
+    tigcm.registerDevice();
+}
+exports.unregister = function (){
+    Ti.API.debug('GLEB - GCM - Unregistering device');
+    if (id != null){
+        id = null; 
+        tigcm.unregisterDevice();
+    }   
+}
+
