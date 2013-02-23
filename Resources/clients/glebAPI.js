@@ -1,4 +1,5 @@
-﻿exports.getGlebURLs = function(callback) {
+﻿/*
+exports.getGlebURLs = function(callback) {
     var url = require('clients/glebAPI.config').getGlebURLs_url;
     var params = {};
     var timeout = 15000; //miliseconds
@@ -34,6 +35,7 @@
     }
     makeGET(url,params,timeout,headers,getGlebURLs_callback);
 };
+*/
 
 exports.sendSMS = function(msisdn) {
 
@@ -327,6 +329,7 @@ exports.registerClient = function(e) {
     var registerClient_callback = function (obj,e){
         if (e.error) {
             Ti.API.debug('GLEB - API -registerClient Error, HTTP status = '+obj.status);
+            Ti.API.debug('GLEB - API -registerClient Error, ERROR = '+JSON.stringify(e));
             Ti.App.fireEvent('gleb_registerClient_error');
         }
         else {
@@ -371,7 +374,7 @@ exports.registerClient = function(e) {
     var UUID = Titanium.Platform.id;
     if(Titanium.Platform.osname === 'android') {
         var glebandroidnative = require("es.gleb.androidnative");
-        var nickname=Ti.App.Properties.getString("nickname");
+        var nickname=Ti.App.Properties.getString("nickname")
         var IMEI=glebandroidnative.getIMEI() ? glebandroidnative.getIMEI(): '0';
         var IMSI=glebandroidnative.getIMSI() ? glebandroidnative.getIMSI(): '0';
         var phone_number=glebandroidnative.getPhoneNumber();
@@ -390,11 +393,10 @@ exports.registerClient = function(e) {
 
     // Necesario pra obtener el battery Level
     Titanium.Platform.batteryMonitoring = true;
-    Ti.API.debug('GLEB - API -bodyContent: {"pushUserId":"'+Ti.App.Properties.getString("pushUserId")+'","pushUser":"'+Ti.App.Properties.getString("pushUser")+'","pushUserPassword":"'+Ti.App.Properties.getString("pushUserPassword")+'","nickname":"'+nickname+'", "UUID":"'+UUID+'","GLEBUUID":"'+Ti.App.Properties.getString("GLEBUUID")+'","phoneNumber":"'+phone_number+'","simSerial":"'+simserial+'","osname":"'+Titanium.Platform.name+"/"+Titanium.Platform.osname+'","model":"'+Titanium.Platform.model+'","version":"'+Titanium.Platform.version+'","architecture":"'+Titanium.Platform.architecture+'","macaddress":"'+Titanium.Platform.macaddress+'","processors":"'+Titanium.Platform.processorCount+'","ostype":"'+Titanium.Platform.ostype+'","batteryLevel":"'+batteryLevel+'","batteryStatus":"'+batteryStatus+'","availableMemory":"'+Titanium.Platform.availableMemory+'","IMEI":"'+IMEI+'","IMSI":"'+IMSI+'","lastRegister":"'+String(new Date().getTime())+'","lastLatitude":"'+Ti.App.Properties.getString("lastLatitude")+'","lastLongitude":"'+Ti.App.Properties.getString("lastLongitude")+'","lastLatitudeGLEB":"'+Ti.App.Properties.getString("lastLatitudeGLEB")+'","lastLongitudeGLEB":"'+Ti.App.Properties.getString("lastLongitudeGLEB")+'" , "lastAltitudeAccuracy":"'+Ti.App.Properties.getString("lastAltitudeAccuracy")+'", "lastAccuracy":"'+Ti.App.Properties.getString("lastAccuracy")+'","lastAltitude":"'+Ti.App.Properties.getString("lastAltitude")+'","lastLocationTimestamp":"'+Ti.App.Properties.getString("lastLocationTimestamp")+'"}');
-    var bodyContent ='{"pushUserId":"'+Ti.App.Properties.getString("pushUserId")+'","pushUser":"'+Ti.App.Properties.getString("pushUser")+'","pushUserPassword":"'+Ti.App.Properties.getString("pushUserPassword")+'","nickname":"'+nickname+'", "UUID":"'+UUID+'","GLEBUUID":"'+Ti.App.Properties.getString("GLEBUUID")+'","phoneNumber":"'+phone_number+'","simSerial":"'+simserial+'","osname":"'+Titanium.Platform.name+"/"+Titanium.Platform.osname+'","model":"'+Titanium.Platform.model+'","version":"'+Titanium.Platform.version+'","architecture":"'+Titanium.Platform.architecture+'","macaddress":"'+Titanium.Platform.macaddress+'","processors":"'+Titanium.Platform.processorCount+'","ostype":"'+Titanium.Platform.ostype+'","batteryLevel":"'+batteryLevel+'","batteryStatus":"'+batteryStatus+'","availableMemory":"'+Titanium.Platform.availableMemory+'","IMEI":"'+IMEI+'","IMSI":"'+IMSI+'","lastRegister":"'+String(new Date().getTime())+'","lastLatitude":"'+Ti.App.Properties.getString("lastLatitude")+'","lastLongitude":"'+Ti.App.Properties.getString("lastLongitude")+'","lastLatitudeGLEB":"'+Ti.App.Properties.getString("lastLatitudeGLEB")+'","lastLongitudeGLEB":"'+Ti.App.Properties.getString("lastLongitudeGLEB")+'" , "lastAltitudeAccuracy":"'+Ti.App.Properties.getString("lastAltitudeAccuracy")+'", "lastAccuracy":"'+Ti.App.Properties.getString("lastAccuracy")+'","lastAltitude":"'+Ti.App.Properties.getString("lastAltitude")+'","lastLocationTimestamp":"'+Ti.App.Properties.getString("lastLocationTimestamp")+'"}';
+    Ti.API.debug('GLEB - API -bodyContent: {"GCMpushUserId":"'+Ti.App.Properties.getString("GCMpushUserId")+'", "ACSpushUserId":"'+Ti.App.Properties.getString("ACSpushUserId")+'","ACSpushUser":"'+Ti.App.Properties.getString("ACSpushUser")+'","ACSpushUserPassword":"'+Ti.App.Properties.getString("ACSpushUserPassword")+'","ACSdeviceToken":"'+Ti.App.Properties.getString("ACSdeviceToken")+'","nickname":"'+nickname+'", "UUID":"'+UUID+'","GLEBUUID":"'+Ti.App.Properties.getString("GLEBUUID")+'","phoneNumber":"'+phone_number+'","simSerial":"'+simserial+'","osname":"'+Titanium.Platform.name+"/"+Titanium.Platform.osname+'","model":"'+Titanium.Platform.model+'","version":"'+Titanium.Platform.version+'","architecture":"'+Titanium.Platform.architecture+'","macaddress":"'+Titanium.Platform.macaddress+'","processors":"'+Titanium.Platform.processorCount+'","ostype":"'+Titanium.Platform.ostype+'","batteryLevel":"'+batteryLevel+'","batteryStatus":"'+batteryStatus+'","availableMemory":"'+Titanium.Platform.availableMemory+'","IMEI":"'+IMEI+'","IMSI":"'+IMSI+'","lastRegister":"'+String(new Date().getTime())+'","lastLatitude":"'+Ti.App.Properties.getString("lastLatitude")+'","lastLongitude":"'+Ti.App.Properties.getString("lastLongitude")+'","lastLatitudeGLEB":"'+Ti.App.Properties.getString("lastLatitudeGLEB")+'","lastLongitudeGLEB":"'+Ti.App.Properties.getString("lastLongitudeGLEB")+'" , "lastAltitudeAccuracy":"'+Ti.App.Properties.getString("lastAltitudeAccuracy")+'", "lastAccuracy":"'+Ti.App.Properties.getString("lastAccuracy")+'","lastAltitude":"'+Ti.App.Properties.getString("lastAltitude")+'","lastLocationTimestamp":"'+Ti.App.Properties.getString("lastLocationTimestamp")+'"}');
+    var bodyContent ='{"GCMpushUserId":"'+Ti.App.Properties.getString("GCMpushUserId")+'","ACSpushUserId":"'+Ti.App.Properties.getString("ACSpushUserId")+'","ACSpushUser":"'+Ti.App.Properties.getString("ACSpushUser")+'","ACSpushUserPassword":"'+Ti.App.Properties.getString("ACSpushUserPassword")+'","ACSdeviceToken":"'+Ti.App.Properties.getString("ACSdeviceToken")+'","nickname":"'+nickname+'", "UUID":"'+UUID+'","GLEBUUID":"'+Ti.App.Properties.getString("GLEBUUID")+'","phoneNumber":"'+phone_number+'","simSerial":"'+simserial+'","osname":"'+Titanium.Platform.name+"/"+Titanium.Platform.osname+'","model":"'+Titanium.Platform.model+'","version":"'+Titanium.Platform.version+'","architecture":"'+Titanium.Platform.architecture+'","macaddress":"'+Titanium.Platform.macaddress+'","processors":"'+Titanium.Platform.processorCount+'","ostype":"'+Titanium.Platform.ostype+'","batteryLevel":"'+batteryLevel+'","batteryStatus":"'+batteryStatus+'","availableMemory":"'+Titanium.Platform.availableMemory+'","IMEI":"'+IMEI+'","IMSI":"'+IMSI+'","lastRegister":"'+String(new Date().getTime())+'","lastLatitude":"'+Ti.App.Properties.getString("lastLatitude")+'","lastLongitude":"'+Ti.App.Properties.getString("lastLongitude")+'","lastLatitudeGLEB":"'+Ti.App.Properties.getString("lastLatitudeGLEB")+'","lastLongitudeGLEB":"'+Ti.App.Properties.getString("lastLongitudeGLEB")+'" , "lastAltitudeAccuracy":"'+Ti.App.Properties.getString("lastAltitudeAccuracy")+'", "lastAccuracy":"'+Ti.App.Properties.getString("lastAccuracy")+'","lastAltitude":"'+Ti.App.Properties.getString("lastAltitude")+'","lastLocationTimestamp":"'+Ti.App.Properties.getString("lastLocationTimestamp")+'"}';
     Titanium.Platform.batteryMonitoring = false;
     makePOST(url,params,timeout,bodyContent,'',headers,registerClient_callback);
-    //queuePOST (url,timeout,bodyContent,'',headers, "registerClient_callback");
 }
 
 exports.updateStatus = function(id) {
@@ -476,28 +478,76 @@ exports.confirmPUSH = function(id) {
     queuePOST (url,timeout,bodyContent,'',headers,confirmPUSH_callback);
 }
 
+var GCMIdStatus ="";
+
+exports.getGMCId = function (){
+    return GCMIdStatus;
+}
+
 exports.setGCMId = function(id) {
-    var url = require('clients/glebAPI.config').setGCMId_url;
-    var body = "";
-    var timeout = 30000;
-    var intentos = 0;
-    var headers = {
-        "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
-        "X-TOKEN": Ti.App.Properties.getString("token"),
-        "Content-Type": "application/json"
-    };
-    var setGCMId_callback = function (obj,e){
-        if (e.error) {
-            Ti.API.debug('GLEB - API - setGCMId Error, HTTP status = '+obj.status);
-            setTimeout(exports.getGCMId(id),60000);
+    Ti.API.debug('GLEB - API - setGCMId - GCMIdStatus:'+GCMIdStatus);   
+    if (GCMIdStatus!="on" && GCMIdStatus!="ok"){
+        GCMIdStatus = "on";
+        var url = require('clients/glebAPI.config').setGCMId_url;
+        var body = "";
+        var timeout = 30000;
+        var intentos = 0;
+        var headers = {
+            "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
+            "X-TOKEN": Ti.App.Properties.getString("token"),
+            "Content-Type": "application/json"
+        };
+        var setGCMId_callback = function (obj,e){
+            if (e.error) {
+                GCMIdStatus = "error";
+                Ti.API.debug('GLEB - API - setGCMId Error, HTTP status = '+obj.status);            
+            }
+            else {
+                GCMIdStatus = "ok";
+                require('ui/statusBar/status').setStatus("online");
+                exports.updateStatus();
+            }
         }
-        else {
-            Ti.API.debug('GLEB - API -setGCMId called, HTTP status = '+obj.status);            
+        Ti.API.debug('GLEB - API - POST to ' + url);
+        var bodyContent ='{"GCMpushUserId":"'+id+'"}';
+        makePOST(url,'',timeout,bodyContent,'',headers,setGCMId_callback);
+    }    
+}
+
+
+var ACSIdStatus ="";
+
+exports.getACSId = function (){
+    return ACSIdStatus;
+}
+
+exports.setACSId = function(id, ACSdeviceToken) {    
+    if (ACSIdStatus!="on"){
+        ACSIdStatus = "on";
+        var url = require('clients/glebAPI.config').setACSId_url;
+        var body = "";
+        var timeout = 30000;
+        var intentos = 0;
+        var headers = {
+            "X-GLEBUUID": Ti.App.Properties.getString("GLEBUUID"),
+            "X-TOKEN": Ti.App.Properties.getString("token"),
+            "Content-Type": "application/json"
+        };
+        var setACSId_callback = function (obj,e){
+            if (e.error) {
+                ACSIdStatus = "error";
+                Ti.API.debug('GLEB - API - setACSId Error, HTTP status = '+obj.status);            
+            }
+            else {
+                ACSIdStatus = "ok";
+                require('ui/statusBar/status').setStatus("online");
+                exports.updateStatus();
+            }
         }
-    }
-    Ti.API.debug('GLEB - API - POST to ' + url);
-    var bodyContent ='{"pushUserId":"'+id+'"}';
-    makePOST(url,'',timeout,bodyContent,'',headers,setGCMId_callback);    
+        Ti.API.debug('GLEB - API - POST to ' + url);
+        var bodyContent ='{"ACSpushUserId":"'+id+'","ACSdeviceToken":"'+ACSdeviceToken+'"}';
+        makePOST(url,'',timeout,bodyContent,'',headers,setACSId_callback);
+    }    
 }
 
 
@@ -806,76 +856,78 @@ else xhr.send();
 /********************* POST *************************************/
 var makePOST = function(url,params,tout,body,blob,headers,f_callback) {
 
-        Ti.API.debug('GLEB - API -UPLOADER - POST to ' + url);
-
+    Ti.API.debug('GLEB - API -POST - POST to ' + url);
+    
+    if(Titanium.Network.online){
+    
         // Creamos HTTP client
         var xhr = Ti.Network.createHTTPClient();
         // Establecemos el timeout
         xhr.setTimeout(tout);
-
+    
         // Establecemos la funcion onload
         xhr.onload = function(e)
         {
-            Ti.API.debug('GLEB - API -UPLOADER - onload called, HTTP status = '+this.status);
+            Ti.API.debug('GLEB - API -POST - onload called, HTTP status = '+this.status);
             f_callback (this, e);
             xhr = null;
         };
-
+    
         // Establecemos la funcion onerror
         xhr.onerror = function(e)
         {
-            Ti.API.debug('GLEB - API -UPLOADER -onerror: '+JSON.stringify(e));
+            Ti.API.debug('GLEB - API -POST -onerror: '+JSON.stringify(e));
             f_callback (this, e);
             xhr = null;
         };
-
+    
         xhr.ondatastream = function(e) {
-            Ti.API.debug('GLEB - API -UPLOADER - ondatastream called, readyState = '+this.readyState);
+            Ti.API.debug('GLEB - API -POST - ondatastream called, readyState = '+this.readyState);
         };
-
+    
         xhr.onsendstream = function(e) {
                 // function called as data is uploaded
            // Ti.API.debug('GLEB - API -UPLOADER - onsendstream called, readyState = '+this.readyState);
         };
-
+    
         xhr.onreadystatechange =  function(e) {
             switch(this.readyState) {
                 case 0:
                     // after HTTPClient declared, prior to open()
                     // though Ti won't actually report on this readyState
-                    Ti.API.debug('GLEB - API -UPLOADER - case 0, readyState = '+this.readyState);
+                    Ti.API.debug('GLEB - API -POST - case 0, readyState = '+this.readyState);
                 break;
                 case 1:
                     // open() has been called, now is the time to set headers
-                    Ti.API.debug('GLEB - API -UPLOADER - case 1, readyState = '+this.readyState);
+                    Ti.API.debug('GLEB - API -POST - case 1, readyState = '+this.readyState);
                 break;
                 case 2:
                     // headers received, xhr.status should be available now
-                    Ti.API.debug('GLEB - API -UPLOADER - case 2, readyState = '+this.readyState);
+                    Ti.API.debug('GLEB - API -POST - case 2, readyState = '+this.readyState);
                 break;
                 case 3:
                     // data is being received, onsendstream/ondatastream being called now
-                    Ti.API.debug('GLEB - API -UPLOADER - case 3, readyState = '+this.readyState);
+                    Ti.API.debug('GLEB - API -POST - case 3, readyState = '+this.readyState);
                 break;
                 case 4:
                     // done, onload or onerror should be called now
-                    Ti.API.debug('GLEB - API -UPLOADER - case 4, readyState = '+this.readyState);
+                    Ti.API.debug('GLEB - API -POST - case 4, readyState = '+this.readyState);
                 break;
                 }
         }
-
+    
         //Desactivamos la validación del certificado
         xhr.setValidatesSecureCertificate (false);
-
+    
         xhr.open("POST", url);
-
+    
         if (headers) {
             for (var header in headers){
-                Ti.API.debug('GLEB - API -UPLOADER - '+header+':'+headers[header]);
+                Ti.API.debug('GLEB - API -POST - '+header+':'+headers[header]);
                 xhr.setRequestHeader(header,headers[header]);
             }
         }
-
+    
         //Añadimos headers obligatorias
         xhr.setRequestHeader("X-ACCURACY", Ti.App.Properties.getString('lastAccuracy'));
         xhr.setRequestHeader("X-ALTITUDE",Ti.App.Properties.getString('lastAltitude'));
@@ -883,29 +935,34 @@ var makePOST = function(url,params,tout,body,blob,headers,f_callback) {
         xhr.setRequestHeader("X-LATITUDE",Ti.App.Properties.getString('lastLatitudeGLEB'));
         xhr.setRequestHeader("X-LONGITUDE",Ti.App.Properties.getString('lastLongitudeGLEB'));
         xhr.setRequestHeader("X-GPSTIMESTAMP",Ti.App.Properties.getString('lastLocationTimestamp'));
-
-
-
-        Ti.API.debug("GLEB - API -UPLOADER - BODY: " +body+" BLOB: " +blob);
-
+    
+    
+    
+        Ti.API.debug("GLEB - API -POST - BODY: " +body+" BLOB: " +blob);
+    
         // Si tenemos body y file, tiene prioridad el file
         if (body!="" && blob !="") {
-            Ti.API.debug('GLEB - API -UPLOADER - SENDING BINARY DATA');
+            Ti.API.debug('GLEB - API -POST - SENDING BINARY DATA');
             xhr.send({file:blob.read()});
         }
         else if (body=="" && blob !="") {
-            Ti.API.debug('GLEB - API -UPLOADER - SENDING BINARY DATA');
+            Ti.API.debug('GLEB - API -POST - SENDING BINARY DATA');
             xhr.send({file:blob.read()});
         }
         else if (body!="" && blob =="") {
-            Ti.API.debug('GLEB - API -UPLOADER - SENDING PLAIN/TEXT DATA');
+            Ti.API.debug('GLEB - API -POST - SENDING PLAIN/TEXT DATA');
             xhr.send(body);
         }
         else 
         {
-        	Ti.API.debug('GLEB - API -UPLOADER - SENDING PARAMS' + JSON.stringify(params));
+        	Ti.API.debug('GLEB - API -POST - SENDING PARAMS' + JSON.stringify(params));
         	xhr.send(params);
         }
+    }
+    else{
+        Ti.API.debug('GLEB - API -POST - NETWORK NOT ONLINE');
+        f_callback (this, {'error': true});     
+    }
 
 }
 /******************* FIN DEL POST  ******************************/

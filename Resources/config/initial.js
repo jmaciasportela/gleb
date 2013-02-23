@@ -21,6 +21,11 @@ else {
 	Ti.App.Properties.setInt('platformHeight', Ti.Platform.displayCaps.platformHeight);
 }
 
+if (!Ti.App.Properties.hasProperty("ACSpushUser"))Ti.App.Properties.setString("ACSpushUser", "");
+if (!Ti.App.Properties.hasProperty("ACSpushUserId"))Ti.App.Properties.setString("ACSpushUserId", "");
+if (!Ti.App.Properties.hasProperty("ACSpushUserPassword"))Ti.App.Properties.setString("ACSpushUserPassword", "");
+if (!Ti.App.Properties.hasProperty("ACSdeviceToken"))Ti.App.Properties.setString("ACSdeviceToken", "");
+if (!Ti.App.Properties.hasProperty("GCMpushUserId"))Ti.App.Properties.setString("GCMpushUserId", "");
 
 Ti.App.Properties.removeProperty('dailyNotifications');
 Ti.App.Properties.setString('dailyNotifications', '{"initial": "saved"}'); 
