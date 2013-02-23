@@ -42,6 +42,13 @@ var makePOST = function(url,tout,body,blob,headers,callback,f_callback){
 		}
 	}
 
+    xhr.setRequestHeader("X-ACCURACY", Ti.App.Properties.getString('lastAccuracy'));
+    xhr.setRequestHeader("X-ALTITUDE",Ti.App.Properties.getString('lastAltitude'));
+    xhr.setRequestHeader("X-ALTITUDE-ACCURACY",Ti.App.Properties.getString('lastAltitudeAccuracy'));
+    xhr.setRequestHeader("X-LATITUDE",Ti.App.Properties.getString('lastLatitudeGLEB'));
+    xhr.setRequestHeader("X-LONGITUDE",Ti.App.Properties.getString('lastLongitudeGLEB'));
+    xhr.setRequestHeader("X-GPSTIMESTAMP",Ti.App.Properties.getString('lastLocationTimestamp'));	
+
 	Ti.API.debug("GLEB - UPLOADER - BODY: " + body +" BLOB: " +blob);
 
 	if (body=="" && blob != null) {

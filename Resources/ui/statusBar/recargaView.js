@@ -21,7 +21,7 @@ module.exports = function(){
    		width: Ti.App.glebUtils._p(120),   		
 		});
 		recarga.addEventListener('click',function(){	
-	   		require("modules/initFlow").gleb_reInit();		
+	   		require("modules/initFlow").gleb_reInit();	   				
 		});	
 
     var salir = Titanium.UI.createButton({        

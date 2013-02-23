@@ -29,11 +29,10 @@ exports.start = function(){
 	Ti.App.Properties.setBool('isUploading',false);
 	
 	// Starting service like
-	var uploadService = require('plugins/uploader');
 	setInterval (function(){	
 		if (!Ti.App.Properties.getBool('isUploading')) {
 		    Ti.API.debug('GLEB - colaHTTP - Checking HTTP QUEUE to start new upload');
-		    uploadService.start();
+		    require('plugins/uploader').start();
 		}   
 		else  Ti.API.debug('GLEB - colaHTTP - Uploading file, skipping to next interval');
 	},parseInt(Ti.App.Properties.getString('tUpload')));
