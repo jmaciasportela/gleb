@@ -15,81 +15,118 @@ Ti.API.debug("GLEB - SERVICE GCM - Message: "+ serviceIntent.getStringExtra('mes
 Ti.API.debug("GLEB - SERVICE GCM - Payload: "+ serviceIntent.getStringExtra('payload'));
 Ti.API.debug("GLEB - SERVICE GCM - Serial: "+ serviceIntent.getStringExtra('serial'));
 
+//Convierte la posicion GPS al formato GLEB
+function convertPosition (position,isLatitude) {
+   positive = position > 0 ? true : false;
+   position = Math.abs(position);
+   latDegrees = Math.floor(position);               
+   position = position - latDegrees;
+   latMinutes = Math.floor(position * 60);
+   position = position - (latMinutes / 60.0);
+   latSeconds = Math.round((position * 3600)*Math.pow(10,3))/Math.pow(10,3);
+   return Ti.Utils.base64encode(latDegrees+ "º"+ latMinutes+ "' "+latSeconds+ "\" "+ (positive ? (isLatitude ? "N" : "E") : (isLatitude ? "S": "O")));
+}
+
+function silentLocation(e)
+    {   
+        var lastLocationTimestamp = parseInt(Ti.App.Properties.getString('lastLocationTimestamp'));        
+        if (!e.success || e.error)
+        {
+            Ti.API.debug("GLEB - SILENTGPS - Geolocation Listener Error: " + translateErrorCode(e.code)+" - "+ e.error); 
+            Ti.API.debug("GLEB - SILENTGPS - Geolocation Listener Error: " + e.code + " - "+ e.error);
+            if (e.code == 3) Ti.App.Properties.setBool('GPSOff', true);
+        }       
+        else {
+            
+        Ti.API.debug('GLEB - SILENTGPS - Geolocation Updated: ' + JSON.stringify(e));
+        var longitude = e.coords.longitude;
+        var latitude = e.coords.latitude;
+        var currentProvider = e.provider.name;
+        var altitude = e.coords.altitude;
+        var heading = e.coords.heading;
+        var accuracy = e.coords.accuracy;
+        var speed = e.coords.speed;
+        var timestamp = e.coords.timestamp;
+        var altitudeAccuracy = e.coords.altitudeAccuracy;        
+        // TRACKING DE POSICION     
+        prevTimeStamp = Ti.App.Properties.getString('prevTimestamp');
+        Ti.API.debug('GLEB - SILENTGPS - Ultimo tracking: ' + prevTimeStamp+ ', nuevo timestamp: ' + timestamp+', diferencia: ' + (parseInt(timestamp) - parseInt(prevTimeStamp)).toString());
+        // Dif de tiempo en milisegundos
+        if (parseInt(timestamp) - parseInt(prevTimeStamp) > parseInt(Ti.App.Properties.getString('tTracking')) ){
+            Ti.App.Properties.setString('prevTimestamp',timestamp);
+            Ti.API.debug('GLEB - SILENTGPS - Guardando tracking de posición');
+            var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory,'trackingGPS');
+            if (!uiDir.exists()) {
+                uiDir.createDirectory();
+            }
+            var d = new Date;   
+            var day=d.getDate();
+            var month = d.getMonth();
+            var year = d.getFullYear();
+            if (day<= 10){
+               day = "0" + day;
+            }
+            if (month<= 10){
+               month = "0"+month;
+            }
+            datestr=day.toString()+month.toString()+year.toString();
+            var f = Titanium.Filesystem.getFile(uiDir.resolve(), "tracking_"+datestr+".json");
+            var record =' {"provider":"'+e.provider.name+'","coords":'+JSON.stringify(e.coords)+",\r\n";            
+            if (f.write(record, true)===false) {               
+               Ti.API.debug("GLEB - SILENTGPS - Ha habido un error guardando el tracking");
+            }
+            else Ti.API.debug("GLEB - SILENTGPS - tracking guardado correctamente"); 
+        }
+
+        if (longitude < 0) Ti.App.Properties.setString('lastLongitude', longitude.toString().substring(0,10));
+        else Ti.App.Properties.setString('lastLongitude', longitude.toString().substring(0,10));
+        if (latitude < 0) Ti.App.Properties.setString('lastLatitude', latitude.toString().substring(0,10));
+        else Ti.App.Properties.setString('lastLatitude', latitude.toString().substring(0,10));  
+        Ti.App.Properties.setString('lastProvider', currentProvider);   
+        Ti.App.Properties.setString('lastAccuracy', Math.floor(accuracy));
+        Ti.App.Properties.setString('lastAltitude', Math.floor(altitude));
+        Ti.App.Properties.setString('lastAltitudeAccuracy', altitudeAccuracy);
+        Ti.App.Properties.setString('lastLatitudeGLEB', convertPosition (latitude, true));
+        Ti.App.Properties.setString('lastLongitudeGLEB', convertPosition (longitude, true));
+        Ti.App.Properties.setString('lastLocationTimestamp', timestamp);      
+
+
+        Ti.API.debug("GLEB - SILENTGPS - ACCURACY:"+Math.floor(accuracy)+" timestamp:"+parseInt(timestamp)+ "lastTimestamp:"+lastLocationTimestamp);
+        
+        if (Math.floor(accuracy) <= 50 && parseInt(timestamp) > lastLocationTimestamp){                
+            //Location conseguida, apagamos location
+            Ti.API.debug("GLEB - SILENTGPS - Deshabilitando localizacion");
+            Titanium.Geolocation.removeEventListener('location', silentLocation);
+            //Paramos el servicios
+            Ti.API.debug("GLEB - SILENTGPS - Parando Servicio");
+            Ti.Android.stopService(serviceIntent);
+        } 
+    }   
+}
+
+
+
 //Check if serial exist
 if (!require('config/data').contains(serviceIntent.getStringExtra('serial'))){
-    Ti.API.debug("GLEB - SERVICE GCM - Notificacion "+ serviceIntent.getStringExtra('serial')+" recibida.");
-    
+
     if (serviceIntent.getStringExtra('pushId') == "0000"){
-        tickerText = serviceIntent.getStringExtra('message');
-        contentText = serviceIntent.getStringExtra('message');
-        contentTitle = "GLEB Alert";   
-        require('config/data').push(serviceIntent.getStringExtra('serial'));
-    }    
-
-    var db = Ti.Database.install(Titanium.Filesystem.resourcesDirectory+'sql/actions.sqlite','actions');
-    try {
-        db.execute('INSERT INTO actions (pushId,message,payload,serial) VALUES("'+serviceIntent.getStringExtra('pushId')+'","'+serviceIntent.getStringExtra('message')+'","'+serviceIntent.getStringExtra('payload')+'","'+serviceIntent.getStringExtra('serial')+'");');
-        Ti.API.debug("GLEB - SERVICE GCM - Notificacion saved on DB");
+        Ti.Geolocation.Android.manualMode = true;
+            gpsProvider = Ti.Geolocation.Android.createLocationProvider({
+            name: Ti.Geolocation.PROVIDER_GPS,
+            minUpdateTime: 15, 
+            minUpdateDistance: 10
+        });
+        Ti.Geolocation.Android.addLocationProvider(gpsProvider);    
+        Titanium.Geolocation.addEventListener('location', silentLocation);
+        Ti.API.debug("GLEB - SILENT GPS - Habilitando localizacion");        
     }
-    catch (err){
-        Ti.API.error("GLEB - SERVICE GCM - Fail to save in DB");
-    }   
-    db.close();
-
-    
-    // ****************************************************************************************************************
-    // intents & notification
-    
-    // we an intent and a pending intent in order to open the app when the users clicks on the notification
-    var notificationIntent = Ti.Android.createIntent({
-        className: 'es.thinetic.ngleb.NewglebActivity',
-        packageName: 'es.thinetic.ngleb',
-    });
-    /*
-    notificationIntent.putExtra("pushId", serviceIntent.getStringExtra('pushId'));
-    notificationIntent.putExtra("mesage", serviceIntent.getStringExtra('message'));
-    notificationIntent.putExtra("payload", serviceIntent.getStringExtra('payload'));
-    notificationIntent.putExtra("serial", serviceIntent.getStringExtra('serial'));
-    
-    Ti.App.Properties.setString("push_pushId", serviceIntent.getStringExtra('pushId'));
-    Ti.App.Properties.setString("push_mesage", serviceIntent.getStringExtra('message'));
-    Ti.App.Properties.setString("push_payload", serviceIntent.getStringExtra('payload'));
-    Ti.App.Properties.setString("push_serial", serviceIntent.getStringExtra('serial'));
-    
-    var props = Ti.App.Properties.listProperties();
-
-for (var i=0, ilen=props.length; i<ilen; i++){
-    var value = Ti.App.Properties.getString(props[i]);
-    Ti.API.info(props[i] + ' = ' + value);
-}
-    
-        */
-       
-    // Create a PendingIntent to tie together the Activity and Intent
-    // check http://docs.appcelerator.com/titanium/2.1/index.html#!/api/Titanium.Android.PendingIntent
-    var intent = Ti.Android.createPendingIntent({
-        intent: notificationIntent,
-        flags: Titanium.Android.FLAG_UPDATE_CURRENT
-    });
-    
-    // check http://docs.appcelerator.com/titanium/2.1/index.html#!/api/Titanium.Android.Notification
-    var notification = Ti.Android.createNotification({
-    	contentIntent: intent,
-    	contentTitle: contentTitle,
-    	contentText: contentText,
-    	tickerText: tickerText,
-    	icon: Ti.App.Android.R.drawable.appicon,
-    	// icon: Ti.App.Android.R.drawable.notification,
-    	defaults:Titanium.Android.NotificationManager.DEFAULT_ALL,
-    	flags : Titanium.Android.ACTION_DEFAULT | Titanium.Android.FLAG_AUTO_CANCEL | Titanium.Android.FLAG_SHOW_LIGHTS
-    });
-    
-    Ti.Android.NotificationManager.notify((new Date().getTime()), notification);
 }
 else Ti.API.debug("GLEB - SERVICE GCM - Notificacion "+ serviceIntent.getStringExtra('serial')+" ya estaba procesada, no se hace nada.");
 
+
+
 // stop this service
-Ti.Android.stopService(serviceIntent);
+//Ti.Android.stopService(serviceIntent);
 
 
 

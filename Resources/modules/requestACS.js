@@ -16,7 +16,7 @@ exports.receivePush = function(e) {
         case "0001":
             Titanium.Media.vibrate([ 0, 500, 100, 500, 100, 500 ] );    
             Ti.API.info('GLEB - C2DM:' + payload.custom.pushId);
-            require("plugins/glebAPI").confirmPUSH(payload.custom.uuid);
+            //require("clients/glebAPI").confirmPUSH(payload.custom.uuid);
             //Ti.App.fireEvent('gleb_vibrate');
         break;  
         
@@ -32,12 +32,12 @@ exports.receivePush = function(e) {
         
         //c2dm_0004 = ACTUALIZA POSICION
         case "0004":
-            require("plugins/glebAPI").updateStatus(payload.custom.uuid);
+            require("clients/glebAPI").updateStatus(payload.custom.uuid);
         break;
         
         //c2dm_0005 = Enviar fichero tracking diario
         case "0005":
-            require("plugins/glebAPI").uploadTracking();
+            require("clients/glebAPI").uploadTracking();
         break;
         
         //c2dm_0006 = Enviar fichero tracking diario

@@ -33,11 +33,11 @@ glebACS_setUpPush = function(){
     //androidPushModule = getAndroidPushModule();
     androidPushModule.showTrayNotification = true ;
     Ti.API.debug('GLEB - ACS - showTrayNotification:'+androidPushModule.showTrayNotification);
-    androidPushModule.showAppOnTrayClick = false;
+    androidPushModule.showAppOnTrayClick = true;
     Ti.API.debug('GLEB - ACS - showAppOnTrayClick:'+androidPushModule.showAppOnTrayClick);
     androidPushModule.showTrayNotificationsWhenFocused = false;
     Ti.API.debug('GLEB - ACS - showTrayNotificationsWhenFocused:'+androidPushModule.showTrayNotificationsWhenFocused);
-    androidPushModule.focusAppOnPush = true;    
+    androidPushModule.focusAppOnPush = false;    
     Ti.API.debug('GLEB - ACS - focusAppOnPush:'+androidPushModule.focusAppOnPush);
     if (!Ti.App.Properties.getBool('ACSisPushSuscribedAll')) glebACS_suscribeChannelAll();
     if (!Ti.App.Properties.getBool('ACSisPushSuscribed')) glebACS_suscribeChannel();       
