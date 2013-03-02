@@ -345,7 +345,7 @@ exports.formContentView = function(content) {
                         Ti.App.glebUtils.closeActivityIndicator();
                         Ti.App.glebUtils.openActivityIndicator({"text":"Enviando formulario ..."});
                         Ti.API.info("GLEB - Enviando datos del formulario al GLEB server");
-                        require("clients/glebAPI").sendForm(result);
+                        require("clients/glebAPI").sendForm(result, "Envio formulario: ");
                     }
                 });
                 

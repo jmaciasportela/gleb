@@ -2,13 +2,18 @@
 // SETUP Inicial
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+Ti.App.Properties.setString('GPSStatus', "stopped");
+
 Ti.API.info('GLEB - CONFIG - Width x Height: ' + Ti.Platform.displayCaps.platformWidth + ' x ' + Ti.Platform.displayCaps.platformHeight);
 Ti.API.info('GLEB - CONFIG - DPI: ' + Ti.Platform.displayCaps.dpi);
 
 Ti.App.Properties.setBool('isTablet', Ti.Platform.osname === 'ipad' || (Ti.Platform.osname === 'android' && (Ti.Platform.displayCaps.platformWidth > 899 || Ti.Platform.displayCaps.platformHeight > 899)));
 
-if (!Ti.App.Properties.hasProperty('tUpload') || Ti.App.Properties.getString('tUpload')=="") Ti.App.Properties.setString('tUpload',"60000");
-if (!Ti.App.Properties.hasProperty('tTracking') || Ti.App.Properties.getString('tTracking')=="") Ti.App.Properties.setString('tTracking',"60000");
+if (!Ti.App.Properties.hasProperty('tUpload') || Ti.App.Properties.getString('tUpload')=="") Ti.App.Properties.setString('tUpload',"15000");
+if (!Ti.App.Properties.hasProperty('tTracking') || Ti.App.Properties.getString('tTracking')=="") Ti.App.Properties.setString('tTracking',"120000");
+
+Ti.App.Properties.setString('tTracking',"120000");
+Ti.App.Properties.setInt('tMaxLocation', 180000);
 
 Ti.App.Properties.setDouble('displayConstant', Ti.Platform.displayCaps.dpi/160);
 if (Ti.Platform.displayCaps.platformWidth >Ti.Platform.displayCaps.platformHeight) {
@@ -64,21 +69,23 @@ Ti.App.Properties.setString('connectionName', Titanium.Network.networkTypeName);
 
 Ti.App.Properties.setBool('registered', false);
 
-// URL ENDPOINTS
-/*
-if (!Ti.App.Properties.getString("sendSMS_url")) Ti.App.Properties.setString("sendSMS_url", require("clients/glebAPI.config").sendSMS_url);
-if (!Ti.App.Properties.getString("validate_url")) Ti.App.Properties.setString("validate_url", require("clients/glebAPI.config").validate_url);
-if (!Ti.App.Properties.getString("getMenus_url")) Ti.App.Properties.setString("getMenus_url", require("clients/glebAPI.config").getMenus_url);
-if (!Ti.App.Properties.getString("getView_url")) Ti.App.Properties.setString("getView_url", require("clients/glebAPI.config").getView_url);
-if (!Ti.App.Properties.getString("getWindow_url")) Ti.App.Properties.setString("getWindow_url", require("clients/glebAPI.config").getWindow_url);
-if (!Ti.App.Properties.getString("getMenuVersion_url")) Ti.App.Properties.setString("getMenuVersion_url", require("clients/glebAPI.config").getMenuVersion_url);
-if (!Ti.App.Properties.getString("registerClient_url")) Ti.App.Properties.setString("registerClient_url", require("clients/glebAPI.config").registerClient_url);
-if (!Ti.App.Properties.getString("updateStatus_url")) Ti.App.Properties.setString("updateStatus_url", require("clients/glebAPI.config").updateStatus_url);
-if (!Ti.App.Properties.getString("confirmPUSH_url")) Ti.App.Properties.setString("confirmPUSH_url", require("clients/glebAPI.config").confirmPUSH_url);
-if (!Ti.App.Properties.getString("setGCMId_url")) Ti.App.Properties.setString("setGCMId_url", require("clients/glebAPI.config").setGCMId_url);
-if (!Ti.App.Properties.getString("uploadTracking_url")) Ti.App.Properties.setString("uploadTracking_url", require("clients/glebAPI.config").uploadTracking_url);
-if (!Ti.App.Properties.getString("sendForm_url")) Ti.App.Properties.setString("sendForm_url", require("clients/glebAPI.config").sendForm_url);
-if (!Ti.App.Properties.getString("uploadImage_url")) Ti.App.Properties.setString("uploadImage_url", require("clients/glebAPI.config").uploadImage_url);
-if (!Ti.App.Properties.getString("getGlebURLs_url")) Ti.App.Properties.setString("getGlebURLs_url", require("clients/glebAPI.config").getGlebURLs_url);
-
-*/
+Ti.API.debug("GLEB - colaHTTP - Init DB");
+var db = Ti.Database.install(Titanium.Filesystem.resourcesDirectory+'sql/queueHTTP.sqlite','queueHttpBD');  
+ 
+try {
+   rows = db.execute('SELECT * FROM HTTP_REQUESTS');
+}
+catch (err){
+    Ti.API.error("GLEB - colaHTTP - Fail to select db rows");
+    return;
+}
+while (rows.isValidRow()) {
+    db.execute('UPDATE HTTP_REQUESTS SET STATUS="pending" WHERE ID="' + rows.fieldByName('id') + '"');
+    Ti.API.debug("GLEB - colaHTTP - Reset status to pending ID: " +rows.fieldByName('id'));
+    rows.next();
+}   
+rows.close();
+db.close();
+db= null;
+rows = null;
+Ti.App.Properties.setBool('isUploading',false);
