@@ -1,4 +1,12 @@
+var ACSStarted = "stopped";
+
+exports.ACSStatus = function (){ 
+ return ACSStarted;
+}
+
+
 exports.pushACS = function (){
+    ACSStarted = "working";
 
 var Cloud = require('ti.cloud');
 Cloud.debug = true;
@@ -162,11 +170,13 @@ function deviceTokenSuccess(e) {
     pushDeviceToken = e.deviceToken;
     Ti.App.Properties.setString("ACSdeviceToken",pushDeviceToken);
     // Equivalente al setGCMId
-    require("clients/glebAPI").setACSId(Ti.App.Properties.getString('ACSpushUserId'), pushDeviceToken);
+    ACSStarted = "started";
+    require("clients/glebAPI").setACSId(Ti.App.Properties.getString('ACSpushUserId'), pushDeviceToken, "Register ACS");
     glebACS_setUpPush();
 }
 
 function deviceTokenError(e) {
+    ACSStarted = "stopped";
     Ti.API.debug('GLEB - ACS - Failed to register for push! ' + e.error);
     disablePushNotifications();
 }

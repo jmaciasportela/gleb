@@ -31,7 +31,8 @@ module.exports = function(){
         height: Ti.App.glebUtils._p(36),
         width: Ti.App.glebUtils._p(120),
         });
-        salir.addEventListener('click',function(){    
+        salir.addEventListener('click',function(){
+            require('plugins/newgps').stop(); 
             var activity = Titanium.Android.currentActivity;
             activity.finish();      
         }); 

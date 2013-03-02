@@ -158,7 +158,7 @@ return view;
 	
 exports._update = function(e) {
 	if (view != null){
-		Ti.API.info("GLEB - Event location.updated - "+JSON.stringify(e));
+		//Ti.API.info("GLEB - Event location.updated - "+JSON.stringify(e));
 		
 		if (!e.success || e.error)
 			{			

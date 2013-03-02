@@ -8,6 +8,14 @@ Ti.API.debug('GLEB - GPS - Loading GPS plugin');
 var locationAdded = false;
 var showAlertGPS = false;
 
+var GPSStarted = "stopped";
+
+exports.GPSStatus = function (){ 
+ return GPSStarted;
+}
+
+var pasadas = 0;
+
 function translateErrorCode (code) {
 	if (code == null) {
 		return null;
@@ -51,12 +59,11 @@ function locationCallback(e)
 		{
 			Ti.API.debug("GLEB - GPS - Geolocation Listener Error: " + translateErrorCode(e.code)+" - "+ e.error); 
             Ti.API.debug("GLEB - GPS - Geolocation Listener Error: " + e.code + " - "+ e.error);
-			if (e.code == 3) Ti.App.Properties.setBool('GPSOff', true);
+			Ti.App.Properties.setBool('GPSOff', true);
 		}		
 		else {
 			
 		Ti.API.debug('GLEB - GPS - Geolocation Updated: ' + JSON.stringify(e));
-
 		var longitude = e.coords.longitude;
 		var latitude = e.coords.latitude;
 		var currentProvider = e.provider.name;
@@ -65,13 +72,16 @@ function locationCallback(e)
 		var accuracy = e.coords.accuracy;
 		var speed = e.coords.speed;
 		var timestamp = e.coords.timestamp;
-		var altitudeAccuracy = e.coords.altitudeAccuracy;
+		var altitudeAccuracy = e.coords.altitudeAccuracy;		
+		
+		//Check location event provider
+		if (currentProvider=="gps") Ti.App.Properties.setBool('GPSOff', false);
 		
 		// TRACKING DE POSICION		
 		prevTimeStamp = Ti.App.Properties.getString('prevTimestamp');
 		Ti.API.debug('GLEB - GPS - Ultimo tracking: ' + prevTimeStamp+ ', nuevo timestamp: ' + timestamp+', diferencia: ' + (parseInt(timestamp) - parseInt(prevTimeStamp)).toString());
 		// Dif de tiempo en milisegundos
-		if (parseInt(timestamp) - parseInt(prevTimeStamp) > parseInt(Ti.App.Properties.getString('tTracking')) ){
+		//if (parseInt(timestamp) - parseInt(prevTimeStamp) > parseInt(Ti.App.Properties.getString('tTracking')) ){
 			Ti.App.Properties.setString('prevTimestamp',timestamp);
 			Ti.API.debug('GLEB - GPS - Guardando tracking de posición');
         	var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory,'trackingGPS');
@@ -95,7 +105,7 @@ function locationCallback(e)
  			   Ti.API.debug("GLEB - GPS - Ha habido un error guardando el tracking");
 			}
 			else Ti.API.debug("GLEB - GPS - tracking guardado correctamente"); 
-		}
+		//}
 
 		if (longitude < 0) Ti.App.Properties.setString('lastLongitude', longitude.toString().substring(0,10));
 	    else Ti.App.Properties.setString('lastLongitude', longitude.toString().substring(0,10));
@@ -111,6 +121,19 @@ function locationCallback(e)
 		
 		//Ti.App.fireEvent ("gleb_locationUpdated", e);
 		require("ui/statusBar/gpsView")._update(e);
+		
+		//Si la accuracy obtenida es menor de 50 se detiene y al menos hace dos pasadas para pararse
+		if (Math.floor(accuracy) <= 100){
+		   if (pasadas<1) {
+		       Ti.API.debug("GLEB - GPS - Pasadas: "+ pasadas);
+		       pasadas ++;
+		    }
+		   else{
+		       pasadas = 0;
+		       exports.pause();
+		   }    
+		}
+		
 	}	
 }
 
@@ -184,6 +207,8 @@ function silentLocation(e)
 
 
 exports.start = function() {
+    
+GPSStarted = "started";    
   
 Ti.Geolocation.Android.manualMode = true;
 
@@ -244,7 +269,7 @@ Ti.Geolocation.Android.addLocationRule(networkRule);
 Titanium.Geolocation.getCurrentPosition(function(e) {
    		if (e.error) {
 			Ti.API.debug("GLEB - GPS ONESHOT - Geolocation One Shot Error: "+ translateErrorCode(e.error.code)+" - "+e.error.message);
-			Ti.App.Properties.setBool('GPSOff',true);
+			//Ti.App.Properties.setBool('GPSOff',true);
 			return;
 		} else {
 			
@@ -286,6 +311,7 @@ locationAdded = true;
 }
 
 exports.pause = function() {
+    GPSStarted = "stopped";
 	Ti.API.debug("GLEB - GPS - pause event received");
 	if (locationAdded) {
 		Ti.API.debug("GLEB - GPS - removing location callback on pause");

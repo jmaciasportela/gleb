@@ -26,7 +26,7 @@
     <sdk-version>2.1.1.GA</sdk-version>
     <id>es.thinetic.v2.gleb</id>
     <name>GLEB</name>
-    <version>0.4.2</version>
+    <version>0.4.3</version>
     <publisher>maci</publisher>
     <url>http://www.thinetic.es</url>
     <description>not specified</description>
@@ -96,4 +96,4 @@
         <module platform="commonjs" version="2.3.0">ti.cloud</module>
         <module platform="android" version="2.0.7">ti.cloudpush</module>
     </modules>
-</ti:app> 
+</ti:app>
