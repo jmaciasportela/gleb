@@ -4,13 +4,21 @@
 **/
 
 
+var GCMStarted = "stopped";
+
+exports.GCMStatus = function (){ 
+ return GCMStarted;
+}
+
+
+
 var tigcm = require('net.iamyellow.tigcm');
 var id = null;
 
 Ti.API.debug('GLEB - GCM - Loading Module');    
 // GLEB - GCM -   message event 
 // setting this to true will force the module to execute the message event instead of the notification in gcm.js when the app is in foreground.
-tigcm.fireEventWhenInFg = true;    
+tigcm.fireEventWhenInFg = false;    
 tigcm.addEventListener('message', function (ev) {        
     if (!require('config/data').contains(ev.serial)){
         require('config/data').push(ev.serial); 
@@ -28,7 +36,8 @@ tigcm.addEventListener('registered', function (ev) {
     //Ponemos el icono en verde
     Ti.API.debug('GLEB - GCM - registered event');
     Ti.App.Properties.setString("GCMpushUserId", ev.registrationId);
-    require('clients/glebAPI').setGCMId(ev.registrationId);
+    GCMStarted = "started";
+    require('clients/glebAPI').setGCMId(ev.registrationId, "Register GCM");
     Ti.API.debug('GLEB - GCM - registered with id ' + ev.registrationId);
 });
 
@@ -40,6 +49,7 @@ tigcm.addEventListener('unregistered', function (ev) {
 });
 
 tigcm.addEventListener('error', function (ev) {
+    GCMStarted = "stopped";
     Ti.API.debug('GLEB - GCM - error with id ' + ev.id);
 });
 
@@ -48,7 +58,8 @@ tigcm.addEventListener('recoverableError', function (ev) {
 });
 
 exports.start = function (){    
-    Ti.API.debug('GLEB - GCM - Start registering');    
+    Ti.API.debug('GLEB - GCM - Start registering');
+    GCMStarted = "working";
     id = tigcm.registrationId;
     if (id === null) {
         // if not, register and wait for 'registered' event!
@@ -58,7 +69,8 @@ exports.start = function (){
     else {        
         Ti.API.debug('GLEB - GCM - we had the registration ID, is = ' + id);
         Ti.App.Properties.setString("GCMpushUserId", id);
-        require('clients/glebAPI').setGCMId(id);
+        GCMStarted = "started";
+        require('clients/glebAPI').setGCMId(id,"Register GCM");
     }
 }    
     

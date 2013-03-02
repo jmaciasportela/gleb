@@ -258,7 +258,7 @@ exports.sendImage = function(params) {
 	                    Ti.App.glebUtils.closeActivityIndicator();
 	                    Ti.App.glebUtils.openActivityIndicator({"text":"Enviando imagen ..."});
 	                    Ti.API.info("GLEB - Enviando imagen al GLEB server");
-	                    require("clients/glebAPI").uploadImage(event.media, url);
+	                    require("clients/glebAPI").uploadImage(event.media, url, "Upload image:");
 					} else {
 						alert("El fichero seleccionado no es una imagen ="+event.mediaType);
 					}
@@ -287,7 +287,7 @@ exports.sendImage = function(params) {
                     Ti.App.glebUtils.closeActivityIndicator();
                     Ti.App.glebUtils.openActivityIndicator({"text":"Enviando imagen ..."});
                     Ti.API.info("GLEB - Enviando imagen al GLEB server");
-                    require("clients/glebAPI").uploadImage(event.media, url);
+                    require("clients/glebAPI").uploadImage(event.media, url,"Upload image:");
 				},
 			    cancel : function() {
 

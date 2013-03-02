@@ -22,7 +22,7 @@ Titanium.UI.setBackgroundImage('images/background.png');
 
 
 require('plugins/battery').start();
-require('plugins/gps').start();
+require('plugins/newgps').start();
 
 ////////////////////////////////////////////
 // ARRANQUE DE LA APP

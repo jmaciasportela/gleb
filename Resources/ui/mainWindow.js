@@ -21,9 +21,21 @@ exports._get = function(params) {
     	Ti.API.debug('GLEB - Main Win Open');
     });
     
-    mainWin.addEventListener('android:back', function(){
-        var activity = Titanium.Android.currentActivity;
-        activity.finish();
+    mainWin.addEventListener('android:back', function(){        
+        var alertDialog = Titanium.UI.createAlertDialog({
+            title: 'Salir de GLEB',
+            message:'¿Desea cerrar GLEB?',
+            buttonNames: ['SI','NO']
+        });         
+        alertDialog.addEventListener('click', function(e)
+            {
+            if (e.index==0) {   
+                require('plugins/newgps').stop();
+                var activity = Titanium.Android.currentActivity;
+                activity.finish();                
+            }            
+        }); 
+        alertDialog.show();
     });
     
 
@@ -35,7 +47,7 @@ exports._get = function(params) {
     mainWin.addEventListener('open', function(){
         Ti.App.Properties.setBool('mainWinOpen', true);        
         // Para checkear si el GPS esta activo
-    	require('plugins/checker').checkLocationStatus();
+    	require('plugins/newgps').warningGPS();
     });
 
     mainWin.addEventListener('focus', function(){

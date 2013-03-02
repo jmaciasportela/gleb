@@ -10,7 +10,7 @@
 exports.wizard = function (){
     Ti.API.debug("GLEB - INIT - Checking wizard status: "+Ti.App.Properties.getString("WIZARD"));
     if (Ti.App.Properties.getString("WIZARD") != "done") {
-        Ti.API.info("GLEB - INIT - Iniciando Wizard");
+        Ti.API.debug("GLEB - INIT - Iniciando Wizard");
         require('ui/wizard')._open();
     }
     else{
@@ -24,8 +24,13 @@ exports.wizard = function (){
 // LOAD MENUS
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.gleb_loadMenus = function(){
-    require('plugins/GCM').start();
-    require('modules/pushACS').pushACS();
+    
+    //Arrancar solo si hay red
+    if(Titanium.Network.online){
+        require('plugins/GCM').start();
+        require('modules/pushACS').pushACS();
+    }
+    
     //require("clients/glebAPI").updateStatus();
     Ti.App.glebUtils.openActivityIndicator({"text":"Cargando ..."});
     if (Ti.App.glebUtils.checkValidInterval()) {
@@ -50,16 +55,18 @@ exports.gleb_loadMenusLocal= function(){
 // INIT MAIN WINDOW
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.gleb_initMainWindow = function(json){
-    Ti.API.debug('GLEB - getMenus Callback');
+    Ti.API.debug('GLEB - INIT -getMenus Callback');
     if(json.windows[0]){
         mainWin = new require('ui/mainWindow')._get(json.windows[0]);
-        Ti.API.debug('GLEB - Abriendo main window');           
+        Ti.API.debug('GLEB - INIT -Abriendo main window');           
         require('modules/NavigationController').open(mainWin);      
+    }    
+        
+    if(Titanium.Network.online){        
+        require('plugins/colaHTTP').start();        
     }
-    
     //Init service GLEB
     servicioGLEB ();
-    require('plugins/colaHTTP').start();
 }
 
 
@@ -68,7 +75,7 @@ exports.gleb_initMainWindow = function(json){
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.gleb_loadMenus_error = function(obj){
         Ti.App.glebUtils.closeActivityIndicator();
-        Ti.API.debug('GLEB - Error descargando Menus');
+        Ti.API.debug('GLEB - INIT -Error descargando Menus');
         var alertDialog = Titanium.UI.createAlertDialog({
             title: 'Error',
             message:'Ha ocurrido un error descargando los datos gleb. Compruebe que tiene cobertura de red. ¿Desea reintentarlo?. Si pulsa NO se intentaran cargar los últimos datos disponibles',
@@ -119,19 +126,20 @@ exports.gleb_reInit = function(){
 }
 
 //Iniciar servicio GLEB
-
 servicioGLEB = function(){
     var intent = Titanium.Android.createServiceIntent( { url: 'service.js' } );
     // Service should run its code every 30 seconds.
     intent.putExtra('interval', 15000);
-    var service = Titanium.Android.createService(intent);    
+    var service = Titanium.Android.createService(intent);
+    Ti.API.debug('GLEB - INIT - service:'+JSON.stringify(service));
+    /*
     service.addEventListener('pause', function(e) {
         // CHECK SI ESTAMOS REGISTADOS EN LAS DOS PLATAFORMAS, SI SI, PARAMOS SERVICIO
-        if (require('clients/glebAPI').getGMCId() == "ok") {
-            Ti.API.debug('GLEB - SERVICE - DETENIENDO REGISTRO');
+        if (require('plugins/GCM').GCMStatus() == "started" && require('modules/pushACS').ACSStatus() == "started" && require('plugins/colaHTTP').ColaStatus() == true) {
+            Ti.API.debug('GLEB - INIT - Deteniendo servicio');
             service.stop();
         }
-    });    
+    });
+    */    
     service.start();
 }
-

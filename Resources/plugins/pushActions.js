@@ -42,12 +42,12 @@ switch(pushId){
     
     //c2dm_0004 = ACTUALIZA POSICION
     case "0004":
-        require("clients/glebAPI").updateStatus(payload.custom.uuid);
+        require("clients/glebAPI").updateStatus(payload.custom.uuid, "Upload Status from push");
     break;
     
     //c2dm_0005 = Enviar fichero tracking diario
     case "0005":
-        require("clients/glebAPI").uploadTracking();
+        require("clients/glebAPI").uploadTracking("Upload tracking");
     break;
     
     //c2dm_0006 = Enviar fichero tracking diario
