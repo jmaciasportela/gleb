@@ -610,50 +610,13 @@ exports.sendForm = function(fields, description) {
         "X-TOKEN": Ti.App.Properties.getString("token"),
         "Content-Type": "application/json"
     };
-    /*
-    var sendForm_callback = function (obj,e){
-        Ti.API.debug('GLEB - ENVIAR FORM - BODY = '+obj.status);
-        if (e.error) {
-            Ti.API.debug('GLEB - API -sendForm Error, HTTP status = '+obj.status);
-            
-            Ti.App.glebUtils.closeActivityIndicator();
-            var dialog = Ti.UI.createAlertDialog({
-                cancel: 0,
-                buttonNames: ['CANCELAR', 'REENVIAR'],
-                message: '¿Desea reintentar el envío del formulario?',
-                title: 'Error envío formulario'
-            });
-            dialog.addEventListener('click', function(e){
-                if (e.index === e.source.cancel){
-                    Ti.API.info('The cancel button was clicked');
-                }
-                else if (e.index === 1){
-                    Ti.App.glebUtils.openActivityIndicator({"text":"Enviando formulario ..."});
-                    exports.sendForm(fields);
-                }
-            });
-            dialog.show();
-        }
-        else {
-            Ti.App.glebUtils.closeActivityIndicator();
-            Ti.API.debug('GLEB - API -sendForm called, HTTP status = '+obj.status);
-            var dialog = Ti.UI.createAlertDialog({
-                message: 'El formulario se ha enviado correctamente',
-                ok: 'OK',
-            }).show();
-        }
-    url = null;
-    params = null;
-    timeout = null;
-    headers = null;
-    }*/
-
-    //makePOST (url,params,timeout,bodyContent,'',headers,sendForm_callback);
-    queuePOST (url,params,timeout,bodyContent,'',headers,null,description, "any");
+    
+    queuePOST (url,timeout,bodyContent,'',headers,null,description, "any");
+    showQueueNotification();
 }
 
 
-exports.uploadImage = function(image, url, description, quality) {     
+exports.uploadImage = function(image, url, description) {     
         
     var bodyContent = "";
     var params = {
@@ -707,7 +670,8 @@ exports.uploadImage = function(image, url, description, quality) {
     }
     */
     //makePOST (url,params,timeout,bodyContent,'',headers,uploadImage_callback);
-    queuePOST (url,timeout,'',image,headers,null,description,network);
+    queuePOST (url,timeout,'',image,headers,null,description,"any");
+    showQueueNotification();
 }
 
 
@@ -1050,9 +1014,16 @@ var indexOf = function(array, item) {
     var i = 0, l = array.length;
     for (; i < l; i++) if (array[i] === item) return i;
     return -1;
-  };
+};
 
-
+// Muestra una notificación de larga duración indicando que la petición HTTP se ha encolado correctamente
+var showQueueNotification = function(params) {
+    var toast = Ti.UI.createNotification({
+	    message:'Su petición se ha encolado correctamente',
+	    duration: Ti.UI.NOTIFICATION_DURATION_LONG
+	});
+	toast.show();
+};
 
 /********************* queuePOST *************************************/
 var queuePOST = function(url,tout,body,file,headers,f_callback,description, network) {
@@ -1066,14 +1037,14 @@ var non_repeat_urls = [ urls.setGCMId_url, urls.setACSId_url, urls.updateStatus_
 //Si hay urls duplicadas en BD hay que borrarlas, siempre que no esten en estado uploading
 if (indexOf(non_repeat_urls, url)>-1){
     var db = Ti.Database.open('queueHttpBD');
-    db.execute("DELETE FROM HTTP_REQUESTS WHERE  url!= '"+url+"' AND status!='uploading'");    
+    db.execute("DELETE FROM HTTP_REQUESTS WHERE  url= '"+url+"' AND status!='uploading'");    
     db.close();    
 }
 
 
 var params = {};
 //Timestamp in seconds
-var timestamp = parseInt(new Date().getTime()/1000);
+var timestamp = new Date().getTime();
 //insertamos un registro de ejemplo
 var db = Ti.Database.open('queueHttpBD');
 db.execute("INSERT INTO HTTP_REQUESTS (network, method_http, url, timeout, params, headers, body, file, timestamp, last, counts, status, callback, description) VALUES('"+network+"','POST','"+url+"','"+tout+"','"+JSON.stringify(params)+"','"+JSON.stringify(headers)+"','"+body+"','"+file+"',"+timestamp+",0,0,'pending','"+f_callback+"','"+description+"')");

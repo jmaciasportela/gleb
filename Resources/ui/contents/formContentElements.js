@@ -342,10 +342,8 @@ exports.formContentView = function(content) {
                     Titanium.Media.vibrate([ 0, 100]);
                     if(validateTextField(result)){
                         //Se envía el formulario al server mediante un POST
-                        Ti.App.glebUtils.closeActivityIndicator();
-                        Ti.App.glebUtils.openActivityIndicator({"text":"Enviando formulario ..."});
                         Ti.API.info("GLEB - Enviando datos del formulario al GLEB server");
-                        require("clients/glebAPI").sendForm(result, "Envio formulario: ");
+                        require("clients/glebAPI").sendForm(result, "Envío de formulario.");
                     }
                 });
                 
