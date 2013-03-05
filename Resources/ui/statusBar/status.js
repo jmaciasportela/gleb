@@ -9,7 +9,7 @@ var date;
 
 exports._get = function(){  
 
-Ti.API.info('GLEB - Cargando msgView View');
+Ti.API.debug('GLEB - Cargando status View');
 	// create UI components
 	var view = Ti.UI.createView({		
 		backgroundImage: '../../images/statusBar.png',
@@ -18,14 +18,22 @@ Ti.API.info('GLEB - Cargando msgView View');
 		borderRadius: 0
 	});
 
-    bulb = Ti.UI.createImageView({
-        top: Ti.App.glebUtils._p(5),
+    acs = Ti.UI.createImageView({
+        top: Ti.App.glebUtils._p(0),
         left: Ti.App.glebUtils._p(30),
-        width: Ti.App.glebUtils._p(32),
-        height: Ti.App.glebUtils._p(32),
-        image: '../../images/bulb_red.png'
+        width: Ti.App.glebUtils._p(100),
+        height: Ti.App.glebUtils._p(40),
+        image: '../../images/ACS_off.png'
     });
-
+    
+    gcm = Ti.UI.createImageView({
+        top: Ti.App.glebUtils._p(0),
+        right: Ti.App.glebUtils._p(25),
+        width: Ti.App.glebUtils._p(110),
+        height: Ti.App.glebUtils._p(40),
+        image: '../../images/GCM_off.png'
+    });    
+/*
     status = Ti.UI.createLabel({
         name:"latitud",
         color:'red',
@@ -74,31 +82,39 @@ Ti.API.info('GLEB - Cargando msgView View');
    		left: '290dp'
 		});
 		buttonRight.addEventListener('click',function(){require("ui/statusBar").statusBarToRight();});
-
-    view.add(bulb);
+*/
+    view.add(acs);
+    view.add(gcm);
+    /*
     view.add(status);
     view.add(date);		
 	view.add(buttonLeft);
 	view.add(buttonRight);
+	*/
     return view;
 }
 
-exports.setStatus = function(text){
-    Ti.API.debug('GLEB - STATUS BAR - Set '+text);
+exports.setStatusACS = function(text){
+    Ti.API.debug('GLEB - Cargando status View ACS:'+text);
     if (text == "online"){
-        status.text = "ONLINE";
-        status.color = "#23FF17";
-        bulb.image = '../../images/bulb_green.png';
+        acs.image = '../../images/ACS_on.png';
     }
-    else if (text=="not online"){
-        status.text = "NOT ONLINE";
-        status.color = "red";
-        bulb.image = '../../images/bulb_red.png';
-    }
-    
-    var d = Ti.App.glebUtils.getCurrentDate();
-    date.text = "Ultima actualización: "+ d[0] + "-" + d[1] + "-"+ d[2] + " a las "+ d[3]+":" + d[4] 
+    else if (text=="not online"){        
+        acs.image = '../../images/ACS_off.png';
+    } 
 }
+
+exports.setStatusGCM = function(text){    
+    Ti.API.debug('GLEB - Cargando status View GCM:'+text);
+    if (text == "online"){     
+        gcm.image = '../../images/GCM_on.png';
+    }
+    else if (text=="not online"){        
+        gcm.image = '../../images/GCM_off.png';
+    } 
+}
+
+
 /*
 exports.setLastUpdate = function(){    
     var d = Ti.App.glebUtils.getCurrentDate();

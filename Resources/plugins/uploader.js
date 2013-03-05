@@ -18,7 +18,10 @@ var makePOST = function(url,tout,body,blob,headers,callback,f_callback){
 		Ti.API.debug('GLEB - UPLOADER - onload called, HTTP status = '+this.status);
 		Ti.API.debug('GLEB - UPLOADER - onload called, callback = '+callback);
 		Ti.API.debug('GLEB - UPLOADER - onload called, typeof callback = '+typeof callback);
-		if (callback !==null) eval ("require (\"clients/glebAPI\")."+callback)(this, e);
+		if (callback !==null) {
+		    Ti.API.debug('GLEB - UPLOADER - Execute callback, require(\"clients/glebAPI\").'+callback);
+		    eval ("require(\"clients/glebAPI\")."+callback)(this, e);
+		}
 		f_callback (this, e);
 	};
 
@@ -30,7 +33,10 @@ var makePOST = function(url,tout,body,blob,headers,callback,f_callback){
 		catch (err) {
 			Ti.API.debug('GLEB - UPLOADER - onerror');
 		}
-		if (callback !==null) eval ("require (\"clients/glebAPI\")."+callback)(this, e);
+		if (callback !==null) {
+            Ti.API.debug('GLEB - UPLOADER - Execute callback, require(\"ui/clients/glebAPI\").'+callback);
+            eval ("require(\"clients/glebAPI\")."+callback)(this, e);
+        }
 		f_callback (this, e);
 	};
 
