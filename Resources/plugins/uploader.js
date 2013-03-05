@@ -78,9 +78,9 @@ var f_callback = function (obj,e){
         Ti.API.debug('GLEB - UPLOADER - f_callback Error, HTTP status = '+obj.status);
         //Ti.API.debug('GLEB - UPLOADER - RESPONSE = '+JSON.stringify(obj));
         tryCounts++;
-        var now = parseInt(new Date().getTime()/1000);
+        var now = new Date().getTime();
         db = Ti.Database.open('queueHttpBD');
-        db.execute('UPDATE HTTP_REQUESTS SET LAST="' + now.valueOf() + '", COUNTS="' + tryCounts + '" WHERE ID="' + id + '"');
+        db.execute('UPDATE HTTP_REQUESTS SET LAST="' + now + '", COUNTS="' + tryCounts + '" WHERE ID="' + id + '"');
         db.close();
         Ti.App.fireEvent ('refreshHTTPTable');
         Ti.App.Properties.setBool ('isUploading',false);
@@ -92,10 +92,12 @@ var f_callback = function (obj,e){
         //Ti.API.debug('GLEB -  RESPONSE = '+JSON.stringify(obj));
         //Comprobamos que el estado del response recibido es ok (code=200)
         if(obj.status == 200){
-            //La petición se ha enviado correctamente y podemos borrarla de BD
+            //La petición se ha enviado correctamente y la marcamos como uploaded
             Ti.API.debug('GLEB - UPLOADER - BORRANDO FICHERO DE LA COLA');
             db = Ti.Database.open('queueHttpBD');
-            db.execute('DELETE FROM HTTP_REQUESTS WHERE ID="' + id + '"');
+            var now = new Date().getTime();
+            //db.execute('DELETE FROM HTTP_REQUESTS WHERE ID="' + id + '"');
+            db.execute('UPDATE HTTP_REQUESTS SET STATUS="uploaded", LAST="' + now + '" WHERE ID="' + id + '"');
             db.close();
             Ti.App.fireEvent ('refreshHTTPTable');
             Ti.App.Properties.setBool ('isUploading',false);
@@ -103,7 +105,8 @@ var f_callback = function (obj,e){
         else{
             //La petición NO se ha enviado correctamente, por lo que incrementamos el contador de BD y actualizamos el campo LAST_TRY del registro de BD
             tryCounts++;
-            var now = parseInt(new Date().getTime()/1000);
+            //var now = parseInt(new Date().getTime()/1000);
+            var now = new Date().getTime();
             db = Ti.Database.open('queueHttpBD');
             db.execute('UPDATE HTTP_REQUESTS SET LAST="' + now + '", COUNTS="' + tryCounts + '" WHERE ID="' + id + '"');
             db.close();
@@ -117,7 +120,7 @@ var f_callback = function (obj,e){
 //Abrimos BD
 	var db = Ti.Database.open('queueHttpBD');
 	var listHttpRequests = db.execute("SELECT * FROM HTTP_REQUESTS WHERE STATUS = 'uploading'");
-	var pendingFiles = db.execute("SELECT * FROM HTTP_REQUESTS WHERE STATUS != 'uploading'");
+	var pendingFiles = db.execute("SELECT * FROM HTTP_REQUESTS WHERE STATUS != 'uploading' AND STATUS != 'uploaded'");
 	db.close();
 	
 	
