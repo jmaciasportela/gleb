@@ -242,7 +242,7 @@ exports.sendImage = function(params) {
     options: ['Capturar foto','Galería de imágenes', 'Cancelar'],
     cancel:2});
 
-    var url = (params.param1 && params.param1 != '') ? params.param1 : Ti.App.Properties.getString("uploadImage_url");
+    var url = (params.param1 && params.param1 != '') ? params.param1 : require('clients/glebAPI.config').uploadImage_url;
 
     dialog.addEventListener('click', function(e) {
     	//OPCION "CAPTURAR FOTO"
@@ -255,10 +255,8 @@ exports.sendImage = function(params) {
 					// called when media returned from the camera
 					if(event.mediaType == Ti.Media.MEDIA_TYPE_PHOTO) {
 						//Se envia la imagen al server mediante un POST
-	                    Ti.App.glebUtils.closeActivityIndicator();
-	                    Ti.App.glebUtils.openActivityIndicator({"text":"Enviando imagen ..."});
-	                    Ti.API.info("GLEB - Enviando imagen al GLEB server");
-	                    require("clients/glebAPI").uploadImage(event.media, url, "Upload image:");
+	                    Ti.API.info("GLEB - Enviando imagen al GLEB server"+JSON.stringify(event));
+	                    require("clients/glebAPI").uploadImage(event.media, url, "Upload image ("+event.media.file.name+")");
 					} else {
 						alert("El fichero seleccionado no es una imagen ="+event.mediaType);
 					}
@@ -284,10 +282,8 @@ exports.sendImage = function(params) {
             	mediaTypes : [Ti.Media.MEDIA_TYPE_PHOTO],
 			    success : function(event) {
 			    	//Se envia la imagen al server mediante un POST
-                    Ti.App.glebUtils.closeActivityIndicator();
-                    Ti.App.glebUtils.openActivityIndicator({"text":"Enviando imagen ..."});
-                    Ti.API.info("GLEB - Enviando imagen al GLEB server");
-                    require("clients/glebAPI").uploadImage(event.media, url,"Upload image:");
+                    Ti.API.info("GLEB - Enviando imagen al GLEB server"+event.media.name);
+                    require("clients/glebAPI").uploadImage(event.media, url,"Upload image ("+event.media.file.name+")");
 				},
 			    cancel : function() {
 
@@ -312,16 +308,20 @@ exports.openSignWindow = function(params) {
 	});
 	win.modal = true;
 
-	var imageView = Ti.UI.createImageView({
-	  image: params.param1,
+	var n=params.param1.split("/"); 
+	var lastItem = n.length-1;
+	var auxImageName = n[lastItem];
+	var m=auxImageName.split(".");
+	var imageNameWithoutExt = m[0];
+	
+	var imageName = (params.param3 && params.param3 != '') ? params.param3 : imageNameWithoutExt+'Signature.jpeg';
+	
+	var url = (params.param2 && params.param2 != '') ? params.param2 : require('clients/glebAPI.config').uploadSignature_url;
+	
+	var imageView = Ti.UI.createWebView({
+		url: params.param1,
+		bottom: Ti.App.glebUtils._p(160)
 	});
-
-	var scrollView = Ti.UI.createScrollView({
-	  showVerticalScrollIndicator: true,
-	  showHorizontalScrollIndicator: false
-	});
-	scrollView.scrollTo(0,0);
-	scrollView.add(imageView)
 
 	var viewDocument = new Titanium.UI.createView({
 		backgroundColor:'white',
@@ -330,7 +330,8 @@ exports.openSignWindow = function(params) {
 	});
 	viewDocument.setTop(Ti.App.glebUtils._p(46));
 
-	viewDocument.add(scrollView);
+	viewDocument.add(imageView);
+	
 	win.add(viewDocument);
 
 
@@ -420,6 +421,12 @@ exports.openSignWindow = function(params) {
 	    });
 	    viewSign.add(tmpImageView); //you must add it to your window!
 		var saveImageData = tmpImageView.toBlob();
+		
+		//Se envia la firma al server mediante un queuePOST
+		Ti.API.info("GLEB - Enviando firma al GLEB server");
+		require("clients/glebAPI").uploadImage(saveImageData, url, "Upload signature ("+imageName+")");
+
+		/*
 		var isExternalStoragePresent = Ti.Filesystem.isExternalStoragePresent();
 		if (isExternalStoragePresent) {
 			Ti.API.debug('GLEB - Objeto'+captura);
@@ -441,10 +448,251 @@ exports.openSignWindow = function(params) {
 				tmpImageView = null;
 			}
 		}
+		*/
 	});
 	viewFooter.add(save);
 
 	win.add(viewFooter);
 
 	require('modules/NavigationController').open(win);
+};
+
+
+
+/* Abre una ventana con la lista de peticiones HTTP encoladas
+ */
+exports.showQueueHTTP = function() {  
+
+var firstTime = true;
+
+var win = new Titanium.UI.createWindow({
+	orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
+	navBarHidden: true,
+});    			
+win.modal = true;	
+
+var arrayHttpRequests = [];
+
+var containerListView = Ti.UI.createView({
+    borderWidth: 0,
+    backgroundColor: "white",
+    layout: "vertical",
+    width: Ti.UI.FILL,
+    height: Ti.UI.FILL
+}); 
+containerListView.setTop(Ti.App.glebUtils._p(46));
+
+// Creamos el header de la tabla. FIJO
+var header = Ti.UI.createView({
+    backgroundColor:"#575252",
+    width: Ti.App.glebUtils._p(320),
+    height:Ti.App.glebUtils._p(30),
+    top:Ti.App.glebUtils._p(0)
+});
+var headerTitle = Ti.UI.createLabel({
+    text: 'Lista de peticiones HTTP encoladas',
+    left:Ti.App.glebUtils._p(0),
+    width:Ti.UI.FILL,
+    top:Ti.App.glebUtils._p(2),
+    height:"auto",
+    color:"white",
+    textAlign:"center",
+    font:{fontSize:Ti.App.glebUtils._p(18),fontWeight:"bold"},
+    shadowColor:"#A7A7A7",
+    shadowOffset:{x:Ti.App.glebUtils._p(1),y:Ti.App.glebUtils._p(1)}
+});
+header.add(headerTitle);
+//Añadmos el header al container
+containerListView.add(header);
+
+
+containerListView._get = function() {
+     
+    //Ti.API.debug('GLEB - Container views childrens: '+containerListView.getChildren());
+    if (containerListView.children[1]) containerListView.remove (containerListView.children[1]);
+    //Ti.API.debug('GLEB - Container views childrens: '+containerListView.getChildren());
+    /* Añadimos el scrollView al container View */    
+    containerListView.add(populateView(recoveryDataQueueHttp()));
+
+	if(firstTime){
+		win.add(containerListView);
+		require('modules/NavigationController').open(win);	
+		firstTime = false;	
+	}
+    
+    Ti.App.glebUtils.closeActivityIndicator();
+    
+    return;
+};
+
+
+containerListView._refresh = function (e){
+    //Ti.App.glebUtils.openActivityIndicator({"text":"Actualizando lista ..."});
+    //Volver a obtener el resultSet con las peticiones encoladas 
+    containerListView._get();
+    //containerListView.add(populateView(recoveryDataQueueHttp())); 
+}   
+
+return containerListView._get();
+
+
+function recoveryDataQueueHttp()
+{	
+	//Limpiamos el array
+	arrayHttpRequests = [];
+	
+	var db = Ti.Database.open('queueHttpBD');  
+	 
+	try {
+	   rows = db.execute('SELECT description, timestamp, status, counts, last FROM HTTP_REQUESTS ORDER BY timestamp DESC');
+	}
+	catch (err){
+	    Ti.API.error("GLEB - colaHTTP - Fail to select db rows");
+	    return;
+	}
+	while (rows.isValidRow()) {
+		
+		httpRequest = {
+			description: rows.fieldByName('description'),
+			timestamp: rows.fieldByName('timestamp'),
+			status: rows.fieldByName('status'),
+			counts: rows.fieldByName('counts'),
+			last: rows.fieldByName('last')
+		}
+		arrayHttpRequests.push(httpRequest);
+	    rows.next();
+	}   
+	rows.close();
+	db.close();
+	db= null;
+	rows = null;
+	
+	return arrayHttpRequests;
+}
+
+function formatDate(timestamp)
+{
+    var d = new Date(timestamp); 
+    var date=d.getDate();
+    var month=d.getMonth();
+    month++;
+    var year=d.getFullYear();  
+    var hour=d.getHours();
+    var min = d.getMinutes();
+    if (min< 10){
+       min = "0"+min;
+    }
+    var seconds=d.getSeconds();
+    datestr = date + "-" + month + "-" + year + " " + hour + ":" + min + ':' + seconds;
+    //datestr=' '+hour+':'+min;*/
+    //datestr=d.toUTCString();
+    return datestr;
+}
+        
+
+function populateView (data){
+    // Creamos el scrollview que va a contener el tableView
+    var scrollView = Ti.UI.createScrollView({
+        zIndex:2,
+        height: Ti.App.glebUtils._p(Ti.App.Properties.getInt("platformHeight")),
+        width: Ti.UI.FILL,
+        showVerticalScrollIndicator: true,
+        backgroundColor: 'white',            
+        scrollType: "vertical",
+        layout: "vertical"  
+    });     
+    
+    ///////////////////// 
+    //INSERTAMOS LA BARRA DE REFRESCO
+	//OBTENEMOS EL PULL VIEW ROW PARA EL REFRESCO DE LA VISTA
+	var RefreshBar = require('ui/refreshBar');
+	var refreshBarListView = new RefreshBar();
+    // Añadimos el PULL VIEW como primer row de la tabla
+    scrollView.add(refreshBarListView);
+	       
+    scrollView.setContentOffset({x: 0, y: Ti.App.glebUtils._p(60)});
+	///////////////////// 
+
+	for(var item in arrayHttpRequests) {
+		Ti.API.debug('El JSON es: '+JSON.stringify(arrayHttpRequests[item]));
+		Ti.API.debug('El JSON es: '+arrayHttpRequests[item].nombre);
+	    
+	    var color = 'white';
+	    switch (arrayHttpRequests[item].status){
+	    	case 'pending':
+	    		color = 'yellow';
+	    		break;
+	    	case 'uploaded':
+	    		color = 'green';
+	    		break;
+	    	case 'error':
+	    		color = 'red';
+	    		break;
+	    }
+	    row = Ti.UI.createView({
+                width: Ti.UI.FILL,
+                height: Ti.UI.SIZE,                     
+                backgroundColor: color,
+                borderWidth: 2,
+                borderColor: 'black',
+                //top: Ti.App.glebUtils._p(5) ,
+                //bottom: Ti.App.glebUtils._p(5) ,
+                layout: 'vertical'
+        });     
+        
+        var label1 = Ti.UI.createLabel({
+            text: 'Descripción: '+arrayHttpRequests[item].description,
+            color: 'black',
+            font: { fontSize: "12dp"},
+            height:'auto',
+            width:Ti.UI.FILL,                   
+            textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT,
+            left: "10dp",
+            touchEnabled:false
+        });     
+        row.add(label1);
+        var label2 = Ti.UI.createLabel({
+            text: 'Fecha petición: '+formatDate(arrayHttpRequests[item].timestamp)+'    Estado: '+arrayHttpRequests[item].status,
+            color: 'black',
+            font: { fontSize: "12dp"},
+            height:'auto',
+            width:Ti.UI.FILL,                   
+            textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT,
+            left: "10dp",
+            touchEnabled:false
+        });   
+        row.add(label2);
+		
+		if(arrayHttpRequests[item].counts > 0){
+			var label3 = Ti.UI.createLabel({
+	            text: 'Intentos: '+arrayHttpRequests[item].counts+'    Fecha último intento: '+formatDate(arrayHttpRequests[item].last),
+	            color: 'black',
+	            font: { fontSize: "12dp"},
+	            height:'auto',
+	            width:Ti.UI.FILL,                   
+	            textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT,
+	            left: "10dp",
+	            touchEnabled:false
+	        });   
+	        row.add(label3);	
+		}
+        
+	   	scrollView.add(row);
+	}
+	
+	//Añadimos un relleno transparente a la vista
+    if(data.length * Ti.App.glebUtils._p(60) < Ti.App.glebUtils._p(900)) {
+        var rowAux = Ti.UI.createView({
+                width: "100%",
+                height: Ti.App.glebUtils._p(900) - (data.length * Ti.App.glebUtils._p(60)),
+                backgroundColor: 'transparent'
+        });
+        scrollView.add(rowAux);
+    }  
+    
+    // update the offset value whenever scroll event occurs
+	RefreshBar.addListenersRefreshBar(refreshBarListView, scrollView, containerListView);
+
+    return scrollView;
+}
 };

@@ -1039,9 +1039,16 @@ var indexOf = function(array, item) {
     var i = 0, l = array.length;
     for (; i < l; i++) if (array[i] === item) return i;
     return -1;
-  };
+};
 
-
+// Muestra una notificación de larga duración indicando que la petición HTTP se ha encolado correctamente
+var showQueueNotification = function(params) {
+    var toast = Ti.UI.createNotification({
+	    message:'Su petición se ha encolado correctamente',
+	    duration: Ti.UI.NOTIFICATION_DURATION_LONG
+	});
+	toast.show();
+};
 
 /********************* queuePOST *************************************/
 var queuePOST = function(url,tout,body,file,headers,f_callback,description, network) {
