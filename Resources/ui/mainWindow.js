@@ -30,7 +30,8 @@ exports._get = function(params) {
         alertDialog.addEventListener('click', function(e)
             {
             if (e.index==0) {   
-                require('plugins/newgps').stop();
+                require('plugins/newgps').stop(); 
+                require("modules/initFlow").servicioGLEBSTOP();
                 var activity = Titanium.Android.currentActivity;
                 activity.finish();                
             }            

@@ -283,6 +283,7 @@ exports.sendImage = function(params) {
 			    success : function(event) {
 			    	//Se envia la imagen al server mediante un POST
                     Ti.API.info("GLEB - Enviando imagen al GLEB server"+event.media.name);
+                    Ti.API.info("GLEB - Enviando imagen al GLEB server"+JSON.stringify(event));
                     require("clients/glebAPI").uploadImage(event.media, url,"Upload image ("+event.media.file.name+")");
 				},
 			    cancel : function() {
@@ -306,7 +307,7 @@ exports.openSignWindow = function(params) {
 		orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
 		navBarHidden: true
 	});
-	win.modal = true;
+	win.modal = true;    
 
 	var n=params.param1.split("/"); 
 	var lastItem = n.length-1;
@@ -468,6 +469,7 @@ var firstTime = true;
 var win = new Titanium.UI.createWindow({
 	orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
 	navBarHidden: true,
+
 });    			
 win.modal = true;	
 
@@ -478,9 +480,9 @@ var containerListView = Ti.UI.createView({
     backgroundColor: "white",
     layout: "vertical",
     width: Ti.UI.FILL,
-    height: Ti.UI.FILL
+    height: Ti.UI.FILL,
+    top: Ti.App.glebUtils._p(46)
 }); 
-containerListView.setTop(Ti.App.glebUtils._p(46));
 
 // Creamos el header de la tabla. FIJO
 var header = Ti.UI.createView({
@@ -695,4 +697,36 @@ function populateView (data){
 
     return scrollView;
 }
+
 };
+
+
+//Daily MAP
+
+exports.gleb_openDailyMap = function(params){    
+    if (Titanium.Network.online){  
+        require('ui/views/mapView')._open();    
+        Ti.App.fireEvent('gleb_closeActivityIndicator');
+    }
+    else {  
+        var n = Ti.UI.createNotification({message:"No tienes cobertura de datos"});
+        n.duration = Ti.UI.NOTIFICATION_DURATION_SHORT;                     
+        n.show();
+        Ti.App.fireEvent('gleb_closeActivityIndicator');
+    }
+};
+
+//Move main view.
+exports.gleb_mainViewTo = function(params){    
+        Ti.API.info("GLEB - Main View to:"+JSON.stringify(params));
+        Ti.App.fireEvent('gleb_mainViewTo',params);
+};
+
+//Move main view.
+exports.gleb_calcularRuta = function(params){    
+    var direction = Ti.Utils.base64decode(params.address);
+    Ti.API.debug("GLEB - Calcular ruta event:"+direction);
+    Titanium.Platform.openURL('http://maps.google.com/maps?saddr='+Ti.App.Properties.getString('lastLatitude')+','+Ti.App.Properties.getString('lastLongitude')+'&t=m&daddr='+direction);       
+};
+
+

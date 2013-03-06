@@ -61,6 +61,7 @@ var makePOST = function(url,tout,body,blob,headers,callback,f_callback){
 
 	if (body=="" && blob != null) {
 		Ti.API.debug('GLEB - UPLOADER - Uploading binary data');
+		Ti.API.debug('GLEB - UPLOADER - BLOB:'+JSON.stringify(blob));
 		xhr.send({file:blob.read()});
 	}
 	else if (body!="" && blob ==null) {

@@ -433,7 +433,7 @@ exports.setGCMId_callback = function (obj,e){
     else {
         GCMIdStatus = "ok";
         require('ui/statusBar/status').setStatusGCM("online");
-        exports.updateStatus();
+        exports.updateStatus("","updateStatus");
     }
 }
 
@@ -471,7 +471,7 @@ exports.setACSId_callback = function (obj,e){
     else {
         ACSIdStatus = "ok";
         require('ui/statusBar/status').setStatusACS("online");
-        exports.updateStatus();
+        exports.updateStatus("","updateStatus");
     }
 }
 
@@ -639,6 +639,7 @@ exports.sendForm = function(fields, description) {
 
     //makePOST (url,params,timeout,bodyContent,'',headers,sendForm_callback);
     queuePOST (url,params,timeout,bodyContent,'',headers,null,description, "any");
+    showQueueNotification();
 }
 
 
@@ -696,7 +697,9 @@ exports.uploadImage = function(image, url, description, quality) {
     }
     */
     //makePOST (url,params,timeout,bodyContent,'',headers,uploadImage_callback);
-    queuePOST (url,timeout,'',image,headers,null,description,network);
+    Ti.API.debug('GLEB - ENVIAR IMAGE - IMAGE = '+JSON.stringify(image));
+    queuePOST (url,timeout,'',image,headers,null,description,"any");
+    showQueueNotification();
 }
 
 
@@ -1069,7 +1072,7 @@ var find = function (arr, obj){
 
 if (find(non_repeat_urls, url)){
     var db = Ti.Database.open('queueHttpBD');
-    db.execute("DELETE FROM HTTP_REQUESTS WHERE  url== '"+url+"' AND status!='uploading'");    
+    db.execute("DELETE FROM HTTP_REQUESTS WHERE  url=='"+url+"' AND (status!='uploading' OR status!='uploaded')");    
     db.close();    
 }
 

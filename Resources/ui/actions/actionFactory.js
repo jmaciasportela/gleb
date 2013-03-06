@@ -56,8 +56,13 @@ exports.addAction = function(element, data) {
 	
 	else if (data.action == 'execMethod') {
 		element.addEventListener('click', function(e){
-			Titanium.Media.vibrate([ 0, 100]);
-			eval ("customMethods."+data.method+"(data.methodParams)");
+			Titanium.Media.vibrate([ 0, 100]);			
+			try{
+			 eval ("customMethods."+data.method+"(data.methodParams)");
+			}
+			catch (err){
+			 Ti.API.error("GLEB - Método no encontrado:"+data.method);    
+			}
 		});
 	}	
 			

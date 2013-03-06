@@ -20,16 +20,24 @@ Ti.API.debug('GLEB - Cargando status View');
 
     acs = Ti.UI.createImageView({
         top: Ti.App.glebUtils._p(0),
-        left: Ti.App.glebUtils._p(30),
+        left: Ti.App.glebUtils._p(22),
         width: Ti.App.glebUtils._p(100),
         height: Ti.App.glebUtils._p(40),
         image: '../../images/ACS_off.png'
     });
+
+    push = Ti.UI.createImageView({
+        top: Ti.App.glebUtils._p(4),
+        left: Ti.App.glebUtils._p(144),
+        width: Ti.App.glebUtils._p(32),
+        height: Ti.App.glebUtils._p(32),
+        image: '../../images/push.png'
+    });
     
     gcm = Ti.UI.createImageView({
         top: Ti.App.glebUtils._p(0),
-        right: Ti.App.glebUtils._p(25),
-        width: Ti.App.glebUtils._p(110),
+        right: Ti.App.glebUtils._p(22),
+        width: Ti.App.glebUtils._p(100),
         height: Ti.App.glebUtils._p(40),
         image: '../../images/GCM_off.png'
     });    
@@ -85,6 +93,8 @@ Ti.API.debug('GLEB - Cargando status View');
 */
     view.add(acs);
     view.add(gcm);
+    view.add(push);
+
     /*
     view.add(status);
     view.add(date);		

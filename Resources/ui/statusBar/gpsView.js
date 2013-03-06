@@ -28,7 +28,7 @@ exports._get = function() {
 
 	radar = Ti.UI.createImageView({
 		top: Ti.App.glebUtils._p(5),
-		left: Ti.App.glebUtils._p(255),
+		left: Ti.App.glebUtils._p(275),
 		width: Ti.App.glebUtils._p(32),
 		height: Ti.App.glebUtils._p(32),
   		image: '../../images/antenna.png'
@@ -36,7 +36,7 @@ exports._get = function() {
 	
 	signal = Ti.UI.createImageView({
 		top: Ti.App.glebUtils._p(5),
-		left: Ti.App.glebUtils._p(210),
+		left: Ti.App.glebUtils._p(220),
 		width: Ti.App.glebUtils._p(40),
 		height: Ti.App.glebUtils._p(30),
   		image: '../../images/signal-0.png'
@@ -78,7 +78,7 @@ exports._get = function() {
 		height:'auto',
 		width:Ti.App.glebUtils._p(80),
         top:Ti.App.glebUtils._p(4),
-        left:Ti.App.glebUtils._p(82),
+        left:Ti.App.glebUtils._p(92),
     	shadowColor:'#000',
     	shadowOffset:{x:Ti.App.glebUtils._p(3),y:Ti.App.glebUtils._p(3)},    	
     	font:{fontSize:Ti.App.glebUtils._p(10)},
@@ -91,7 +91,7 @@ exports._get = function() {
 		height:'auto',
 		width:Ti.App.glebUtils._p(80),
         top:Ti.App.glebUtils._p(20),
-        left:Ti.App.glebUtils._p(82),
+        left:Ti.App.glebUtils._p(92),
     	shadowColor:'#000',
     	shadowOffset:{x:Ti.App.glebUtils._p(3),y:Ti.App.glebUtils._p(3)},    	
     	font:{fontSize:Ti.App.glebUtils._p(10)},
@@ -106,7 +106,7 @@ exports._get = function() {
 		height:'auto',		
     	width:Ti.App.glebUtils._p(45),
         top:Ti.App.glebUtils._p(4),
-        left:Ti.App.glebUtils._p(160),
+        left:Ti.App.glebUtils._p(180),
     	shadowColor:'#000',
     	shadowOffset:{x:Ti.App.glebUtils._p(3),y:Ti.App.glebUtils._p(3)},    	
     	font:{fontSize:Ti.App.glebUtils._p(10)},
@@ -119,7 +119,7 @@ exports._get = function() {
 		height:'auto',
 		width:Ti.App.glebUtils._p(45),
         top:Ti.App.glebUtils._p(20),
-        left:Ti.App.glebUtils._p(160),
+        left:Ti.App.glebUtils._p(180),
     	shadowColor:'#000',
     	shadowOffset:{x:Ti.App.glebUtils._p(3),y:Ti.App.glebUtils._p(3)},    	
     	font:{fontSize:Ti.App.glebUtils._p(10)},

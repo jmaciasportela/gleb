@@ -33,14 +33,13 @@ module.exports = function(){
         });
         salir.addEventListener('click',function(){
             require('plugins/newgps').stop(); 
+            require("modules/initFlow").servicioGLEBSTOP();
             var activity = Titanium.Android.currentActivity;
             activity.finish();      
-        }); 
-				
+        });	
 		
 	// assemble view hierarchy
 	view.add(recarga);
-    view.add(salir);
-	
+    view.add(salir);	
     return view;
 }
