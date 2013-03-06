@@ -26,7 +26,8 @@ exports.marketContentView = function(content) {
                         methodParams: item.methodParams
                     });     
                 
-                // Tratamiento especial para el boton con nombre locationMap, para que se update la imagen de fondo al pulsar                           
+                // Tratamiento especial para el boton con nombre locationMap, para que se update la imagen de fondo al pulsar         
+                /*                  
                 if (button.name=='locationMap'){
                     Ti.API.debug("GLEB - Add event click to locationMap");
                     button.addEventListener('click', function(e){
@@ -60,7 +61,8 @@ exports.marketContentView = function(content) {
                         Ti.App.fireEvent('gleb_openDailyMap');
                     });
                 }                           
-                                
+                */
+                               
                 //Si en el JSON se indica algún tipo de acción asociada al item, se le añade en este punto del código                                               
                 if (button.name!='locationMap' && item.action && item.action != '') {
                     actionFactory.addAction(button, content[i]);

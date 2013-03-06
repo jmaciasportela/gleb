@@ -125,12 +125,18 @@ exports.gleb_reInit = function(){
     require("clients/glebAPI").getMenus(exports.gleb_loadMenusLocal, exports.gleb_loadMenus_error);
 }
 
+var service=null;;
+
 //Iniciar servicio GLEB
-servicioGLEB = function(){
+servicioGLEB = function(){    
+    if (service!=null){
+        service.stop();
+        service=null;
+    }        
     var intent = Titanium.Android.createServiceIntent( { url: 'service.js' } );
     // Service should run its code every 30 seconds.
     intent.putExtra('interval', 15000);
-    var service = Titanium.Android.createService(intent);
+    service = Titanium.Android.createService(intent);
     Ti.API.debug('GLEB - INIT - service:'+JSON.stringify(service));
     /*
     service.addEventListener('pause', function(e) {
@@ -141,5 +147,11 @@ servicioGLEB = function(){
         }
     });
     */    
-    service.start();
+    service.start();    
+}
+
+//Iniciar servicio GLEB
+exports.servicioGLEBSTOP = function(){       
+    service.stop();
+    service=null;   
 }

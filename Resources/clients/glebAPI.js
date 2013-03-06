@@ -432,8 +432,8 @@ exports.setGCMId_callback = function (obj,e){
     }
     else {
         GCMIdStatus = "ok";
-        require('ui/statusBar/status').setStatus("online");
-        exports.updateStatus();
+        require('ui/statusBar/status').setStatusGCM("online");
+        exports.updateStatus("","updateStatus");
     }
 }
 
@@ -450,17 +450,6 @@ exports.setGCMId = function(id, description) {
             "X-TOKEN": Ti.App.Properties.getString("token"),
             "Content-Type": "application/json"
         };
-        var setGCMId_callback = function (obj,e){
-            if (e.error) {
-                GCMIdStatus = "error";
-                Ti.API.debug('GLEB - API - setGCMId Error, HTTP status = '+obj.status);            
-            }
-            else {
-                GCMIdStatus = "ok";
-                require('ui/statusBar/status').setStatus("online");
-                exports.updateStatus();
-            }
-        }
         Ti.API.debug('GLEB - API - POST to ' + url);
         var bodyContent ='{"GCMpushUserId":"'+id+'"}';
         queuePOST(url,timeout,bodyContent,'',headers,"setGCMId_callback", description, "any");
@@ -481,8 +470,8 @@ exports.setACSId_callback = function (obj,e){
     }
     else {
         ACSIdStatus = "ok";
-        require('ui/statusBar/status').setStatus("online");
-        exports.updateStatus();
+        require('ui/statusBar/status').setStatusACS("online");
+        exports.updateStatus("","updateStatus");
     }
 }
 
@@ -610,13 +599,51 @@ exports.sendForm = function(fields, description) {
         "X-TOKEN": Ti.App.Properties.getString("token"),
         "Content-Type": "application/json"
     };
-    
-    queuePOST (url,timeout,bodyContent,'',headers,null,description, "any");
+    /*
+    var sendForm_callback = function (obj,e){
+        Ti.API.debug('GLEB - ENVIAR FORM - BODY = '+obj.status);
+        if (e.error) {
+            Ti.API.debug('GLEB - API -sendForm Error, HTTP status = '+obj.status);
+            
+            Ti.App.glebUtils.closeActivityIndicator();
+            var dialog = Ti.UI.createAlertDialog({
+                cancel: 0,
+                buttonNames: ['CANCELAR', 'REENVIAR'],
+                message: '¿Desea reintentar el envío del formulario?',
+                title: 'Error envío formulario'
+            });
+            dialog.addEventListener('click', function(e){
+                if (e.index === e.source.cancel){
+                    Ti.API.info('The cancel button was clicked');
+                }
+                else if (e.index === 1){
+                    Ti.App.glebUtils.openActivityIndicator({"text":"Enviando formulario ..."});
+                    exports.sendForm(fields);
+                }
+            });
+            dialog.show();
+        }
+        else {
+            Ti.App.glebUtils.closeActivityIndicator();
+            Ti.API.debug('GLEB - API -sendForm called, HTTP status = '+obj.status);
+            var dialog = Ti.UI.createAlertDialog({
+                message: 'El formulario se ha enviado correctamente',
+                ok: 'OK',
+            }).show();
+        }
+    url = null;
+    params = null;
+    timeout = null;
+    headers = null;
+    }*/
+
+    //makePOST (url,params,timeout,bodyContent,'',headers,sendForm_callback);
+    queuePOST (url,params,timeout,bodyContent,'',headers,null,description, "any");
     showQueueNotification();
 }
 
 
-exports.uploadImage = function(image, url, description) {     
+exports.uploadImage = function(image, url, description, quality) {     
         
     var bodyContent = "";
     var params = {
@@ -670,6 +697,7 @@ exports.uploadImage = function(image, url, description) {
     }
     */
     //makePOST (url,params,timeout,bodyContent,'',headers,uploadImage_callback);
+    Ti.API.debug('GLEB - ENVIAR IMAGE - IMAGE = '+JSON.stringify(image));
     queuePOST (url,timeout,'',image,headers,null,description,"any");
     showQueueNotification();
 }
@@ -1035,16 +1063,26 @@ var urls = require('clients/glebAPI.config');
 var non_repeat_urls = [ urls.setGCMId_url, urls.setACSId_url, urls.updateStatus_url, urls.uploadTracking_url]
 
 //Si hay urls duplicadas en BD hay que borrarlas, siempre que no esten en estado uploading
-if (indexOf(non_repeat_urls, url)>-1){
+var find = function (arr, obj){
+    for(var i=0; i<arr.length; i++) {
+        if (arr[i] == obj) return true;
+    }
+    return false;
+}
+
+if (find(non_repeat_urls, url)){
     var db = Ti.Database.open('queueHttpBD');
-    db.execute("DELETE FROM HTTP_REQUESTS WHERE  url= '"+url+"' AND status!='uploading'");    
+    db.execute("DELETE FROM HTTP_REQUESTS WHERE  url=='"+url+"' AND (status!='uploading' OR status!='uploaded')");    
     db.close();    
 }
 
 
 var params = {};
 //Timestamp in seconds
-var timestamp = new Date().getTime();
+var timestamp = parseInt(new Date().getTime()/1000);
+
+Ti.API.debug("GLEB- QUEUEPOST - INSERT INTO HTTP_REQUESTS (network, method_http, url, timeout, params, headers, body, file, timestamp, last, counts, status, callback, description) VALUES('"+network+"','POST','"+url+"','"+tout+"','"+JSON.stringify(params)+"','"+JSON.stringify(headers)+"','"+body+"','"+file+"',"+timestamp+",0,0,'pending','"+f_callback+"','"+description+"')");
+
 //insertamos un registro de ejemplo
 var db = Ti.Database.open('queueHttpBD');
 db.execute("INSERT INTO HTTP_REQUESTS (network, method_http, url, timeout, params, headers, body, file, timestamp, last, counts, status, callback, description) VALUES('"+network+"','POST','"+url+"','"+tout+"','"+JSON.stringify(params)+"','"+JSON.stringify(headers)+"','"+body+"','"+file+"',"+timestamp+",0,0,'pending','"+f_callback+"','"+description+"')");

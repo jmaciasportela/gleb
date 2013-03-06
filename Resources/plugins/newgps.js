@@ -5,24 +5,18 @@
 
 Ti.API.debug('GLEB - GPS - Loading GPS plugin');
 
-//Variable para registrar el estado del modulo
-var GPSStatus = "stopped";
-
 //Variable para devolver el estado del modulo
 exports.getStatus = function (){ 
- return GPSStatus;
+ return Ti.App.Properties.getString('GPSStatus');
 }
 
 //Variable para modificar el estado del modulo
 exports.setStatus = function (){ 
- return GPSStatus;
+ //return GPSStatus;
 }
 
 //Variable para almacenar las pasadas
 var pasadas = 0;
-
-//Por defecto vamos a pensar que el GPS esta habilitado siempre
-var isGPSEnabled = true;
 
 //Timestamp del momento en que se activo la localizacion
 var startTimestamp = 0;
@@ -65,9 +59,9 @@ function convertPosition (position,isLatitude) {
 }
 
 
-exports.warningGPS = function (){
-
-    if (isGPSEnabled == false){            
+exports.warningGPS = function (){    
+    Ti.API.debug('GLEB - GPS - GPS enabled: '+Ti.App.Properties.getBool('GPSOff'));
+    if (Ti.App.Properties.getBool('GPSOff') == true){
         Ti.API.debug('GLEB - GPS - GPS deshabilitado');
         var alertDialog = Titanium.UI.createAlertDialog({
             title: 'Aviso',
@@ -88,12 +82,15 @@ exports.warningGPS = function (){
 
 function locationCallback(e)
 	{
-	    //Si ocurre un error
+	    
+	    Ti.API.debug('GLEB - GPS - Geolocation Updated: ' + JSON.stringify(e));	    
+
 		if (!e.success || e.error)
 		{
 			Ti.API.debug("GLEB - GPS - Geolocation Listener Error: " + translateErrorCode(e.code)+" - "+ e.error); 
             Ti.API.debug("GLEB - GPS - Geolocation Listener Error: " + e.code + " - "+ e.error);
-			isGPSEnabled == false;
+			if (e.code==0 )  Ti.App.Properties.setBool('GPSOff',true);
+	    Ti.API.debug('GLEB - GPS - ERROR, GPS is not enabled: '+Ti.App.Properties.getBool('GPSOff'));
 		}		
 		//Si se recibe un evento correcto
 		else {			
@@ -111,7 +108,7 @@ function locationCallback(e)
 		var altitudeAccuracy = e.coords.altitudeAccuracy;		
 		
 		//Check location event provider
-		if (currentProvider=="gps") isGPSEnabled == true;
+		if (currentProvider=="gps") Ti.App.Properties.setBool('GPSOff',false);
 		
 
 		// Comprobamos el intervalo de tiempo de tracking
@@ -138,7 +135,7 @@ function locationCallback(e)
     		}
     		datestr=day.toString()+month.toString()+year.toString();
         	var f = Titanium.Filesystem.getFile(uiDir.resolve(), "tracking_"+datestr+".json");
-        	var record =' {"provider":"'+e.provider.name+'","coords":'+JSON.stringify(e.coords)+",\r\n";        	
+        	var record =' {"provider":"'+e.provider.name+'","coords":'+JSON.stringify(e.coords)+"},";        	
         	if (f.write(record, true)===false) { 			   
     		   Ti.API.debug("GLEB - GPS - Ha habido un error guardando el tracking");
     		}
@@ -188,7 +185,9 @@ function locationCallback(e)
 }
 
 
-exports.start = function() {   
+exports.start = function() {
+
+Ti.API.debug("GLEB - GPS - start event received");
     
 if (Ti.App.Properties.getString('GPSStatus') =="stopped"){    
     Ti.App.Properties.setString('GPSStatus', "started");    
