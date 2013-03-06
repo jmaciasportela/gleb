@@ -21,8 +21,8 @@ Ti.API.debug("GLEB - INIT - Set background");
 Titanium.UI.setBackgroundImage('images/background.png');
 
 
-require('plugins/battery').start();
 require('plugins/newgps').start();
+require('plugins/battery').start();
 
 ////////////////////////////////////////////
 // ARRANQUE DE LA APP

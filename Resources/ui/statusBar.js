@@ -14,11 +14,11 @@ var recargaView = require('ui/statusBar/recargaView');
 var gpsView = require('ui/statusBar/gpsView');
 var compassView = require('ui/statusBar/compassView');
 var bannerView = require('ui/statusBar/bannerView');
-var msgView = require('ui/statusBar/msgView');
+//var msgView = require('ui/statusBar/msgView');
 var statusView = require('ui/statusBar/status');
 
 scrollView = Titanium.UI.createScrollableView({
-        views: [statusView._get(), gpsView._get(), new compassView(), new recargaView(), new msgView(), new bannerView()],      
+        views: [statusView._get(), gpsView._get(), new compassView(), new recargaView(), new bannerView()],      
         showPagingControl: false,       
         maxZoomScale:2.0,
         layout: "horizontal",

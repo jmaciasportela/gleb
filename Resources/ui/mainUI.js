@@ -109,6 +109,7 @@ exports._get = function(params) {
 	});
 
 	var gleb_mainViewTo_f = function (e){
+	    /*
 		var i;
     	Ti.API.debug("GLEB - MAIN WINDOW - Numero de vistas: " + mainView.views.length);
 		Ti.API.debug("GLEB - MAIN WINDOW - Buscamos la vista con nombre: " + e.source.eventParams);
@@ -116,8 +117,9 @@ exports._get = function(params) {
 			Ti.API.debug("GLEB - MAIN WINDOW - " + e.source.eventParams + " : " + mainView.views[i].eventParams);
 			if (mainView.views[i].name == e.source.eventParams) break;
 		}
-		Ti.API.info("GLEB - MAIN WINDOW - Movemos scrollable view to:"+i);
-		mainView.currentPage=i;
+		*/
+		Ti.API.info("GLEB - MAIN WINDOW - Movemos scrollable view to:"+JSON.stringify(e));		
+		mainView.currentPage=parseInt(e.view);
 	};
 	Ti.App.addEventListener ('gleb_mainViewTo', gleb_mainViewTo_f);
 

@@ -3,6 +3,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Ti.App.Properties.setString('GPSStatus', "stopped");
+Ti.App.Properties.setBool('GPSOff',false);
 
 Ti.API.info('GLEB - CONFIG - Width x Height: ' + Ti.Platform.displayCaps.platformWidth + ' x ' + Ti.Platform.displayCaps.platformHeight);
 Ti.API.info('GLEB - CONFIG - DPI: ' + Ti.Platform.displayCaps.dpi);
@@ -44,7 +45,6 @@ Ti.App.Properties.setBool('actInd', false);
 var date = require('modules/utils').getCurrentDate();
 if (Ti.App.Properties.getString ('avisoGPSDay') == date[0].toString()) Ti.App.Properties.setBool ('avisoGPS',true);
 else Ti.App.Properties.setBool ('avisoGPS',false);
-Ti.App.Properties.setBool ('GPSOff', true);
 
 Ti.App.Properties.setInt('initialDegrees',0);
 Ti.App.Properties.setString('prevTimestamp','0');
@@ -69,7 +69,7 @@ Ti.App.Properties.setString('connectionName', Titanium.Network.networkTypeName);
 
 Ti.App.Properties.setBool('registered', false);
 
-Ti.API.debug("GLEB - colaHTTP - Init DB");
+Ti.API.debug("GLEB - CONFIG - Init DB");
 var db = Ti.Database.install(Titanium.Filesystem.resourcesDirectory+'sql/queueHTTP.sqlite','queueHttpBD');  
  
 try {
@@ -80,10 +80,35 @@ catch (err){
     return;
 }
 while (rows.isValidRow()) {
-    db.execute('UPDATE HTTP_REQUESTS SET STATUS="pending" WHERE ID="' + rows.fieldByName('id') + '"');
-    Ti.API.debug("GLEB - colaHTTP - Reset status to pending ID: " +rows.fieldByName('id'));
+    db.execute('UPDATE HTTP_REQUESTS SET STATUS="pending" WHERE STATUS!="uploaded" AND ID="' + rows.fieldByName('id') + '"');    
+    Ti.API.debug("GLEB - CONFIG - Reset status to pending ID: " +rows.fieldByName('id'));
     rows.next();
 }   
+
+var n = db.execute('SELECT COUNT(*) FROM HTTP_REQUESTS');
+Ti.API.debug("GLEB - CONFIG - N:"+typeof n);
+Ti.API.debug("GLEB - CONFIG - N:"+JSON.stringify(n));
+
+var limit = parseInt(n.rowCount) - 100;
+
+Ti.API.debug("GLEB - CONFIG - LIMIT:"+limit);
+if (limit > 0){
+    try {
+       rows = db.execute('SELECT * FROM HTTP_REQUESTS ORDER BY TIMESTAMP ASC LIMIT '+limit+';');
+    }
+    catch (err){
+        Ti.API.error("GLEB - colaHTTP - Fail to select db rows");
+        return;
+    }
+        
+    while (rows.isValidRow()) {
+        db.execute('DELETE FROM HTTP_REQUESTS ID="' + rows.fieldByName('id') + '"');    
+        Ti.API.debug("GLEB - CONFIG - Reset status to pending ID: " +rows.fieldByName('id'));
+        rows.next();
+    }       
+    
+}    
+   
 rows.close();
 db.close();
 db= null;

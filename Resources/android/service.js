@@ -22,14 +22,16 @@ var cdate = parseInt(require('modules/utils').getCurrentDateMS());
 var ldate = parseInt(Ti.App.Properties.getString('lastLocationTimestamp'));
  
 // Si hace mas de Tlocation que se hizo la ultima localización se arranca de nuevo
-if (cdate - ldate > parseInt(Ti.App.Properties.getString('tTracking')) && require('plugins/gps').GPSStatus() == "stopped"){    
+if (cdate - ldate > parseInt(Ti.App.Properties.getString('tTracking')) && require('plugins/newgps').getStatus() == "stopped"){    
     Ti.API.debug('GLEB - SERVICE - TIME:'+cdate);
     Ti.API.debug('GLEB - SERVICE - LASTTIME:'+ldate);
     Ti.API.debug('GLEB - SERVICE - DIF:'+ (cdate-ldate));
     Ti.API.debug('GLEB - SERVICE - tTraking:'+parseInt(Ti.App.Properties.getString('tTracking')));
-    Ti.API.debug('GLEB - SERVICE - GPS status:'+require('plugins/gps').GPSStatus());    
-    Ti.API.debug('GLEB - SERVICE - Starting Location');
-    require('plugins/gps').start();    
+    Ti.API.debug('GLEB - SERVICE - GPS status:'+require('plugins/newgps').getStatus());    
+    if (require('plugins/newgps').getStatus() =="stopped"){
+        Ti.API.debug('GLEB - SERVICE - Starting Location');
+        require('plugins/newgps').start();
+    }    
 }
 
 

@@ -6,8 +6,9 @@ exports._open = function () {
 	mapWin = Titanium.UI.createWindow({  
 		backgroundColor:'transparent',
 		orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
-       	navBarHidden: true
+       	navBarHidden: true,
 	});
+	mapWin.modal = true;
 	
 	
 var mainView = Ti.UI.createView({
@@ -19,6 +20,8 @@ var mainView = Ti.UI.createView({
     height: Ti.UI.FILL,
     top: Ti.App.glebUtils._p(46)
 }); 
+
+
 
 var header = Ti.UI.createView({
 	backgroundColor:"#575252",
@@ -71,39 +74,43 @@ var mapview = Titanium.Map.createView({
     //top: Ti.App.glebUtils._p(46)
 });
 
-Ti.API.debug('GLEB - Leyendo fichero tracking de posición');
+Ti.API.debug('GLEB - MAPVIEW - Leyendo fichero tracking de posición');
 var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory,'trackingGPS');
 if (uiDir.exists()) {
-	var d = new Date;	
-	var day=d.getDate();
-	var month = d.getMonth();
-	var year = d.getYear();
-	if (day<= 10){
-	   day = "0"+day;
-	}
-	if (month<= 10){
-	   month = "0"+month;
-	}
-	datestr=day+month+year;
+    var d = new Date;   
+    var day=d.getDate();
+    var month = d.getMonth();
+    var year = d.getFullYear();
+    if (day<= 10){
+       day = "0" + day;
+    }
+    if (month<= 10){
+       month = "0"+month;
+    }
+    datestr=day.toString()+month.toString()+year.toString();
 	var f = Titanium.Filesystem.getFile(uiDir.resolve(), "tracking_"+datestr+".json");
-	if (f.exists()){        		
+	if (f.exists()){    
+        Ti.API.debug("GLEB - MAPVIEW - Abriendo fichero tracking_"+datestr+".json");    		
 		var content = f.read();
 		var record =content.text.slice(0,-1);	
 		var json = '['+record+']';
-		Ti.API.debug('GLEB - JSON : '+ json);
+		//Ti.API.debug('GLEB - JSON : '+ json);
 		var markers=[];		
 		try {
-		markers =JSON.parse(json);
+		    markers =JSON.parse(json);
 		}
 		catch (err){
 			Ti.API.debug('GLEB - ERROR PARSEANDO JSON MARKERS : '+ err);			
 		}	
-		Ti.API.debug('GLEB - MARKERS: '+JSON.stringify(markers));
+		//Ti.API.debug('GLEB - MARKERS: '+JSON.stringify(markers));
 		
 		var prev = 0;
 		var points = [];
+		Ti.API.debug('GLEB - MAPVIEW - Markers length:'+ markers.length);
+        Ti.API.debug('GLEB - MAPVIEW - Markers 0:'+ JSON.stringify(markers[0]));
+
 		for (var i =0; i< markers.length; i++){
-		  	var a = new Date(markers[i]["timestamp"]);
+		  	var a = new Date(markers[i]["coords"]["timestamp"]);
 			var months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 		    var year = a.getFullYear();
 		    var month = months[a.getMonth()];
@@ -112,30 +119,37 @@ if (uiDir.exists()) {
 		    var min = a.getMinutes();
 		    var sec = a.getSeconds();
 		    var time = date+','+month+' '+year+' '+hour+':'+min+':'+sec ;	
+		    
 			var annotation = Titanium.Map.createAnnotation({
 				image: Titanium.Filesystem.resourcesDirectory+"images/pin.png",
-			    latitude:parseFloat(markers[i]["latitude"]),
-			    longitude:parseFloat(markers[i]["longitude"]),
+			    latitude:parseFloat(markers[i]["coords"]["latitude"]),
+			    longitude:parseFloat(markers[i]["coords"]["longitude"]),
 			    title: time,
-			    subtitle:"Precision GPS:"+parseInt(markers[i]["accuracy"])+"\n"+ "Velocidad"+parseInt(markers[i]["speed"])+"\n"+"Altitud:"+parseInt(markers[i]["altitude"]),			    
+			    subtitle:"Precision GPS:"+parseInt(markers[i]["coords"]["accuracy"])+"\n"+ "Velocidad"+parseInt(markers[i]["coords"]["speed"])+"\n"+"Altitud:"+parseInt(markers[i]["coords"]["altitude"]),			    
 			    animate:true,    
 			    myid:1
-			});		
-			if (prev != markers[i]["timestamp"]) mapview.addAnnotation (annotation);
-			prev = 	markers[i]["timestamp"];			
-			points.push({latitude: markers[i]["latitude"],longitude: markers[i]["longitude"]});
+			});
+			
+			if (prev != markers[i]["coords"]["timestamp"]) {
+			    Ti.API.debug('GLEB - MAPVIEW - Añadiendo anotacion:'+ JSON.stringify(annotation));
+			    mapview.addAnnotation (annotation);
+			}
+			prev = 	markers[i]["coords"]["timestamp"];			
+			points.push({latitude: markers[i]["coords"]["latitude"],longitude: markers[i]["coords"]["longitude"]});
 		}
 		
-		/*
+		
 		var route = {
                 name:"Dayly",
                 points:points,
                 color:"red",
-                width:4
+                width: Ti.App.glebUtils._p(1)
             };
 		mapview.addRoute(route);
-		*/		
+				
 	}
+    else Ti.API.debug("GLEB - MAPVIEW - Error Abriendo fichero tracking_"+datestr+".json");
+
 }
 
 // Markers tipicos de google maps	
@@ -165,6 +179,7 @@ mapview.addEventListener('click', function(evt) {
 
 mapWin.add(mainView);
 require('modules/NavigationController').open(mapWin);
+
 };
 
 exports.cleanup = function (){
@@ -175,23 +190,4 @@ exports.cleanup = function (){
     mapWin = null;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-// DAILY MAP
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Ti.App.addEventListener('gleb_openDailyMap', function(){	
-	if (Ti.App.Properties.getBool('connectionStatus')){	
-		exports._open();	
-		Ti.App.glebUtils.closeActivityIndicator();
-	}
-	else {	
-		var n = Ti.UI.createNotification({message:"No tienes cobertura de datos"});
-		n.duration = Ti.UI.NOTIFICATION_DURATION_SHORT;						
-		n.show();
-		Ti.App.glebUtils.closeActivityIndicator();
-	}
-});
-
-Ti.App.addEventListener('gleb_openDailyMap_close', function(){	
-	exports.cleanup();
-});
