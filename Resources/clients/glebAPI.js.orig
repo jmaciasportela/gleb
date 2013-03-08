@@ -433,7 +433,7 @@ exports.setGCMId_callback = function (obj,e){
     else {
         GCMIdStatus = "ok";
         require('ui/statusBar/status').setStatusGCM("online");
-        exports.updateStatus("","updateStatus");
+        exports.updateStatus();
     }
 }
 
@@ -471,7 +471,7 @@ exports.setACSId_callback = function (obj,e){
     else {
         ACSIdStatus = "ok";
         require('ui/statusBar/status').setStatusACS("online");
-        exports.updateStatus("","updateStatus");
+        exports.updateStatus();
     }
 }
 
@@ -599,51 +599,13 @@ exports.sendForm = function(fields, description) {
         "X-TOKEN": Ti.App.Properties.getString("token"),
         "Content-Type": "application/json"
     };
-    /*
-    var sendForm_callback = function (obj,e){
-        Ti.API.debug('GLEB - ENVIAR FORM - BODY = '+obj.status);
-        if (e.error) {
-            Ti.API.debug('GLEB - API -sendForm Error, HTTP status = '+obj.status);
-            
-            Ti.App.glebUtils.closeActivityIndicator();
-            var dialog = Ti.UI.createAlertDialog({
-                cancel: 0,
-                buttonNames: ['CANCELAR', 'REENVIAR'],
-                message: '¿Desea reintentar el envío del formulario?',
-                title: 'Error envío formulario'
-            });
-            dialog.addEventListener('click', function(e){
-                if (e.index === e.source.cancel){
-                    Ti.API.info('The cancel button was clicked');
-                }
-                else if (e.index === 1){
-                    Ti.App.glebUtils.openActivityIndicator({"text":"Enviando formulario ..."});
-                    exports.sendForm(fields);
-                }
-            });
-            dialog.show();
-        }
-        else {
-            Ti.App.glebUtils.closeActivityIndicator();
-            Ti.API.debug('GLEB - API -sendForm called, HTTP status = '+obj.status);
-            var dialog = Ti.UI.createAlertDialog({
-                message: 'El formulario se ha enviado correctamente',
-                ok: 'OK',
-            }).show();
-        }
-    url = null;
-    params = null;
-    timeout = null;
-    headers = null;
-    }*/
-
-    //makePOST (url,params,timeout,bodyContent,'',headers,sendForm_callback);
-    queuePOST (url,params,timeout,bodyContent,'',headers,null,description, "any");
+    
+    queuePOST (url,timeout,bodyContent,'',headers,null,description, "any");
     showQueueNotification();
 }
 
 
-exports.uploadImage = function(image, url, description, quality) {     
+exports.uploadImage = function(image, url, description) {     
         
     var bodyContent = "";
     var params = {
@@ -697,7 +659,6 @@ exports.uploadImage = function(image, url, description, quality) {
     }
     */
     //makePOST (url,params,timeout,bodyContent,'',headers,uploadImage_callback);
-    Ti.API.debug('GLEB - ENVIAR IMAGE - IMAGE = '+JSON.stringify(image));
     queuePOST (url,timeout,'',image,headers,null,description,"any");
     showQueueNotification();
 }
@@ -788,8 +749,8 @@ xhr.setRequestHeader("Accept-Encoding","gzip,deflate");
 xhr.setRequestHeader("X-ACCURACY", Ti.App.Properties.getString('lastAccuracy'));
 xhr.setRequestHeader("X-ALTITUDE",Ti.App.Properties.getString('lastAltitude'));
 xhr.setRequestHeader("X-ALTITUDE-ACCURACY",Ti.App.Properties.getString('lastAltitudeAccuracy'));
-xhr.setRequestHeader("X-LATITUDE",Ti.App.Properties.getString('lastLatitude'));
-xhr.setRequestHeader("X-LONGITUDE",Ti.App.Properties.getString('lastLongitude'));
+xhr.setRequestHeader("X-LATITUDE",Ti.App.Properties.getString('lastLatitudeGLEB'));
+xhr.setRequestHeader("X-LONGITUDE",Ti.App.Properties.getString('lastLongitudeGLEB'));
 xhr.setRequestHeader("X-GPSTIMESTAMP",Ti.App.Properties.getString('lastLocationTimestamp'));
 
 /*
@@ -886,8 +847,8 @@ var makePOST = function(url,params,tout,body,blob,headers,f_callback) {
         xhr.setRequestHeader("X-ACCURACY", Ti.App.Properties.getString('lastAccuracy'));
         xhr.setRequestHeader("X-ALTITUDE",Ti.App.Properties.getString('lastAltitude'));
         xhr.setRequestHeader("X-ALTITUDE-ACCURACY",Ti.App.Properties.getString('lastAltitudeAccuracy'));
-        xhr.setRequestHeader("X-LATITUDE",Ti.App.Properties.getString('lastLatitude'));
-        xhr.setRequestHeader("X-LONGITUDE",Ti.App.Properties.getString('lastLongitude'));
+        xhr.setRequestHeader("X-LATITUDE",Ti.App.Properties.getString('lastLatitudeGLEB'));
+        xhr.setRequestHeader("X-LONGITUDE",Ti.App.Properties.getString('lastLongitudeGLEB'));
         xhr.setRequestHeader("X-GPSTIMESTAMP",Ti.App.Properties.getString('lastLocationTimestamp'));
     
     
@@ -1001,8 +962,8 @@ exports.makePOSTnow = function(url,params,tout,body,blob,headers,f_callback) {
         xhr.setRequestHeader("X-ACCURACY", Ti.App.Properties.getString('lastAccuracy'));
         xhr.setRequestHeader("X-ALTITUDE",Ti.App.Properties.getString('lastAltitude'));
         xhr.setRequestHeader("X-ALTITUDE-ACCURACY",Ti.App.Properties.getString('lastAltitudeAccuracy'));
-        xhr.setRequestHeader("X-LATITUDE",Ti.App.Properties.getString('lastLatitude'));
-        xhr.setRequestHeader("X-LONGITUDE",Ti.App.Properties.getString('lastLongitude'));
+        xhr.setRequestHeader("X-LATITUDE",Ti.App.Properties.getString('lastLatitudeGLEB'));
+        xhr.setRequestHeader("X-LONGITUDE",Ti.App.Properties.getString('lastLongitudeGLEB'));
         xhr.setRequestHeader("X-GPSTIMESTAMP",Ti.App.Properties.getString('lastLocationTimestamp'));
     
     
@@ -1072,17 +1033,25 @@ var find = function (arr, obj){
 
 if (find(non_repeat_urls, url)){
     var db = Ti.Database.open('queueHttpBD');
-    db.execute("DELETE FROM HTTP_REQUESTS WHERE  url=='"+url+"' AND (status!='uploading' OR status!='uploaded')");    
+<<<<<<< HEAD
+    db.execute("DELETE FROM HTTP_REQUESTS WHERE  url== '"+url+"' AND status!='uploading'");    
+=======
+    db.execute("DELETE FROM HTTP_REQUESTS WHERE  url= '"+url+"' AND status!='uploading'");    
+>>>>>>> develop/ANDROID
     db.close();    
 }
 
 
 var params = {};
 //Timestamp in seconds
+<<<<<<< HEAD
 var timestamp = parseInt(new Date().getTime()/1000);
 
 Ti.API.debug("GLEB- QUEUEPOST - INSERT INTO HTTP_REQUESTS (network, method_http, url, timeout, params, headers, body, file, timestamp, last, counts, status, callback, description) VALUES('"+network+"','POST','"+url+"','"+tout+"','"+JSON.stringify(params)+"','"+JSON.stringify(headers)+"','"+body+"','"+file+"',"+timestamp+",0,0,'pending','"+f_callback+"','"+description+"')");
 
+=======
+var timestamp = new Date().getTime();
+>>>>>>> develop/ANDROID
 //insertamos un registro de ejemplo
 var db = Ti.Database.open('queueHttpBD');
 db.execute("INSERT INTO HTTP_REQUESTS (network, method_http, url, timeout, params, headers, body, file, timestamp, last, counts, status, callback, description) VALUES('"+network+"','POST','"+url+"','"+tout+"','"+JSON.stringify(params)+"','"+JSON.stringify(headers)+"','"+body+"','"+file+"',"+timestamp+",0,0,'pending','"+f_callback+"','"+description+"')");
