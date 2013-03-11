@@ -16,11 +16,44 @@ exports.checkGUI = function(){
 exports.getGUI = function(){    
     if (f.exists()){
         var content = f.read();
-        data = JSON.parse(content.text); //UI JSON
-        return data;
+        try {
+            data = JSON.parse(content.text); //UI JSON        
+        }
+        catch (err){
+            exports.errorGUI();
+            return null;            
+        }        
+        //Tenemos el objeto JSON cargado en data, hay que comprobar si tiene main window antes de devolverlo.
+        if(data.windows != undefined){        
+            return data;
+        }
+        else{            
+            exports.errorGUI();    
+        }
     }
     return null;
 }
+
+exports.errorGUI = function(obj){
+        Ti.App.glebUtils.closeActivityIndicator();
+        Ti.API.debug('GLEB - INIT -Error procesando Menus');
+        var alertDialog = Titanium.UI.createAlertDialog({
+            title: 'Error',
+            message:'Ha ocurrido un error procesando los datos gleb. ¿Desea reintentar la descarga?',
+            buttonNames: ['SI']
+        });
+        alertDialog.addEventListener('click', function(e)
+            {
+            if (e.index==0) {
+                    //Borramos antiguo fichero
+                    f.deleteFile();
+                    require("modules/initFlow").gleb_loadMenus();
+            }
+        });
+        alertDialog.show();
+}
+
+
 
 // POR REVISAR
 exports.setGUI = function(){    
