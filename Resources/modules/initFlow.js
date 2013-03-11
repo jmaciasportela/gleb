@@ -13,11 +13,21 @@ exports.wizard = function (){
         Ti.API.debug("GLEB - INIT - Iniciando Wizard");
         require('ui/wizard')._open();
     }
-    else{
-        
-        exports.gleb_loadMenus();
+    else{        
+        exports.gleb_starPUSH();
     }
 }
+
+
+
+exports.gleb_starPUSH = function(){
+        //Arrancar solo si hay red
+    if(Titanium.Network.online){
+        require('plugins/GCM').start();
+        require('modules/pushACS').pushACS();
+    }
+    exports.gleb_loadMenus();
+}   
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,21 +35,22 @@ exports.wizard = function (){
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.gleb_loadMenus = function(){
     
-    //Arrancar solo si hay red
-    if(Titanium.Network.online){
-        require('plugins/GCM').start();
-        require('modules/pushACS').pushACS();
-    }
-    
     //require("clients/glebAPI").updateStatus();
     Ti.App.glebUtils.openActivityIndicator({"text":"Cargando ..."});
     if (Ti.App.glebUtils.checkValidInterval()) {
         if (require('modules/glebData').checkGUI()){
+            Ti.API.debug('GLEB - INIT - Existe GUI local');
             exports.gleb_loadMenusLocal();
         }
-        else require("clients/glebAPI").getMenus(exports.gleb_loadMenusLocal, exports.gleb_loadMenus_error);
+        else {
+            Ti.API.debug('GLEB - INIT - No Existe GUI local, descargando');
+            require("clients/glebAPI").getMenus(exports.gleb_loadMenusLocal, exports.gleb_loadMenus_error);
+        }
     }
-    else require("clients/glebAPI").getMenus(exports.gleb_loadMenusLocal, exports.gleb_loadMenus_error);
+    else {
+        Ti.API.debug('GLEB - INIT - Cambio de dia, descargando nuevo GUI');
+        require("clients/glebAPI").getMenus(exports.gleb_loadMenusLocal, exports.gleb_loadMenus_error);
+    }
 }
 
 
@@ -47,7 +58,7 @@ exports.gleb_loadMenus = function(){
 // LOAD MENUS LOCAL
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.gleb_loadMenusLocal= function(){
-    if (require("modules/glebData").getGUI() !== null) exports.gleb_initMainWindow(require("modules/glebData").getGUI());    
+    if (require("modules/glebData").getGUI() !== null) exports.gleb_initMainWindow(require("modules/glebData").getGUI());
 }
 
 
@@ -60,7 +71,7 @@ exports.gleb_initMainWindow = function(json){
         mainWin = new require('ui/mainWindow')._get(json.windows[0]);
         Ti.API.debug('GLEB - INIT -Abriendo main window');           
         require('modules/NavigationController').open(mainWin);      
-    }    
+    }
         
     if(Titanium.Network.online){        
         require('plugins/colaHTTP').start();        
@@ -84,7 +95,7 @@ exports.gleb_loadMenus_error = function(obj){
         alertDialog.addEventListener('click', function(e)
                 {
                 if (e.index==0) {
-                        exports.loadMenus();
+                        exports.gleb_loadMenus();
                 }
                 else {
                         Ti.App.glebUtils.closeActivityIndicator({"text":"Cargando ..."});

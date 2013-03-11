@@ -112,6 +112,15 @@ exports.getMenus = function(gleb_loadMenusLocal, gleb_loadMenus_error) {
         else {
 
             if (obj.responseText) {
+                /*
+                // Primero chequeamos que un JSON correcto
+                try{
+                    JSON.parse(obj.responseText); 
+                }
+                catch (err){
+                    require("modules/glebData").errorGUI();
+                }
+                */
                 //Ti.API.debug('GLEB - API -PATH= '+Titanium.Filesystem.applicationDataDirectory);
                 var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'ui');
                 if (!uiDir.exists()) {
