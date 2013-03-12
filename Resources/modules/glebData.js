@@ -13,6 +13,28 @@ exports.checkGUI = function(){
     else return false;
 }
 
+exports.getWinId = function(windowId){    
+    if (f.exists()){
+        var content = f.read();
+        try {
+            data = JSON.parse(content.text); //UI JSON        
+        }
+        catch (err){
+            return null;            
+        }        
+        //Tenemos el objeto JSON cargado en data, hay que comprobar si existe el windowId solicitado.
+        for(i in data.windows){
+        	var winContent=data.windows[i];
+        	Ti.API.debug('GLEB - winId: ' + windowId);
+        	Ti.API.debug('GLEB - winContent: ' + JSON.stringify(winContent.name));
+        	if(winContent.winId == windowId){
+        		return winContent;
+        	}
+        }
+    }
+    return null;
+}
+
 exports.getGUI = function(){    
     if (f.exists()){
         var content = f.read();
