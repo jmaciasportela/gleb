@@ -32,18 +32,122 @@ exports.addAction = function(element, data) {
                       orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
                       navBarHidden: true,
                    });    			
-			win.modal = true;			
-			var GlebListView = require('ui/views/listView');
-			var view = new GlebListView({
-				name: data.winContent.name,
-				headerTitle: data.winContent.headerTitle,
-				style: data.winContent.style,
-			    data: data.winContent.content                
-			});    		
-    		view.setTop(Ti.App.glebUtils._p(46));
-    		
-    		win.add(view);
-    		require('modules/NavigationController').open(win);  
+			win.modal = true;
+			
+			var typeSupported = false;
+			
+			//Lo primero será recuperar la información de la ventana que se desea abrir (winId) dentro de la variable winContent
+			Ti.API.debug('GLEB - winId: ' + data.winId);
+			var winContent = require('modules/glebData').getWinId(data.winId);
+			
+			if(winContent==null)
+			{
+				var errorView = Ti.UI.createView({
+	                width: Ti.UI.FILL,
+	                height: Ti.UI.FILL,                     
+	                backgroundColor: 'white',
+	                layout: 'vertical'
+		        });     
+		        
+		        var errorLabel = Ti.UI.createLabel({
+		            text: 'No se ha podido cargar el contenido de la ventana',
+		            color: 'black',
+		            font: { fontSize: "16dp"},
+		            textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+		            top: "40dp",
+		            right: "10dp",
+		            left: "10dp",
+		            height:'auto'
+		        });     
+		        errorView.add(errorLabel);
+				errorView.setTop(Ti.App.glebUtils._p(46));
+	        	win.add(errorView);
+    			require('modules/NavigationController').open(win);
+    			return;
+			}
+			
+			switch (winContent.contentType){
+		    	case 'grid':
+		    		var GlebGridView = require('ui/views/gridView');                
+		            var view = new GlebGridView({
+		                name: winContent.name,
+		                refresh: winContent.refresh || "OFF",
+		                style: winContent.style,
+		                data: winContent.content       
+		            });
+		            typeSupported = true;
+		    		break;
+		    	case 'market':
+		    		var GlebMarketView = require('ui/views/marketView');            
+		            var view = new GlebMarketView({
+		                name: winContent.name,
+		                refresh: winContent.refresh || "OFF",
+		                style: winContent.style,
+		                data: winContent.content
+		            });
+		            typeSupported = true;
+		    		break;
+		    	case 'listMarket':
+			    	var GlebListMarketView = require('ui/views/listMarketView');            
+		            var view = new GlebListMarketView({
+		                name: winContent.name,
+		                refresh: winContent.refresh || "OFF",
+		                headerTitle: winContent.headerTitle,
+		                style: winContent.style,
+		                data: winContent.content
+		            });
+		    		typeSupported = true;
+		    		break;
+		    	case 'grid_3':
+			    	var GlebGridView3 = require('ui/views/grid3View');            
+		            var view = new GlebGridView3({
+		                name: winContent.name,
+		                refresh: winContent.refresh || "OFF",
+		                style: winContent.style,
+		                data: winContent.content
+		            });
+		    		typeSupported = true;
+		    		break;
+		    	case 'list':
+			    	var GlebListView = require('ui/views/listView');            
+		            var view = new GlebListView({
+		                name: winContent.name,
+		                refresh: winContent.refresh || "OFF",
+		                headerTitle: winContent.headerTitle,
+		                style: winContent.style,
+		                data: winContent.content
+		            });
+		    		typeSupported = true;
+		    		break;
+		    	case 'form':
+			    	var FormView = require('ui/views/formView');            
+		            var view = new FormView({
+		                name: winContent.name,
+		                refresh: winContent.refresh || "OFF",
+		                headerTitle: winContent.headerTitle,
+		                style: winContent.style,
+		                data: winContent.content
+		            });
+		    		typeSupported = true;
+		    		break;
+		    	case 'webView':
+			    	var GlebWebView = require('ui/views/webView');
+		            var view = new GlebWebView({
+		                name: winContent.name,
+		                url: winContent.url            
+		            });
+		    		typeSupported = true;
+		    		break;
+		    	default:
+		    		Ti.API.info("Type unsupported="+winContent.contentType);
+		    		break;
+	    	}
+	        
+	        if(typeSupported){
+	        	view.setTop(Ti.App.glebUtils._p(46));
+	        	win.add(view);
+    			require('modules/NavigationController').open(win);
+	        }		 
 		});
 	}
 
