@@ -93,8 +93,6 @@ exports.validate = function(code,msisdn) {
 }
 
 
-
-
 exports.getMenus = function(gleb_loadMenusLocal, gleb_loadMenus_error) {
 
     var url = require('clients/glebAPI.config').getMenus_url;
@@ -112,6 +110,8 @@ exports.getMenus = function(gleb_loadMenusLocal, gleb_loadMenus_error) {
         else {
 
             if (obj.responseText) {
+                
+                Ti.API.debug('GLEB - API - getMenus: '+obj.responseText);
                 /*
                 // Primero chequeamos que un JSON correcto
                 try{
