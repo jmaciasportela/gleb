@@ -14,7 +14,7 @@ exports._get = function(params) {
                 name: params.views[v].name,
                 refresh: params.views[v].refresh || "OFF",
                 style: params.views[v].style,
-                data: params.views[v].content       
+                content: params.views[v].content       
             });
             views.push(view);
         }
@@ -24,7 +24,7 @@ exports._get = function(params) {
                 name: params.views[v].name,
                 refresh: params.views[v].refresh || "OFF",
                 style: params.views[v].style,
-                data: params.views[v].content
+                content: params.views[v].content
             });
             views.push(view);
         }
@@ -35,7 +35,7 @@ exports._get = function(params) {
                 refresh: params.views[v].refresh || "OFF",
                 headerTitle: params.views[v].headerTitle,
                 style: params.views[v].style,
-                data: params.views[v].content
+                content: params.views[v].content
             });
             views.push(view);
         }
@@ -45,7 +45,7 @@ exports._get = function(params) {
                 name: params.views[v].name,
                 refresh: params.views[v].refresh || "OFF",
                 style: params.views[v].style,
-                data: params.views[v].content
+                content: params.views[v].content
             });
             views.push(view);
         }
@@ -56,7 +56,7 @@ exports._get = function(params) {
                 refresh: params.views[v].refresh || "OFF",
                 headerTitle: params.views[v].headerTitle,
                 style: params.views[v].style,
-                data: params.views[v].content
+                content: params.views[v].content
             });
             views.push(view);
         }
@@ -68,7 +68,17 @@ exports._get = function(params) {
                 refresh: params.views[v].refresh || "OFF",
                 headerTitle: params.views[v].headerTitle,
                 style: params.views[v].style,
-                data: params.views[v].content
+                content: params.views[v].content
+            });
+            views.push(view);
+        }
+        else if(params.views[v].contentType =='mapView' ){      
+            //Ti.API.info("GLEB - WEBVIEW URL"+ JSON.stringify(params.views[v]));     
+            var GlebMapView = require('ui/views/mapView');
+            var view = new GlebMapView({
+                headerTitle: params.views[v].headerTitle,
+                showTrack: params.views[v].showTrack,
+                content: params.views[v].content            
             });
             views.push(view);
         }

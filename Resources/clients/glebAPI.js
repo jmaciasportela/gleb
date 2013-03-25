@@ -110,17 +110,23 @@ exports.getMenus = function(gleb_loadMenusLocal, gleb_loadMenus_error) {
         else {
 
             if (obj.responseText) {
-                
+                		
                 Ti.API.debug('GLEB - API - getMenus: '+obj.responseText);
-                /*
+                
                 // Primero chequeamos que un JSON correcto
                 try{
-                    JSON.parse(obj.responseText); 
+                    var auxData = JSON.parse(obj.responseText); 
                 }
                 catch (err){
-                    require("modules/glebData").errorGUI();
+                    require("modules/glebData").errorGUI("bad JSON");
+                    return;
                 }
-                */
+                //Tenemos el objeto JSON cargado en obj.responseText, hay que comprobar si tiene main window.
+		        if(auxData.windows == undefined){  
+		            require("modules/glebData").errorGUI("missing window");
+                    return;
+		        }
+                
                 //Ti.API.debug('GLEB - API -PATH= '+Titanium.Filesystem.applicationDataDirectory);
                 var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'ui');
                 if (!uiDir.exists()) {
@@ -130,6 +136,8 @@ exports.getMenus = function(gleb_loadMenusLocal, gleb_loadMenus_error) {
                 if (f.write(obj.responseText)===false) {
                    // handle write error
                    Ti.API.debug("GLEB - API -Ha habido un error guardando el UI");
+                   require("modules/glebData").errorGUI("handle write error");
+                   return;
                 }
             }
             var ts = Math.round((new Date()).getTime());
@@ -169,21 +177,28 @@ exports.getView = function(name, f_callback) {
             //Ti.API.debug('GLEB - API -onload called, HTTP status = '+ obj.responseText);
             if (obj.responseText) {
                 var response =  JSON.parse(obj.responseText);
+                Ti.API.debug('GLEB - GETVIEW - El response es: '+JSON.stringify(response));
                 var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'ui');
                 var f = Titanium.Filesystem.getFile(uiDir.resolve(), "gui.json");
                 if (f.exists()){
+                	Ti.API.debug('GLEB - GETVIEW - El json existe');
                     var content = f.read();
                     var json = JSON.parse(content.text); //UI JSON
-                    for (var i=0 ; i< json.windows[0].views.length; i++){
-                        if (json.windows[0].views[i].name == response.name){
-                            Ti.API.debug('GLEB - API -VISTA ENCONTRADA, ACTUALIZNADO UI.LOCAL');
-                            json.windows[0].views[i] = response;
-                            if (f.write(JSON.stringify(json))===false) {
-                                // handle write error
-                                Ti.API.debug("GLEB - API -Ha habido un error guardando el UI");
-                            }
-                        };
-                    }
+                    for (var i=0 ; i< json.windows.length; i++){
+                    	//Conprobamos si el window que se está analizando contiene views
+                    	if(json.windows[i].views){
+                    		for (var j=0 ; j< json.windows[i].views.length; j++){
+		                        if (json.windows[i].views[j].name == response.name){
+		                            Ti.API.debug('GLEB - API -VISTA ENCONTRADA, ACTUALIZNADO UI.LOCAL');
+		                            json.windows[i].views[j] = response;
+		                            if (f.write(JSON.stringify(json))===false) {
+		                                // handle write error
+		                                Ti.API.debug("GLEB - API -Ha habido un error guardando el UI");
+		                            }
+		                        };
+		                    }	
+                    	}
+	            	}
                 }
                 Ti.API.debug('GLEB - API -gleb_getView_done Event called');
                 f_callback (response);

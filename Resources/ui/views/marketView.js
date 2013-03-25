@@ -25,7 +25,7 @@ var containerView = Ti.UI.createView({
 }); 
 
 
-containerView._get = function() {
+containerView._get = function(params) {
     
     //Recibimos Params 
     Ti.API.debug('GLEB - Actualizando vista: '+params.name);
@@ -40,8 +40,8 @@ containerView._get = function() {
     /* Creamos el estilo y los elementos de la primera llamada*/
     var localStyle = style.getStyleView(params.style || {});
     
-    if (params.data) {
-        var localData = contentView.marketContentView(params.data);             
+    if (params.content) {
+        var localData = contentView.marketContentView(params.content);             
     }
     else {
         //No vienen contents en el UI JSON
@@ -67,7 +67,7 @@ containerView._refresh = function (e){
 }   
 
 
-return containerView._get();
+return containerView._get(params);
 
 
 /* Funcion que se encaga de crear la vista scroll vertical e ir añadiendo los elementos
@@ -129,7 +129,7 @@ function populateView (data, style){
     
     // Por cada elemento definido en la scroll view que se los hemos pasado en la definicion de la vista procesados a traves del contentView !!
     for( i in view.data ){
-        item=params.data[i]; // Es cada elemento de la seccion content del UI.json
+        item=params.content[i]; // Es cada elemento de la seccion content del UI.json
         obj=view.data[i];       
         //Ti.API.debug("OBJ:"+JSON.stringify(obj));
         //Ti.API.debug("ITEM: "+JSON.stringify(item));

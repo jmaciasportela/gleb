@@ -705,7 +705,15 @@ function populateView (data){
 
 exports.gleb_openDailyMap = function(params){    
     if (Titanium.Network.online){  
-        require('ui/views/mapView')._open();    
+    	require('ui/views/mapView')._open();
+    	/*
+    	var GlebMapView = require('ui/views/mapView');
+        var view = new GlebMapView({
+            headerTitle: 'Localizaciones de Hoy',
+            showTrack: 'ON'           
+        });
+        GlebMapView._open(view);
+        */    
         Ti.App.fireEvent('gleb_closeActivityIndicator');
     }
     else {  

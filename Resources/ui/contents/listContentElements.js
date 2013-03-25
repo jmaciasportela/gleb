@@ -35,14 +35,14 @@ for (i in content) {
                         image: imagePath,
                         //defaultImage: Titanium.Filesystem.resourcesDirectory+item.defaultImage,
                         backgroundColor: "transparent",
-                        height: item.iconHeight+"dp",
-                        width: item.iconWidth+"dp",                     
+                        height: localStyle.iconHeight+"dp",
+                        width: localStyle.iconWidth+"dp",                     
                         left: Ti.App.glebUtils._p(10),
                         touchEnabled:false
                 });             
                 row.add(BS);    
                 
-                var leftPosition = parseInt(item.iconWidth)+20;
+                var leftPosition = parseInt(localStyle.iconWidth)+20;
                 
                 var label1 = Ti.UI.createLabel({
                     text: Ti.App.glebUtils.textoClaro(item.labelH1),

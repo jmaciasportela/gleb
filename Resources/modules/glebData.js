@@ -59,19 +59,49 @@ exports.getGUI = function(){
 exports.errorGUI = function(text){
         Ti.App.glebUtils.closeActivityIndicator();
         Ti.API.debug('GLEB - INIT - Error procesando Menus: '+text);
-        var alertDialog = Titanium.UI.createAlertDialog({
-            title: 'Error',
-            message:'Ha ocurrido un error procesando los datos gleb. ¿Desea reintentar la descarga?',
-            buttonNames: ['SI']
-        });
-        alertDialog.addEventListener('click', function(e)
+        
+        if (exports.checkGUI()){
+            Ti.API.debug('GLEB - INIT - Existe GUI local');
+            var alertDialog = Titanium.UI.createAlertDialog({
+	            title: 'Error',
+	            message:'Ha ocurrido un error procesando los datos gleb. ¿Desea reintentar la descarga?',
+	            buttonNames: ['SI','NO']
+	        });
+	        
+			alertDialog.addEventListener('click', function(e)
             {
-            if (e.index==0) {
+	            if (e.index==0) {
                     //Borramos antiguo fichero
-                    f.deleteFile();
+                    //f.deleteFile();
+                    //require("modules/initFlow").gleb_loadMenus();
+                    require("clients/glebAPI").getMenus(require("modules/initFlow").gleb_loadMenusLocal, require("modules/initFlow").gleb_loadMenus_error);
+				}
+	            else{
+	            	require('modules/initFlow').gleb_loadMenusLocal();
+	            }
+	        });
+        }
+        else{
+        	var alertDialog = Titanium.UI.createAlertDialog({
+	            title: 'Error',
+	            message:'Ha ocurrido un error procesando los datos gleb. ¿Desea reintentar la descarga?',
+	            buttonNames: ['Reintentar','Salir']
+	        });	
+	        
+	        alertDialog.addEventListener('click', function(e)
+            {
+	            if (e.index==0) {
                     require("modules/initFlow").gleb_loadMenus();
-            }
-        });
+	            }
+	            else{
+	                require('plugins/newgps').stop(); 
+	                require("modules/initFlow").servicioGLEBSTOP();
+	                var activity = Titanium.Android.currentActivity;
+	                activity.finish();                
+	            }
+	        });
+        }
+                
         alertDialog.show();
 }
 
