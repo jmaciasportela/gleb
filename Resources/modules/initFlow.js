@@ -33,7 +33,7 @@ exports.gleb_starPUSH = function(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // LOAD MENUS
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-exports.gleb_loadMenus = function(){
+exports.gleb_loadMenus = function(forzarDescargaServer){
     
     //require("clients/glebAPI").updateStatus();
     Ti.App.glebUtils.openActivityIndicator({"text":"Cargando ..."});
@@ -58,7 +58,12 @@ exports.gleb_loadMenus = function(){
 // LOAD MENUS LOCAL
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.gleb_loadMenusLocal= function(){
-    if (require("modules/glebData").getGUI() !== null) exports.gleb_initMainWindow(require("modules/glebData").getGUI());
+    if (require("modules/glebData").getGUI() !== null){
+    	exports.gleb_initMainWindow(require("modules/glebData").getGUI());
+    }
+    else{
+    	Ti.App.glebUtils.closeActivityIndicator();
+    }
 }
 
 
@@ -69,7 +74,8 @@ exports.gleb_initMainWindow = function(json){
     Ti.API.debug('GLEB - INIT -getMenus Callback');
     if(json.windows[0]){
         mainWin = new require('ui/mainWindow')._get(json.windows[0]);
-        Ti.API.debug('GLEB - INIT -Abriendo main window');           
+        Ti.API.debug('GLEB - INIT -Abriendo main window');
+        Ti.App.glebUtils.closeActivityIndicator();           
         require('modules/NavigationController').open(mainWin);      
     }
         
@@ -95,7 +101,8 @@ exports.gleb_loadMenus_error = function(obj){
         alertDialog.addEventListener('click', function(e)
                 {
                 if (e.index==0) {
-                        exports.gleb_loadMenus();
+                        //exports.gleb_loadMenus();
+                        require("clients/glebAPI").getMenus(exports.gleb_loadMenusLocal, exports.gleb_loadMenus_error);
                 }
                 else {
                         Ti.App.glebUtils.closeActivityIndicator({"text":"Cargando ..."});
@@ -129,6 +136,7 @@ exports.gleb_loadMenus_error = function(obj){
 // INIT MAIN WINDOW
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.gleb_reInit = function(){
+	Ti.App.glebUtils.closeActivityIndicator();
     Ti.App.glebUtils.openActivityIndicator({"text":"Reiniciando ..."});
     // Resetear el stack de ventanas
     require('modules/NavigationController').clean();
@@ -162,7 +170,9 @@ servicioGLEB = function(){
 }
 
 //Iniciar servicio GLEB
-exports.servicioGLEBSTOP = function(){       
-    service.stop();
-    service=null;   
+exports.servicioGLEBSTOP = function(){ 
+	if(service!=null){
+		service.stop();
+    	service=null; 	
+	}           
 }

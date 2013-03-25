@@ -39,25 +39,11 @@ var headerTitle = Ti.UI.createLabel({
 });
 header.add(headerTitle);
 //Añadmos el header al container
-containerView.add(header);  
-
-var buttonVolver = Titanium.UI.createButton({           
-    backgroundColor: 'white',
-    borderColor: 'white',
-    borderRadius: 4,
-    borderWidth: 1,
-    title: 'VOLVER',
-    font:{fontSize:Ti.App.glebUtils._p(20),fontWeight:"bold"},
-});
-buttonVolver.addEventListener('click',function(){
-    Titanium.Media.vibrate([ 0, 100]);
-    alert ("HUNDIDO");
-    containerView._refresh ();
-    });     
+containerView.add(header);    
 
 var loadListMarketMainWin = false;
 
-containerView._get = function() {
+containerView._get = function(params) {
     
     //Recibimos Params 
     Ti.API.debug('GLEB - Actualizando vista: '+params.name);
@@ -69,8 +55,8 @@ containerView._get = function() {
     /* Creamos el estilo y los elementos de la primera llamada*/
     var localStyle = style.getStyleView(params.style || {});
     
-    if (params.data) {
-        var localData = contentView.listMarketContentView(params.data);             
+    if (params.content) {
+        var localData = contentView.listMarketContentView(params.content);             
     }
     else {
         //No vienen contents en el UI JSON
@@ -97,7 +83,7 @@ containerView._refresh = function (e){
     require("clients/glebAPI").getView(params.name, containerView._get );
 }   
 
-return containerView._get();
+return containerView._get(params);
 
 function formatDate()
 {
@@ -152,18 +138,29 @@ function populateView (data, style){
                 layout: "horizontal",
                 focusable: false,
                 width: Ti.UI.FILL,
-                height: Ti.App.glebUtils._p(80),
+                height: Ti.UI.SIZE,
                 name: "market_row_"+j,
-                backgroundColor:'transparent',
+                backgroundColor: 'transparent',
             });
             fila.add(objA);
-            if (objB)fila.add(objB);        
+            if (objB){
+            	//Tenemos que saber cual tiene mayor altura para seleccionar el color de fondo del row
+            	if(objA.tamano>=objB.tamano){
+            		fila.backgroundColor=objB.backgroundColor
+            	} 
+            	else{
+            		fila.backgroundColor=objA.backgroundColor
+            	}
+            	fila.add(objB);
+				Ti.API.debug("GLEB - LISTMARKET - TamanoAAA: "+objA.tamano);
+				Ti.API.debug("GLEB - LISTMARKET - TamanoBBB: "+objB.tamano);
+            }        
             sView.add(fila);
             i= i+2;
         }
     }
     
-    ////////// FINDE LA PARTE DEL MARKET
+    ////////// FIN DE LA PARTE DEL MARKET
 
     // update the offset value whenever scroll event occurs
     if((params.refresh) && (params.refresh.toUpperCase() == 'ON'))

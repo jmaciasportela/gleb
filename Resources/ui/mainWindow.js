@@ -5,14 +5,16 @@
 
 exports._get = function(params) {
 
+	var windowStyle = params.style || {};
+	
     mainWin = Titanium.UI.createWindow({
-         backgroundColor: params.style.backgroundColor || 'transparent',
-         borderColor: params.style.borderColor || 'black',
-         borderWidth: params.style.borderWidth || 0,
-    backgroundImage: params.style.backgroundImage || 'images/background.png',
-    orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
-    exitOnClose: false,
-    navBarHidden: true
+        backgroundColor: windowStyle.backgroundColor || 'transparent',
+        borderColor: windowStyle.borderColor || 'black',
+        borderWidth: windowStyle.borderWidth || 0,
+    	backgroundImage: windowStyle.backgroundImage || 'images/background.png',
+    	orientationModes : [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT],
+    	exitOnClose: false,
+    	navBarHidden: true
     });
 
     mainWin.addEventListener('open',function(){

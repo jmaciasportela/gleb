@@ -22,7 +22,7 @@ var containerView = Ti.UI.createView({
     name: params.name       
 }); 
 
-containerView._get = function() {
+containerView._get = function(params) {
     
     /*
      *  gridContentElements es el que se encarga de transformar los elementos del content del UI JSON en elementos de Titanium. Se le pasa el array content  []
@@ -34,8 +34,8 @@ containerView._get = function() {
     /* Creamos el estilo y los elementos de la primera llamada*/
     var localStyle = style.getStyleView(params.style || {});
 
-    if (params.data) {
-        var localData = contentView.gridContentView(params.data);               
+    if (params.content) {
+        var localData = contentView.gridContentView(params.content);               
     }
     else {
         //No vienen contents en el UI JSON
@@ -51,7 +51,13 @@ containerView._get = function() {
     return containerView;
 };
 
-return containerView._get();
+containerView._refresh = function (e){
+    Ti.App.fireEvent("gleb_openActivityIndicator",{"text":"Actualizando contenido ..."});
+    Ti.API.debug("GLEB - Actualizando Form: "+params.name);     
+    require("clients/glebAPI").getView(params.name, containerView._get );
+}  
+
+return containerView._get(params);
 
 
 /* Funcion que se encaga de crear la vista scroll vertical e ir añadiendo los elementos

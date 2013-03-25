@@ -47,7 +47,7 @@ header.add(headerTitle);
 //Añadmos el header al container
 containerView.add(header);
 
-containerView._get = function() {
+containerView._get = function(params) {
     
     //Recibimos Params 
     Ti.API.debug('GLEB - Actualizando vista: '+params.name);
@@ -62,8 +62,8 @@ containerView._get = function() {
     /* Creamos el estilo y los elementos de la primera llamada*/
     var localStyle = style.getStyleView(params.style || {});
     
-    if (params.data) {
-        var localData = contentView.formContentView(params.data);               
+    if (params.content) {
+        var localData = contentView.formContentView(params.content);               
     }
     else {
         //No vienen contents en el UI JSON
@@ -89,7 +89,7 @@ containerView._refresh = function (e){
 }   
 
 
-return containerView._get();
+return containerView._get(params);
 
 
 /* Funcion que se encaga de crear la vista scroll vertical e ir añadiendo los elementos
