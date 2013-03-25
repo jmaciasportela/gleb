@@ -73,7 +73,7 @@ exports.addAction = function(element, data) {
 		                name: winContent.name,
 		                refresh: winContent.refresh || "OFF",
 		                style: winContent.style,
-		                data: winContent.content       
+		                content: winContent.content       
 		            });
 		            typeSupported = true;
 		    		break;
@@ -83,7 +83,7 @@ exports.addAction = function(element, data) {
 		                name: winContent.name,
 		                refresh: winContent.refresh || "OFF",
 		                style: winContent.style,
-		                data: winContent.content
+		                content: winContent.content
 		            });
 		            typeSupported = true;
 		    		break;
@@ -94,7 +94,7 @@ exports.addAction = function(element, data) {
 		                refresh: winContent.refresh || "OFF",
 		                headerTitle: winContent.headerTitle,
 		                style: winContent.style,
-		                data: winContent.content
+		                content: winContent.content
 		            });
 		    		typeSupported = true;
 		    		break;
@@ -104,7 +104,7 @@ exports.addAction = function(element, data) {
 		                name: winContent.name,
 		                refresh: winContent.refresh || "OFF",
 		                style: winContent.style,
-		                data: winContent.content
+		                content: winContent.content
 		            });
 		    		typeSupported = true;
 		    		break;
@@ -115,7 +115,7 @@ exports.addAction = function(element, data) {
 		                refresh: winContent.refresh || "OFF",
 		                headerTitle: winContent.headerTitle,
 		                style: winContent.style,
-		                data: winContent.content
+		                content: winContent.content
 		            });
 		    		typeSupported = true;
 		    		break;
@@ -126,7 +126,7 @@ exports.addAction = function(element, data) {
 		                refresh: winContent.refresh || "OFF",
 		                headerTitle: winContent.headerTitle,
 		                style: winContent.style,
-		                data: winContent.content
+		                content: winContent.content
 		            });
 		    		typeSupported = true;
 		    		break;

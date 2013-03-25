@@ -41,7 +41,6 @@ exports.getStyleContent = function(params) {
         style.labelH1VerticalAlign = Titanium.UI.TEXT_VERTICAL_ALIGNMENT_CENTER;
     }
     
-    style.labelH1VerticalAlign  = Titanium.UI.TEXT_VERTICAL_ALIGNMENT_BOTTOM;
     style.labelH1Weight = params.labelH1Weight  || "normal";
     style.labelH2Size   = params.labelH2Size    || 12;
     style.labelH2Color  = params.labelH2Color   || "#000";

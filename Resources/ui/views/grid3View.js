@@ -42,8 +42,8 @@ containerView._get = function(params) {
 	//Recibimos Params 
 	Ti.API.debug('GLEB - Actualizando vista: '+params.name);
 
-	if (params.data) {
-		var localData = contentView.gridContentView(params.data);				
+	if (params.content) {
+		var localData = contentView.gridContentView(params.content);				
 	}
 	else {
 		//No vienen contents en el UI JSON

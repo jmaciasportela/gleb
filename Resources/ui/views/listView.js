@@ -49,7 +49,7 @@ containerListView.add(header);
 
 var loadListMainWin = false;
 
-containerListView._get = function() {
+containerListView._get = function(params) {
     
     //Ti.API.debug('GLEB - LIST PARAMS:' +JSON.stringify(params));
     
@@ -61,18 +61,15 @@ containerListView._get = function() {
     
     /* Creamos el estilo y los elementos de la primera llamada*/
     
-    var localStyle = style.getStyleView(params.style || {});
-    
+	var localStyle = style.getStyleView(params.style || {});
     //Recibimos Params 
     Ti.API.debug('GLEB - Actualizando vista: '+params.name);
-
-    if (params.data) {
-        var localData = contentView.listContentView(params.data);               
+    if (params.content) {
+        var localData = contentView.listContentView(params.content);              
     }
     else {
         //No vienen contents en el UI JSON
-        //var localData = contentView.listContentView(params.content);
-    }   
+    } 
         
     //Ti.API.debug('GLEB - Container views childrens: '+containerListView.getChildren());
     if (containerListView.children[1]) containerListView.remove (containerListView.children[1]);
@@ -94,7 +91,7 @@ containerListView._refresh = function (e){
     require("clients/glebAPI").getView(params.name, containerListView._get );
 }   
 
-return containerListView._get();
+return containerListView._get(params);
 
 
 
