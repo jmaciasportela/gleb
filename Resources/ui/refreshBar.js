@@ -128,10 +128,19 @@ module.exports.addListenersRefreshBar = function (row, scrollView, containerView
 		                //Acciones a ejecutar cuando se para el scrollView
 			            if (offset==Ti.App.glebUtils._p(0)) {
 			                Ti.API.info('REFRESH !!!!');
-			                containerView._refresh();               
-			                scrollView.scrollTo(0,Ti.App.glebUtils._p(60));
-			                row.getChildren()[3].text="Ultima actualización: "+formatDate();
-			                row.getChildren()[2].text = "Desliza hacia abajo para refrescar";
+			                if (Titanium.Network.online){  
+						    	containerView._refresh();               
+				                scrollView.scrollTo(0,Ti.App.glebUtils._p(60));
+				                row.getChildren()[3].text="Ultima actualización: "+formatDate();
+				                row.getChildren()[2].text = "Desliza hacia abajo para refrescar";
+						    }
+						    else {  
+						        var n = Ti.UI.createNotification({message:"No tienes cobertura de datos"});
+						        n.duration = Ti.UI.NOTIFICATION_DURATION_SHORT;                     
+						        n.show();
+				                scrollView.scrollTo(0,Ti.App.glebUtils._p(60));
+				                row.getChildren()[2].text = "Desliza hacia abajo para refrescar";
+						    }
 			            }
 			            else if (offset<Ti.App.glebUtils._p(60)){
 			                scrollView.scrollTo(0,Ti.App.glebUtils._p(60));

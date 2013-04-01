@@ -12,18 +12,18 @@ exports.marketContentView = function(content) {
         item=content[i];        
         var localStyle = style.getStyleContent(item.style || {});
 
-        if( item.type == 'button' ){
+        if( item.type && item.type == 'button' ){
                 button = Ti.UI.createButton({
-                        name: item.name,
+                        name: item.name || '',
                         height:'auto',
                         width:'auto',                   
                         backgroundColor: localStyle.backgroundColor,
                         backgroundImage: Ti.App.glebUtils.replaceCadena(localStyle.backgroundImage),
-                        action: item.action,
-                        winId: item.winId,
-                        url: item.url,
-                        method: item.method,
-                        methodParams: item.methodParams
+                        action: item.action || '',
+                        winId: item.winId || '',
+                        url: item.url || '',
+                        method: item.method || '',
+                        methodParams: item.methodParams || ''
                     });     
                 
                 // Tratamiento especial para el boton con nombre locationMap, para que se update la imagen de fondo al pulsar         

@@ -106,6 +106,17 @@ exports.errorGUI = function(text){
 }
 
 
+exports.errorGUI_View = function(text){
+        Ti.App.glebUtils.closeActivityIndicator();
+        Ti.API.debug('GLEB - INIT - Error procesando vista: '+text);
+        
+        var alertDialog = Titanium.UI.createAlertDialog({
+            title: 'Error',
+            message:'Ha ocurrido un error procesando los datos gleb.',
+            ok: 'OK'
+        }).show();
+}
+
 
 // POR REVISAR
 exports.setGUI = function(){    
@@ -120,3 +131,22 @@ exports.updateGUI = function(){
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// VALIDATE VIEWS DATA
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+exports.validateView = function(viewData, contentType){
+	var validate = false;
+	
+	if( contentType =='grid' || contentType =='market' || contentType =='listMarket' || contentType =='grid_3' || contentType =='list' || contentType =='form' || contentType =='mapView' ){
+        if(viewData.content){
+        	validate = true;
+        }
+    }
+    else if(contentType =='webView' ){      
+        if(viewData.url && viewData.url!=''){
+        	validate = true;
+        }
+    }
+        
+	return validate;
+}

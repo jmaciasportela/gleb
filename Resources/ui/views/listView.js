@@ -88,7 +88,7 @@ containerListView._get = function(params) {
 containerListView._refresh = function (e){
     Ti.App.glebUtils.openActivityIndicator({"text":"Actualizando lista ..."});
     Ti.API.debug("GLEB - Actualizando list: "+params.name);     
-    require("clients/glebAPI").getView(params.name, containerListView._get );
+    var resultCode = require("clients/glebAPI").getView(params.name, containerListView._get );
 }   
 
 return containerListView._get(params);

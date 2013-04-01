@@ -9,6 +9,11 @@ exports._p = function (value) {
     return parseInt(value*platformWidth/320);
 };
 
+exports.convertDpToPixel = function (value) {
+    return parseInt(value*Ti.App.Properties.getDouble('displayConstant'));
+};
+
+
 /*
 exports.textoClaro = function (texto){
 var base64Matcher = new RegExp("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$");
