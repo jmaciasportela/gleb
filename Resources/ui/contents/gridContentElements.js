@@ -9,21 +9,21 @@ exports.gridContentView = function(content) {
         item=content[i];        
         var localStyle = style.getStyleContent(item.style || {});
 
-        if( item.type == 'button' ){
+        if( item.type && item.type == 'button' ){
                 button = Ti.UI.createButton({
-                        name: item.name,    
-                        title: item.labelH1,
+                        name: item.name || '',    
+                        title: item.labelH1 || '',
                         font: {fontSize: localStyle.labelH1Size+"dp", fontWeight:localStyle.labelH1Weight },            
                         color: localStyle.labelH1Color,
                         textAlign: localStyle.labelH1TextAlign,
                         verticalAlign: localStyle.labelH1VerticalAlign,
                         backgroundColor: localStyle.backgroundColor,
                         backgroundImage: localStyle.backgroundImage,
-                        action: item.action,
-                        winId: item.winId,
-                        url: item.url,
-                        method: item.method,
-                        methodParams: item.methodParams
+                        action: item.action || '',
+                        winId: item.winId || '',
+                        url: item.url || '',
+                        method: item.method || '',
+                        methodParams: item.methodParams || ''
                 });
                         
                 //Si en el JSON se indica algún tipo de acción asociada al item, se le añade en este punto del código                                               
