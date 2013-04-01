@@ -7,7 +7,7 @@
  */
 exports.showNotification = function(params) {
     var toast = Ti.UI.createNotification({
-	    message:params.param1,
+	    message:params.param1 || '',
 	    duration: Ti.UI.NOTIFICATION_DURATION_LONG
 	});
 	toast.show();

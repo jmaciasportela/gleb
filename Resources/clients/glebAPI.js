@@ -127,6 +127,35 @@ exports.getMenus = function(gleb_loadMenusLocal, gleb_loadMenus_error) {
                     return;
 		        }
                 
+                //TODO - ANTES DE GUARDAR EL JSON QUE SE HA SOLICITADO AL SERVER, SE DEBERIA DE REALIZAR ALGUNA VALIDACION MAS
+                if(auxData.windows[0].views == undefined){  
+		            require("modules/glebData").errorGUI("missing views");
+                    return;
+		        }
+		        
+		        var controlJSON = false;
+		        var contentType = null;
+                for(v in auxData.windows[0].views) {
+                	if(auxData.windows[0].views[v].contentType){
+                		contentType = auxData.windows[0].views[v].contentType;
+                	}
+                	else{
+                		break;
+                	}
+                	
+			        if( (auxData.windows[0].views[v].content != undefined) && (contentType == 'grid' || contentType == 'market' || 
+			        contentType == 'listMarket' || contentType == 'grid_3' || contentType == 'list' || contentType == 'form' || 
+			        contentType == 'mapView' || contentType == 'webView' ) ){
+			        	controlJSON = true;
+			        	break;
+			        }
+			    };
+			    if(!controlJSON){
+			    	require("modules/glebData").errorGUI("incorrect views");
+                    return;
+			    }
+                
+                
                 //Ti.API.debug('GLEB - API -PATH= '+Titanium.Filesystem.applicationDataDirectory);
                 var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'ui');
                 if (!uiDir.exists()) {
@@ -177,12 +206,42 @@ exports.getView = function(name, f_callback) {
             //Ti.API.debug('GLEB - API -onload called, HTTP status = '+ obj.responseText);
             if (obj.responseText) {
                 var response =  JSON.parse(obj.responseText);
+                // Primero chequeamos que un JSON correcto
+                try{
+                    var response =  JSON.parse(obj.responseText);
+                }
+                catch (err){
+                    require("modules/glebData").errorGUI_View("bad JSON");
+                    return;
+                }
+                	
+                var controlJSON = false;	        
+		        var contentType = null;
+            	if(response.contentType){
+            		contentType = response.contentType;
+            	}
+            	else{
+            		require("modules/glebData").errorGUI_View("incorrect view");
+            		return;
+            	}
+            	
+		        if( (response.content && response.content != undefined) && (contentType == 'grid' || contentType == 'market' || 
+		        contentType == 'listMarket' || contentType == 'grid_3' || contentType == 'list' || contentType == 'form' || 
+		        contentType == 'mapView' || contentType == 'webView' ) ){
+		        	controlJSON = true;
+		        }
+			    if(!controlJSON){
+			    	require("modules/glebData").errorGUI_View("incorrect view");
+                    return;
+			    }
+				    
                 Ti.API.debug('GLEB - GETVIEW - El response es: '+JSON.stringify(response));
                 var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'ui');
                 var f = Titanium.Filesystem.getFile(uiDir.resolve(), "gui.json");
                 if (f.exists()){
                 	Ti.API.debug('GLEB - GETVIEW - El json existe');
                     var content = f.read();
+				    
                     var json = JSON.parse(content.text); //UI JSON
                     for (var i=0 ; i< json.windows.length; i++){
                     	//Conprobamos si el window que se está analizando contiene views
@@ -197,6 +256,16 @@ exports.getView = function(name, f_callback) {
 		                            }
 		                        };
 		                    }	
+                    	}
+                    	else{
+                    		if (json.windows[i].name == response.name){
+	                            Ti.API.debug('GLEB - API -WINDOW ENCONTRADO, ACTUALIZNADO UI.LOCAL');
+	                            json.windows[i] = response;
+	                            if (f.write(JSON.stringify(json))===false) {
+	                                // handle write error
+	                                Ti.API.debug("GLEB - API -Ha habido un error guardando el UI");
+	                            }
+	                        };
                     	}
 	            	}
                 }
@@ -216,7 +285,11 @@ exports.getView = function(name, f_callback) {
                 headers = null;
             }
             else {
-                f_callback ({"error":"No se puede actualizar la vista, no existe."});
+                //f_callback ({"error":"No se puede actualizar la vista, no existe."});
+                Ti.App.glebUtils.closeActivityIndicator();
+                var n = Ti.UI.createNotification({message:"No existen datos nuevos para esta vista"});
+		        n.duration = Ti.UI.NOTIFICATION_DURATION_SHORT;                     
+		        n.show();
             }
         }
     }

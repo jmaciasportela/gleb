@@ -7,7 +7,7 @@ var customMethods = require ("modules/customMethods");
 
 exports.addAction = function(element, data) {
 																	
-	if (data.action == 'openWebView') {
+	if (data.action && data.action == 'openWebView' && data.url && data.url != '') {
 		element.addEventListener('click', function(e){
 			Titanium.Media.vibrate([ 0, 100]);
             var win = new Titanium.UI.createWindow({
@@ -25,7 +25,7 @@ exports.addAction = function(element, data) {
 		});
 	}   
 	
-	else if (data.action == 'openWin') {
+	else if (data.action && data.action == 'openWin' && data.winId && data.winId != '') {
 		element.addEventListener('click', function(e){
 			Titanium.Media.vibrate([ 0, 100]);
             var win = new Titanium.UI.createWindow({
@@ -68,76 +68,101 @@ exports.addAction = function(element, data) {
 			
 			switch (winContent.contentType){
 		    	case 'grid':
-		    		var GlebGridView = require('ui/views/gridView');                
-		            var view = new GlebGridView({
-		                name: winContent.name,
-		                refresh: winContent.refresh || "OFF",
-		                style: winContent.style,
-		                content: winContent.content       
-		            });
-		            typeSupported = true;
+		    		if(require("modules/glebData").validateView(winContent, 'grid')){     
+			    		var GlebGridView = require('ui/views/gridView');                
+			            var view = new GlebGridView({
+			                name: winContent.name || "",
+			                refresh: winContent.refresh || "OFF",
+			                style: winContent.style || {},
+			                content: winContent.content       
+			            });
+			            typeSupported = true;
+					}
 		    		break;
 		    	case 'market':
-		    		var GlebMarketView = require('ui/views/marketView');            
-		            var view = new GlebMarketView({
-		                name: winContent.name,
-		                refresh: winContent.refresh || "OFF",
-		                style: winContent.style,
-		                content: winContent.content
-		            });
-		            typeSupported = true;
+		    		if(require("modules/glebData").validateView(winContent, 'market')){ 
+			    		var GlebMarketView = require('ui/views/marketView');            
+			            var view = new GlebMarketView({
+			                name: winContent.name || "",
+			                refresh: winContent.refresh || "OFF",
+			                style: winContent.style || {},
+			                content: winContent.content
+			            });
+			            typeSupported = true;
+					}
 		    		break;
 		    	case 'listMarket':
-			    	var GlebListMarketView = require('ui/views/listMarketView');            
-		            var view = new GlebListMarketView({
-		                name: winContent.name,
-		                refresh: winContent.refresh || "OFF",
-		                headerTitle: winContent.headerTitle,
-		                style: winContent.style,
-		                content: winContent.content
-		            });
-		    		typeSupported = true;
+		    		if(require("modules/glebData").validateView(winContent, 'listMarket')){ 
+				    	var GlebListMarketView = require('ui/views/listMarketView');            
+			            var view = new GlebListMarketView({
+			                name: winContent.name || "",
+			                refresh: winContent.refresh || "OFF",
+			                headerTitle: winContent.headerTitle || "",
+			                style: winContent.style || {},
+			                content: winContent.content
+			            });
+			    		typeSupported = true;
+					}
 		    		break;
 		    	case 'grid_3':
-			    	var GlebGridView3 = require('ui/views/grid3View');            
-		            var view = new GlebGridView3({
-		                name: winContent.name,
-		                refresh: winContent.refresh || "OFF",
-		                style: winContent.style,
-		                content: winContent.content
-		            });
-		    		typeSupported = true;
+		    		if(require("modules/glebData").validateView(winContent, 'grid_3')){ 
+				    	var GlebGridView3 = require('ui/views/grid3View');            
+			            var view = new GlebGridView3({
+			                name: winContent.name || "",
+			                refresh: winContent.refresh || "OFF",
+			                style: winContent.style || {},
+			                content: winContent.content
+			            });
+			    		typeSupported = true;
+					}
 		    		break;
 		    	case 'list':
-			    	var GlebListView = require('ui/views/listView');            
-		            var view = new GlebListView({
-		                name: winContent.name,
-		                refresh: winContent.refresh || "OFF",
-		                headerTitle: winContent.headerTitle,
-		                style: winContent.style,
-		                content: winContent.content
-		            });
-		    		typeSupported = true;
+		    		if(require("modules/glebData").validateView(winContent, 'list')){ 
+				    	var GlebListView = require('ui/views/listView');            
+			            var view = new GlebListView({
+			                name: winContent.name || "",
+			                refresh: winContent.refresh || "OFF",
+			                headerTitle: winContent.headerTitle || "",
+			                style: winContent.style || {},
+			                content: winContent.content
+			            });
+			    		typeSupported = true;
+					}
 		    		break;
 		    	case 'form':
-			    	var FormView = require('ui/views/formView');            
-		            var view = new FormView({
-		                name: winContent.name,
-		                refresh: winContent.refresh || "OFF",
-		                headerTitle: winContent.headerTitle,
-		                style: winContent.style,
-		                content: winContent.content
-		            });
-		    		typeSupported = true;
+		    		if(require("modules/glebData").validateView(winContent, 'form')){ 
+				    	var FormView = require('ui/views/formView');            
+			            var view = new FormView({
+			                name: winContent.name || "",
+			                refresh: winContent.refresh || "OFF",
+			                headerTitle: winContent.headerTitle || "",
+			                style: winContent.style || {},
+			                content: winContent.content
+			            });
+			    		typeSupported = true;
+					}
+		    		break;
+		    	case 'mapView':
+		    		if(require("modules/glebData").validateView(winContent, 'mapView')){ 
+				    	var GlebMapView = require('ui/views/mapView');            
+			            var view = new GlebMapView({
+			                headerTitle: winContent.headerTitle || "",
+			                showTrack: winContent.showTrack || "OFF",
+			                content: winContent.content
+			            });
+			    		typeSupported = true;
+					}
 		    		break;
 		    	case 'webView':
-			    	var GlebWebView = require('ui/views/webView');
-		            var view = new GlebWebView({
-		                name: winContent.name,
-		                url: winContent.url            
-		            });
-		    		typeSupported = true;
-		    		break;
+		    		if(require("modules/glebData").validateView(winContent, 'webView')){ 
+				    	var GlebWebView = require('ui/views/webView');
+			            var view = new GlebWebView({
+			                name: winContent.name || "",
+			                url: winContent.url            
+			            });
+			    		typeSupported = true;
+			    		break;
+				}
 		    	default:
 		    		Ti.API.info("Type unsupported="+winContent.contentType);
 		    		break;
@@ -151,18 +176,23 @@ exports.addAction = function(element, data) {
 		});
 	}
 
-    else if (data.action == 'openIntent') {
+    else if (data.action && data.action == 'openIntent' && data.intent && data.intent != '') {
         element.addEventListener('click', function(e){
             Titanium.Media.vibrate([ 0, 100]);
             customMethods.openIntent(data);
         });
     }
 	
-	else if (data.action == 'execMethod') {
+	else if (data.action && data.action == 'execMethod' && data.method && data.method != '') {
 		element.addEventListener('click', function(e){
 			Titanium.Media.vibrate([ 0, 100]);			
 			try{
-			 eval ("customMethods."+data.method+"(data.methodParams)");
+				if(data.methodParams){
+			 		eval ("customMethods."+data.method+"(data.methodParams)");
+			 	}
+			 	else{
+			 		eval ("customMethods."+data.method+"()");
+			 	}
 			}
 			catch (err){
 			 Ti.API.error("GLEB - Método no encontrado:"+data.method);    

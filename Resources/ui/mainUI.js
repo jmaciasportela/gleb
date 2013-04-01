@@ -9,87 +9,100 @@ exports._get = function(params) {
     
     for(v in params.views) {
         if( params.views[v].contentType =='grid' ){
-            var GlebGridView = require('ui/views/gridView');                
-            var view = new GlebGridView({
-                name: params.views[v].name,
-                refresh: params.views[v].refresh || "OFF",
-                style: params.views[v].style,
-                content: params.views[v].content       
-            });
-            views.push(view);
+			if(require("modules/glebData").validateView(params.views[v], 'grid')){        	
+	            var GlebGridView = require('ui/views/gridView');                
+	            var view = new GlebGridView({
+	                name: params.views[v].name || "",
+	                refresh: params.views[v].refresh || "OFF",
+	                style: params.views[v].style || {},
+	                content: params.views[v].content      
+	            });
+	            views.push(view);
+            }
         }
         else if( params.views[v].contentType =='market' ){
-            var GlebMarketView = require('ui/views/marketView');            
-            var view = new GlebMarketView({
-                name: params.views[v].name,
-                refresh: params.views[v].refresh || "OFF",
-                style: params.views[v].style,
-                content: params.views[v].content
-            });
-            views.push(view);
+			if(require("modules/glebData").validateView(params.views[v], 'market')){        	
+	            var GlebMarketView = require('ui/views/marketView');            
+	            var view = new GlebMarketView({
+	                name: params.views[v].name || "",
+	                refresh: params.views[v].refresh || "OFF",
+	                style: params.views[v].style || {},
+	                content: params.views[v].content
+	            });
+	            views.push(view);
+            }
         }
         else if( params.views[v].contentType =='listMarket' ){
-            var GlebListMarketView = require('ui/views/listMarketView');            
-            var view = new GlebListMarketView({
-                name: params.views[v].name,
-                refresh: params.views[v].refresh || "OFF",
-                headerTitle: params.views[v].headerTitle,
-                style: params.views[v].style,
-                content: params.views[v].content
-            });
-            views.push(view);
+			if(require("modules/glebData").validateView(params.views[v], 'listMarket')){        	
+	            var GlebListMarketView = require('ui/views/listMarketView');            
+	            var view = new GlebListMarketView({
+	                name: params.views[v].name || "",
+	                refresh: params.views[v].refresh || "OFF",
+	                headerTitle: params.views[v].headerTitle || "",
+	                style: params.views[v].style || {},
+	                content: params.views[v].content
+	            });
+	            views.push(view);
+            }
         }
         else if(params.views[v].contentType =='grid_3' ){
-            var GlebGridView3 = require('ui/views/grid3View');            
-            var view = new GlebGridView3({
-                name: params.views[v].name,
-                refresh: params.views[v].refresh || "OFF",
-                style: params.views[v].style,
-                content: params.views[v].content
-            });
-            views.push(view);
+			if(require("modules/glebData").validateView(params.views[v], 'grid_3')){        	
+	            var GlebGridView3 = require('ui/views/grid3View');            
+	            var view = new GlebGridView3({
+	                name: params.views[v].name || "",
+	                refresh: params.views[v].refresh || "OFF",
+	                style: params.views[v].style || {},
+	                content: params.views[v].content
+	            });
+	            views.push(view);
+            }
         }
         else if(params.views[v].contentType =='list' ){
-            var GlebListView = require('ui/views/listView');            
-            var view = new GlebListView({
-                name: params.views[v].name,
-                refresh: params.views[v].refresh || "OFF",
-                headerTitle: params.views[v].headerTitle,
-                style: params.views[v].style,
-                content: params.views[v].content
-            });
-            views.push(view);
+			if(require("modules/glebData").validateView(params.views[v], 'list')){        	
+	            var GlebListView = require('ui/views/listView');            
+	            var view = new GlebListView({
+	                name: params.views[v].name || "",
+	                refresh: params.views[v].refresh || "OFF",
+	                headerTitle: params.views[v].headerTitle || "",
+	                style: params.views[v].style || {},
+	                content: params.views[v].content
+	            });
+	            views.push(view);
+            }
         }
         else if(params.views[v].contentType =='form' ){
-            //Ti.API.debug("GLEB - FORM_VIEW"+ JSON.stringify(params.views[v]));
-            var FormView = require('ui/views/formView');            
-            var view = new FormView({
-                name: params.views[v].name,
-                refresh: params.views[v].refresh || "OFF",
-                headerTitle: params.views[v].headerTitle,
-                style: params.views[v].style,
-                content: params.views[v].content
-            });
-            views.push(view);
+			if(require("modules/glebData").validateView(params.views[v], 'form')){
+	            var FormView = require('ui/views/formView');            
+	            var view = new FormView({
+	                name: params.views[v].name || "",
+	                refresh: params.views[v].refresh || "OFF",
+	                headerTitle: params.views[v].headerTitle || "",
+	                style: params.views[v].style || {},
+	                content: params.views[v].content
+	            });
+	            views.push(view);
+            }
         }
         else if(params.views[v].contentType =='mapView' ){      
-            //Ti.API.info("GLEB - WEBVIEW URL"+ JSON.stringify(params.views[v]));     
-            var GlebMapView = require('ui/views/mapView');
-            var view = new GlebMapView({
-                headerTitle: params.views[v].headerTitle,
-                showTrack: params.views[v].showTrack,
-                content: params.views[v].content            
-            });
-            views.push(view);
+			if(require("modules/glebData").validateView(params.views[v], 'mapView')){    
+	            var GlebMapView = require('ui/views/mapView');
+	            var view = new GlebMapView({
+	                headerTitle: params.views[v].headerTitle || "",
+	                showTrack: params.views[v].showTrack || "OFF",
+	                content: params.views[v].content         
+	            });
+	            views.push(view);
+            }
         }
         else if(params.views[v].contentType =='webView' ){      
-            //Ti.API.info("GLEB - WEBVIEW URL"+ JSON.stringify(params.views[v]));     
-            var GlebWebView = require('ui/views/webView');
-            var view = new GlebWebView({
-                name: params.views[v].name,
-                url: params.views[v].url            
-            });
-            views.push(view);
+            if(require("modules/glebData").validateView(params.views[v], 'webView')){
+            	var GlebWebView = require('ui/views/webView');
+	            var view = new GlebWebView({
+	                name: params.views[v].name || "",
+	                url: params.views[v].url      
+	            });
+	            views.push(view);
+            }
         }
         else {
             Ti.API.info("Type unsupported="+params.views[v].contentType);
