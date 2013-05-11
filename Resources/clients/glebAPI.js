@@ -657,8 +657,7 @@ exports.uploadTracking = function(description) {
 exports.sendForm = function(fields, description) {
 
     var url = require('clients/glebAPI.config').sendForm_url;
-
-    var bodyContent = "";
+    var bodyContent ="";
     var firstTime = true;
     for(i=0;i<fields.length;i++){
         var item = fields[i];
@@ -735,7 +734,7 @@ exports.sendForm = function(fields, description) {
     }*/
 
     //makePOST (url,params,timeout,bodyContent,'',headers,sendForm_callback);
-    queuePOST (url,params,timeout,bodyContent,'',headers,null,description, "any");
+    queuePOST (url,timeout,bodyContent,'',headers,null,description, "any");
     showQueueNotification();
 }
 
