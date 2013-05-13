@@ -1,9 +1,9 @@
 // Fichero de configuración
 
 //Endpoints
-var protocol = "http";
-var host = "thinetic.com";
-var port = "80";
+var protocol = "https";
+var host = "gleb.es";
+var port = "443";
 
 //sendSMS
 exports.sendSMS_url =  protocol +"://"+host+":"+port+"/gleb2/sendSMS.php";
