@@ -217,60 +217,98 @@ exports.getView = function(name, f_callback) {
                 	
                 var controlJSON = false;	        
 		        var contentType = null;
-            	if(response.contentType){
-            		contentType = response.contentType;
-            	}
-            	else{
-            		require("modules/glebData").errorGUI_View("incorrect view");
-            		return;
-            	}
-            	
-		        if( (response.content && response.content != undefined) && (contentType == 'grid' || contentType == 'market' || 
-		        contentType == 'listMarket' || contentType == 'grid_3' || contentType == 'list' || contentType == 'form' || 
-		        contentType == 'mapView' || contentType == 'webView' ) ){
-		        	controlJSON = true;
+		        var indexUpdate = null;
+		        
+		        Ti.API.debug('GLEB - GETVIEW - Longitud del array del response: '+response.length);
+		        
+		        //SI NO ES UN ARRAY, NO HACEMOS NADA
+		        if(response.length == undefined){
+		        	Ti.App.glebUtils.closeActivityIndicator(); 
+					var toast = Ti.UI.createNotification({
+					    message:'No se ha podido actualizar la vista',
+					    duration: Ti.UI.NOTIFICATION_DURATION_LONG
+					});
+					toast.show();
+		        	return;
 		        }
-			    if(!controlJSON){
-			    	require("modules/glebData").errorGUI_View("incorrect view");
-                    return;
-			    }
-				    
-                Ti.API.debug('GLEB - GETVIEW - El response es: '+JSON.stringify(response));
-                var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'ui');
-                var f = Titanium.Filesystem.getFile(uiDir.resolve(), "gui.json");
-                if (f.exists()){
-                	Ti.API.debug('GLEB - GETVIEW - El json existe');
-                    var content = f.read();
-				    
-                    var json = JSON.parse(content.text); //UI JSON
-                    for (var i=0 ; i< json.windows.length; i++){
-                    	//Conprobamos si el window que se está analizando contiene views
-                    	if(json.windows[i].views){
-                    		for (var j=0 ; j< json.windows[i].views.length; j++){
-		                        if (json.windows[i].views[j].name == response.name){
-		                            Ti.API.debug('GLEB - API -VISTA ENCONTRADA, ACTUALIZNADO UI.LOCAL');
-		                            json.windows[i].views[j] = response;
-		                            if (f.write(JSON.stringify(json))===false) {
-		                                // handle write error
-		                                Ti.API.debug("GLEB - API -Ha habido un error guardando el UI");
-		                            }
-		                        };
-		                    }	
-                    	}
-                    	else{
-                    		if (json.windows[i].name == response.name){
-	                            Ti.API.debug('GLEB - API -WINDOW ENCONTRADO, ACTUALIZNADO UI.LOCAL');
-	                            json.windows[i] = response;
-	                            if (f.write(JSON.stringify(json))===false) {
-	                                // handle write error
-	                                Ti.API.debug("GLEB - API -Ha habido un error guardando el UI");
-	                            }
-	                        };
-                    	}
+		        
+		        //Recorremos el array de views de la respuesta de getView
+                for (var index=0 ; index< response.length; index++){
+                
+	            	if(response[index].contentType){
+	            		contentType = response[index].contentType;
 	            	}
-                }
+	            	else{
+	            		require("modules/glebData").errorGUI_View("incorrect view");
+	            		return;
+	            	}
+	            	
+			        if( (response[index].content && response[index].content != undefined) && (contentType == 'grid' || contentType == 'market' || 
+			        contentType == 'listMarket' || contentType == 'grid_3' || contentType == 'list' || contentType == 'form' || 
+			        contentType == 'mapView' || contentType == 'webView' ) ){
+			        	controlJSON = true;
+			        }
+				    if(!controlJSON){
+				    	require("modules/glebData").errorGUI_View("incorrect view");
+	                    return;
+				    }
+					    
+	                Ti.API.debug('GLEB - GETVIEW - El response es: '+JSON.stringify(response[index]));
+	                var uiDir = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'ui');
+	                var f = Titanium.Filesystem.getFile(uiDir.resolve(), "gui.json");
+	                if (f.exists()){
+	                	Ti.API.debug('GLEB - GETVIEW - El json existe');
+	                    var content = f.read();
+					    var existElement = false;
+					    
+	                    var json = JSON.parse(content.text); //UI JSON
+	                    for (var i=0 ; i< json.windows.length; i++){
+	                    	//Conprobamos si el window que se está analizando contiene views
+	                    	if(json.windows[i].views){
+	                    		for (var j=0 ; j< json.windows[i].views.length; j++){
+			                        if (json.windows[i].views[j].name == response[index].name && response[index].name == name){
+			                            Ti.API.debug('GLEB - API -VISTA ENCONTRADA, ACTUALIZNADO UI.LOCAL');
+			                            json.windows[i].views[j] = response[index];
+			                            indexUpdate = index;
+			                            existElement = true;	
+			                            if (f.write(JSON.stringify(json))===false) {
+			                                // handle write error
+			                                Ti.API.debug("GLEB - API -Ha habido un error guardando el UI");
+			                            }
+			                        };
+			                    }	
+	                    	}
+	                    	else{
+	                    		if (json.windows[i].name == response[index].name && response[index].name == name){
+	                    			if (response[index].winId && json.windows[i].winId == response[index].winId){
+			                            Ti.API.debug('GLEB - API -WINDOW ENCONTRADO, ACTUALIZNADO UI.LOCAL');
+			                            json.windows[i] = response[index];
+			                            existElement = true;	
+			                            if (f.write(JSON.stringify(json))===false) {
+			                                // handle write error
+			                                Ti.API.debug("GLEB - API -Ha habido un error guardando el UI");
+			                            }
+			                    	}
+		                        };
+	                    	}
+		            	}
+		            	if(!existElement){
+		            		//AÑADIR EL ELEMENTO AL JSON
+		            		json.windows[json.windows.length] = response[index];
+		            		if (f.write(JSON.stringify(json))===false) {
+                                // handle write error
+                                Ti.API.debug("GLEB - API -Ha habido un error guardando el UI");
+                            }
+		            	}
+	                }
+	            } 
+	                
                 Ti.API.debug('GLEB - API -gleb_getView_done Event called');
-                f_callback (response);
+                //SOLO DEBEMOS LANZAR LA FUNCION DE CALLBACK CON EL INDICE DEL RESPONSE CUYO NOMBRE COINCIDA CON EL QUE SE BUSCABA
+                if(indexUpdate!=null){
+                	Ti.API.debug('GLEB - API - El indice a actualizar es el: '+indexUpdate);
+                	f_callback (response[indexUpdate]);	
+                }
 
                 //Ti.App.fireEvent('gleb_getView_done',{"name":name,"response":response});
 
