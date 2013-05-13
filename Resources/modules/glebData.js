@@ -17,7 +17,8 @@ exports.getWinId = function(windowId){
     if (f.exists()){
         var content = f.read();
         try {
-            data = JSON.parse(content.text); //UI JSON        
+            data = JSON.parse(content.text); //UI JSON
+			//Ti.API.debug('GLEB - JSON completo: ' + JSON.stringify(data));       
         }
         catch (err){
             return null;            
@@ -26,8 +27,9 @@ exports.getWinId = function(windowId){
         for(i in data.windows){
         	var winContent=data.windows[i];
         	Ti.API.debug('GLEB - winId: ' + windowId);
-        	Ti.API.debug('GLEB - winContent: ' + JSON.stringify(winContent.name));
-        	if(winContent.winId == windowId){
+        	//Ti.API.debug('GLEB - winContent: ' + JSON.stringify(winContent));
+        	//Ti.API.debug('GLEB - winContent: ' + JSON.stringify(winContent.name));
+        	if(winContent.winId && winContent.winId == windowId){
         		return winContent;
         	}
         }
