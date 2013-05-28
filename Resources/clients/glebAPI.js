@@ -283,7 +283,8 @@ exports.getView = function(name, f_callback) {
 	                    			if (response[index].winId && json.windows[i].winId == response[index].winId){
 			                            Ti.API.debug('GLEB - API -WINDOW ENCONTRADO, ACTUALIZNADO UI.LOCAL');
 			                            json.windows[i] = response[index];
-			                            existElement = true;	
+			                            existElement = true;
+			                            indexUpdate = index;	
 			                            if (f.write(JSON.stringify(json))===false) {
 			                                // handle write error
 			                                Ti.API.debug("GLEB - API -Ha habido un error guardando el UI");
